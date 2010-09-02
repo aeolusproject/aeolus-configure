@@ -1,0 +1,51 @@
+The Deltacloud Appliance
+
+You can find more documentation at the Deltacloud web site at
+http://deltacloud.org/
+
+
+Prerequisites
+-------------
+
+To fully build the appliance from source you will need to create the the
+deltacloud_appliance rpm containing the puppet recipe. Create the appliance
+using the Thincrust appliance creator. And boot the appliance using libvirt.
+
+See http://thincrust.net/ and http://libvirt.org/ for more information.
+
+
+Building deltacloud_appliance.rpm
+---------------------------------
+
+First add the following to ~/.rpmmacros to set your rpmbuild directory
+     %_topdir   ~/rpmbuild
+
+Then run the following commands:
+$ mv deltacloud_appliance deltacloud_appliance-0.0.1 
+
+$ tar czvf deltacloud_appliance-0.0.1.tgz deltacloud_appliance-0.0.1
+
+$ cp deltacloud_appliance-0.0.1.tgz ~/rpmbuild/SOURCES
+
+$ rpmbuild -ba deltacloud_appliance.spec
+
+You will need to put the resulting rpm in a location which appliance-creator can
+find. Currently the latest build of the appliance rpm as well as updated dependencies
+to solve various integration issues can be found at http://yum.morsi.org/repos/13 which
+is already pulled in via the appliance's kickstart. As these fixes make their way into
+upstream codebases and releases, and eventually into Fedora, as well as the appliance_creator
+recipe itself, this repo will be relied upon less and eventually retired.
+
+
+Building and Starting the Appliance
+-----------------------------------
+
+Run the following commands from the appliance project checkout directory
+  (both need to be run as root or via sudo)
+
+$ sudo appliance-creator -n deltacloud -c deltacloud_appliance.ks  --cache /var/tmp/act/
+
+$ sudo virt-image deltacloud/deltacloud.xml
+
+This will start the appliance via libvirt. Bring up your preferred vm or vnc
+viewer to access.
