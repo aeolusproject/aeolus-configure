@@ -9,7 +9,7 @@ Release:  1%{?dist}
 Group:    Applications/Internet
 License:  GPLv2+
 URL:      http://deltacloud.org
-Source0:  %{name}-%{version}.tar.gz
+Source0:  %{name}-%{version}.tgz
 BuildRoot:  %{_tmppath}/%{name}-%{version}
 BuildArch:  noarch
 Requires:   ace-banners
