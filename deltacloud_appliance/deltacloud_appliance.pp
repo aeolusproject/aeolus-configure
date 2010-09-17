@@ -30,7 +30,7 @@ import "firewall"
 
 # Information about our appliance
 $appliance_name = "Deltacloud Appliance"
-$appliance_version = "0.0.1"
+$appliance_version = "0.0.2"
 
 # Configuration
 appliance_base::setup{$appliance_name:}
@@ -40,7 +40,7 @@ firewall::setup{$appliance_name: status=>"enabled"}
 
 # Install required gems
 single_exec{"install_required_gems":
-            command => "/usr/bin/gem install authlogic gnuplot scruffy compass builder"
+            command => "/usr/bin/gem install authlogic gnuplot scruffy compass builder compass-960-plugin simple-navigation amazon-ec2"
 }
 
 # TODO setup a gem repo w/ latest snapshots of image builder, deltacloud core if we need those
@@ -50,9 +50,9 @@ single_exec{"install_deltacloud_core":
             command => "/usr/bin/gem install deltacloud-client deltacloud-core"
 }
 
-# Image builder
+# Image builder / warehouse
 
-# FIXME when image builder is pushed to rubygems and/or rpm is available
+# FIXME when image builder and warehouse are pushed to rubygems and/or rpm is available
 # install via that means and remove this wget
 single_exec{"download_image_builder":
             command => "/usr/bin/wget http://projects.morsi.org/deltacloud/deltacloud-image-builder-agent-0.0.1.gem http://projects.morsi.org/deltacloud/deltacloud-image-builder-console-0.0.1.gem"
@@ -61,19 +61,14 @@ single_exec{"install_image_builder":
             command => "/usr/bin/gem install deltacloud-image-builder-agent-0.0.1.gem deltacloud-image-builder-console-0.0.1.gem",
             require => Single_exec[download_image_builder]
 }
+single_exec{"download_image_warehouse":
+            command => "/usr/bin/wget http://projects.morsi.org/deltacloud/iwhd -O /usr/sbin/iwhd && chmod +x /usr/sbin/iwhd"
+}
 
 # Pulp
 # Configure pulp to fetch from Fedora
-# FIXME currently major blocker with puppet / pulp:
-#   1) ace's single_exec invokes puppet's execute (lib/puppet/util.rb)
-#   2) puppet execute sets locale environment variables to posix default ('C') immediately before running the command (lib/puppet/util.rb line 295)
-#   3) pulp-admin attempts to attain default locale (pulp/client/connection.py line 80)
-#   4) the python locale module attempts to parse these locale env vars (/usr/lib64/python2.6/locale.py line 471)
-#   5) setting those vars to 'C' causes the locale module to return None (locale.py line 409) which causes pulp-admin to thow a fatal exception
-#
-# There is no way to get around this here, since puppet sets the locale env vars and then immediately invokes Kernel.exec('pulp-admin...').
-# We can move the pulp-admin command to the kickstart or deltacloud_appliance rpm spec for a quick workaround for the time being, though
-# a bug should really be filed against either puppet or pulp.
+# FIXME the locale issue has been fixed, but this command is timing out
+# indefinetly due to what seems to be a bug in pulp, did not debug extensively
 #single_exec{"pulp_fedora_config":
 #            command => "/usr/bin/pulp-admin -u admin -p admin repo create --id=fedora-repo --feed yum:http://download.fedora.redhat.com/pub/fedora/linux/updates/13/x86_64/"
 #}

@@ -8,14 +8,15 @@ repo --name=thincrust   --baseurl=http://www.thincrust.net/repo/noarch/
 # local yum repo with:
 #  * ruby 1.8.7
 #  * rails 2.3.8
-#  * patched locale_rails, activerecord, haml, and puppet rpms (to fix issues)
+#  * patched activerecord, haml, and puppet rpms (to fix issues)
 #  * deltacloud aggregator rpms
 #  * condor-dcloud and libdeltacloud
 #  * deltacloud_appliance
+#  * hail
 repo --name=deltacloud_local --baseurl=http://yum.morsi.org/repos/13
 
 # pull pulp in from here
-repo --name=pulp --baseurl=http://mmccune.fedorapeople.org/pulp/fedora/13/$basearch
+repo --name=pulp --baseurl=http://repos.fedorapeople.org/repos/pulp/pulp/fedora-$releasever/$basearch/
 
 # Firewall / network configuration
 firewall --enable --ssh
@@ -43,7 +44,7 @@ part /  --fstype="ext3" --ondisk=sda --size=3072 --bytes-per-inode=4096
 firstboot --disable
 
 %post
-  /sbin/chkconfig --level 35 ace off
+  /sbin/chkconfig --level 35 ace on
   mkdir /etc/sysconfig/ace
   echo deltacloud_appliance >> /etc/sysconfig/ace/appliancename
 

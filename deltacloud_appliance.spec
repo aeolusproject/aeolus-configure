@@ -3,7 +3,7 @@
 
 Summary:  DeltaCloud Appliance
 Name:     deltacloud_appliance
-Version:  0.0.1
+Version:  0.0.2
 Release:  1%{?dist}
 
 Group:    Applications/Internet
@@ -34,9 +34,16 @@ Requires:   pulp-client
 Requires:   rubygem-thin
 Requires:   rubygem-haml
 
-# To download the image builder, eventually replace with
-# image builder rpm itself:
+# To download the image builder and warehouse,
+# eventually replace with the corresponding rpms
 Requires:   wget
+
+# Image warehouse deps, remove when we pull in rpm
+Requires: jansson
+Requires: libmicrohttpd
+Requires: hail
+Requires: tokyocabinet
+Requires: mongo
 
 %description
 Deltacloud appliance
@@ -61,5 +68,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Mar 26 2008 Mohammed Morsi <mmorsi@redhat.com> 0.0.2-1
+- Updated packages pulled in to latest versions
+- Various fixes
+- Added initial image warehouse bits
+
 * Thu Mar 26 2008 Mohammed Morsi <mmorsi@redhat.com> 0.0.1-1
 - Initial package
