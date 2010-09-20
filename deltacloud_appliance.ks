@@ -16,7 +16,7 @@ repo --name=thincrust   --baseurl=http://www.thincrust.net/repo/noarch/
 repo --name=deltacloud_local --baseurl=http://yum.morsi.org/repos/13
 
 # pull pulp in from here
-repo --name=pulp --baseurl=http://repos.fedorapeople.org/repos/pulp/pulp/fedora-$releasever/$basearch/
+repo --name=pulp --baseurl=http://repos.fedorapeople.org/repos/pulp/pulp/fedora-13/$basearch/
 
 # Firewall / network configuration
 firewall --enable --ssh
