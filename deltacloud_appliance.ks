@@ -13,7 +13,9 @@ repo --name=thincrust   --baseurl=http://www.thincrust.net/repo/noarch/
 #  * condor-dcloud and libdeltacloud
 #  * deltacloud_appliance
 #  * hail
-repo --name=deltacloud_local --baseurl=http://yum.morsi.org/repos/13
+repo --name=deltacloud --baseurl=http://yum.morsi.org/repos/13
+
+repo --name=deltacloud_local --baseurl=file://DELTACLOUD_APPLIANCE_LOCAL_REPO
 
 # pull pulp in from here
 repo --name=pulp --baseurl=http://repos.fedorapeople.org/repos/pulp/pulp/fedora-13/$basearch/
@@ -38,7 +40,7 @@ timezone  US/Eastern
 bootloader --append="5" --location=mbr --timeout=1
 
 # Disk partitioning information
-part /  --fstype="ext3" --ondisk=sda --size=3072 --bytes-per-inode=4096
+part /  --fstype="ext3" --ondisk=sda --size=3072
 
 # No need for additional config
 firstboot --disable

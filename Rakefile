@@ -9,8 +9,8 @@ directory 'build/rpmbuild/BUILD'
 directory 'repo/noarch'
 directory 'repo/x86_64'
 
-CLEAN.include('pkg', 'build/**')
-CLOBBER.include('deltacloud/**', 'repo/**')
+CLEAN.include('pkg', 'build', 'repo', 'deltacloud_appliance.ks.new')
+CLOBBER.include('deltacloud')
 PKG_NAME = "deltacloud_appliance"
 PKG_VERSION = "0.0.2"
 RPM_TOPDIR = "_topdir #{Dir.pwd}/build/rpmbuild"
@@ -42,11 +42,7 @@ end
 desc "create image"
 task :create_image => :rpm do
  puts "NOTE:  This command will only work if run as root, so we're using 'sudo'.  You have been warned!"
- system "sudo appliance-creator -n deltacloud -c deltacloud_appliance.ks --cache /var/tmp/act"
+ cp_r "deltacloud_appliance.ks", "deltacloud_appliance.ks.new"
+ sh   "sed -i s-DELTACLOUD_APPLIANCE_LOCAL_REPO-#{Dir.pwd}/repo- deltacloud_appliance.ks.new"
+ system "sudo appliance-creator -n deltacloud -c deltacloud_appliance.ks.new --cache /var/tmp/act"
 end
-
-
-
-
-
- 
