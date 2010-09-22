@@ -13,37 +13,20 @@ using the Thincrust appliance creator. And boot the appliance using libvirt.
 
 See http://thincrust.net/ and http://libvirt.org/ for more information.
 
+Some commands require root access.  Those commands will be executed using sudo, so ensure that
+the user building the appliance has an appropriate entry in /etc/sudoers.
 
-Building deltacloud_appliance.rpm
+
+Building deltacloud_appliance.rpm and creating the appliance
 ---------------------------------
 
-First add the following to ~/.rpmmacros to set your rpmbuild directory
-     %_topdir   ~/rpmbuild
+The build process is largely automated via rake:
+$ rake create_image
 
-Then run the following commands:
-$ mv deltacloud_appliance deltacloud_appliance-0.0.2
-
-$ tar czvf deltacloud_appliance-0.0.2.tgz deltacloud_appliance-0.0.2
-
-$ cp deltacloud_appliance-0.0.2.tgz ~/rpmbuild/SOURCES
-
-$ rpmbuild -ba deltacloud_appliance.spec
-
-You will need to put the resulting rpm in a location which appliance-creator can
-find. Currently the latest build of the appliance rpm as well as updated dependencies
-to solve various integration issues can be found at http://yum.morsi.org/repos/13 which
-is already pulled in via the appliance's kickstart. As these fixes make their way into
-upstream codebases and releases, and eventually into Fedora, as well as the appliance_creator
-recipe itself, this repo will be relied upon less and eventually retired.
-
-
-Building and Starting the Appliance
+Starting the Appliance
 -----------------------------------
 
-Run the following commands from the appliance project checkout directory
-  (both need to be run as root or via sudo)
-
-$ sudo appliance-creator -n deltacloud -c deltacloud_appliance.ks  --cache /var/tmp/act/
+Run the following command from the appliance project checkout directory
 
 $ sudo virt-image deltacloud/deltacloud.xml
 
