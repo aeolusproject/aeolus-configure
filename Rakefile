@@ -18,7 +18,7 @@ task :default => :rpms
 # Build the rpm
 Rake::RpmTask.new(RPM_SPEC) do |rpm|
   rpm.need_tar = true
-  rpm.package_files.include("#{PKG_NAME}/**")
+  rpm.package_files.include("#{PKG_NAME}/**/*")
   rpm.topdir = "#{RPMBUILD_DIR}"
 end
 

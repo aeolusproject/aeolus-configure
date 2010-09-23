@@ -5,17 +5,17 @@ repo --name=f13         --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist
 repo --name=f13-updates --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=updates-released-f13&arch=$basearch
 repo --name=thincrust   --baseurl=http://www.thincrust.net/repo/noarch/
 
-# local yum repo with:
+# deltacloud yum repos:
 #  * ruby 1.8.7
 #  * rails 2.3.8
 #  * patched activerecord, haml, and puppet rpms (to fix issues)
 #  * deltacloud aggregator rpms
 #  * condor-dcloud and libdeltacloud
-#  * deltacloud_appliance
 #  * hail
-repo --name=deltacloud --baseurl=http://yum.morsi.org/repos/13
+repo --name=deltacloud_arch   --baseurl=http://repos.fedorapeople.org/repos/deltacloud/appliance/fedora-13/$basearch
+repo --name=deltacloud_noarch --baseurl=http://repos.fedorapeople.org/repos/deltacloud/appliance/fedora-13/noarch
 
-repo --name=deltacloud_local --baseurl=file://DELTACLOUD_APPLIANCE_LOCAL_REPO
+repo --name=deltacloud_local  --baseurl=file://DELTACLOUD_APPLIANCE_LOCAL_REPO
 
 # pull pulp in from here
 repo --name=pulp --baseurl=http://repos.fedorapeople.org/repos/pulp/pulp/fedora-13/$basearch/

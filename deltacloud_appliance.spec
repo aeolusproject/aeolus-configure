@@ -56,7 +56,7 @@ Deltacloud appliance
 %install
 rm -rf %{buildroot}
 %{__mkdir} -p %{buildroot}/%{aceHome}/appliances/%{name}
-%{__cp} -R %{pbuild}/* %{buildroot}/%{aceHome}/appliances/%{name}
+%{__cp} -R %{pbuild}/%{name}/* %{buildroot}/%{aceHome}/appliances/%{name}
 
 %clean
 rm -rf %{buildroot}
