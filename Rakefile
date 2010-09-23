@@ -13,7 +13,7 @@ CLOBBER.include('deltacloud')
 PKG_NAME = "deltacloud_appliance"
 RPM_SPEC = "deltacloud_appliance.spec"
 
-task :default => :rpms
+task :default => :create_image
 
 # Build the rpm
 Rake::RpmTask.new(RPM_SPEC) do |rpm|
