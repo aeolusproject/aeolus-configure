@@ -1,48 +1,36 @@
-require 'rake/clean'
-require 'rake/packagetask'
+# Deltacloud Appliance Rakefile
 
-directory 'build/rpmbuild/SOURCES'
-directory 'build/rpmbuild/SPECS'
-directory 'build/rpmbuild/SRPMS'
-directory 'build/rpmbuild/RPMS/noarch'
-directory 'build/rpmbuild/BUILD'
-directory 'repo/noarch'
-directory 'repo/x86_64'
+require 'rake/clean'
+require 'rake/rpmtask'
+require 'rake/yumtask'
+
+CURRENT_DIR  = File.dirname(__FILE__)
+RPMBUILD_DIR = "#{CURRENT_DIR}/build/rpmbuild"
+YUM_REPO     = "#{CURRENT_DIR}/repo"
 
 CLEAN.include('pkg', 'build', 'repo', 'deltacloud_appliance.ks.new')
 CLOBBER.include('deltacloud')
 PKG_NAME = "deltacloud_appliance"
-PKG_VERSION = "0.0.2"
-RPM_TOPDIR = "_topdir #{Dir.pwd}/build/rpmbuild"
+RPM_SPEC = "deltacloud_appliance.spec"
 
-task :default => :rpm
+task :default => :rpms
 
-#Make the tarball
-Rake::PackageTask.new("#{PKG_NAME}", "#{PKG_VERSION}") do |p|
- p.need_tar = true
- p.package_files.include("#{PKG_NAME}/**")
+# Build the rpm
+Rake::RpmTask.new(RPM_SPEC) do |rpm|
+  rpm.need_tar = true
+  rpm.package_files.include("#{PKG_NAME}/**")
+  rpm.topdir = "#{RPMBUILD_DIR}"
 end
 
-desc "build the rpm"
-task :rpm => ["pkg/#{PKG_NAME}-#{PKG_VERSION}.tgz", 
-       "build/rpmbuild/SOURCES", "build/rpmbuild/SPECS", "build/rpmbuild/SRPMS",
-       "build/rpmbuild/RPMS/noarch", "build/rpmbuild/BUILD"] do
- cp "pkg/#{PKG_NAME}-#{PKG_VERSION}.tgz" ,  "build/rpmbuild/SOURCES/#{PKG_NAME}-#{PKG_VERSION}.tgz"
- cp "#{PKG_NAME}.spec", "build/rpmbuild/SPECS/#{PKG_NAME}.spec"
-
- system "rpmbuild --define \"#{RPM_TOPDIR}\" -ba #{PKG_NAME}.spec"
-end
-
-desc "Create a yum repo for the appliance"
-task :create_repo => ["repo/noarch", "repo/x86_64", :rpm ] do
- cp_r "build/rpmbuild/RPMS/noarch/.", "repo/noarch", :verbose => true
- system "cd repo; createrepo -v ."
+# Construct yum repo
+Rake::YumTask.new(YUM_REPO) do |repo|
+  repo.rpms << "#{RPMBUILD_DIR}/RPMS/noarch/#{PKG_NAME}*.rpm"
 end
 
 desc "create image"
-task :create_image => :rpm do
+task :create_image => :create_repo do
  puts "NOTE:  This command will only work if run as root, so we're using 'sudo'.  You have been warned!"
  cp_r "deltacloud_appliance.ks", "deltacloud_appliance.ks.new"
- sh   "sed -i s-DELTACLOUD_APPLIANCE_LOCAL_REPO-#{Dir.pwd}/repo- deltacloud_appliance.ks.new"
+ sh   "sed -i s-DELTACLOUD_APPLIANCE_LOCAL_REPO-#{YUM_REPO}- deltacloud_appliance.ks.new"
  system "sudo appliance-creator -n deltacloud -c deltacloud_appliance.ks.new --cache /var/tmp/act"
 end
