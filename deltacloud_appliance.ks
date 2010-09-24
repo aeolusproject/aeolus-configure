@@ -64,6 +64,7 @@ bash
 chkconfig
 dhclient
 e2fsprogs
+gnuplot
 grub
 iputils
 kernel
