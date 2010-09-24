@@ -53,9 +53,6 @@ firstboot --disable
   # start mongodb and httpd for pulp server
   /sbin/chkconfig --level 35 mongod on
   /sbin/chkconfig --level 35 httpd on
-
-  /usr/sbin/useradd dcuser -p ""
-  # TODO (here or in deltacloud_appliance.pp) startup firefox on duser's X login w/ core & aggregator wuis in tabs
 %end
 
 %packages --excludedocs --nobase --instLangs=en

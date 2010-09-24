@@ -138,3 +138,38 @@ service{"deltacloud-core":
        enable => true,
        require => [Single_exec[install_deltacloud_core], File["/etc/init.d/deltacloud-core"]]
 }
+
+# Create dcuser, setup account
+single_exec{"create_dcuser":
+            command => "/usr/sbin/useradd dcuser -p ''"
+}
+file{"/etc/gdm/custom.conf":
+     source => "puppet:///deltacloud_appliance/gdm-custom.conf",
+     mode   => 755,
+     require => Single_exec[create_dcuser]
+}
+file{["/home/dcuser/.config/", "/home/dcuser/.config/autostart/",
+      "/home/dcuser/Desktop"]:
+       ensure => "directory",
+       require => Single_exec[create_dcuser]
+}
+file{"/home/dcuser/.config/autostart/deltacloud.desktop":
+     source => "puppet:///deltacloud_appliance/deltacloud.desktop",
+     mode   => 755,
+     require => File["/home/dcuser/.config/autostart"]
+}
+file{"/home/dcuser/Desktop/deltacloud.desktop":
+     source => "puppet:///deltacloud_appliance/deltacloud.desktop",
+     mode   => 755,
+     require => File["/home/dcuser/Desktop"]
+}
+file{"/home/dcuser/background.png":
+     source => "puppet:///deltacloud_appliance/background.png",
+     mode   => 755,
+     require => Single_exec[create_dcuser]
+}
+single_exec{"set_dcuser_background":
+            command => "/usr/bin/gconftool-2 --type string --set /desktop/gnome/background/picture_filename '/home/dcuser/background.png'",
+            user    => 'dcuser',
+            require => [Single_exec[create_dcuser], File["/home/dcuser/background.png"]]
+}
