@@ -64,6 +64,13 @@ single_exec{"install_image_builder":
 single_exec{"download_image_warehouse":
             command => "/usr/bin/wget http://projects.morsi.org/deltacloud/iwhd -O /usr/sbin/iwhd && chmod +x /usr/sbin/iwhd"
 }
+file{"/etc/iwhd/":
+     ensure => "directory"
+}
+file{"/etc/iwhd/conf.js":
+     source => "puppet:///deltacloud_appliance/iwhd-conf.js",
+     require => File["/etc/iwhd"]
+}
 
 # Pulp
 # Configure pulp to fetch from Fedora
