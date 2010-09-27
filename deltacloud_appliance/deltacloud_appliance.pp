@@ -71,6 +71,19 @@ file{"/etc/iwhd/conf.js":
      source => "puppet:///deltacloud_appliance/iwhd-conf.js",
      require => File["/etc/iwhd"]
 }
+file{"/etc/init.d/iwhd":
+     source => "puppet:///deltacloud_appliance/iwhd.init",
+     mode   => 755
+}
+service {"iwhd" :
+       ensure => running,
+       enable => true,
+       require => [File["/etc/iwhd/conf.js"], File["/etc/init.d/iwhd"]]
+}
+single_exec{"create-bucket":
+       command => "/usr/bin/curl -X PUT http://localhost:9090/my_bucket",
+       require => Service[iwhd]
+}
 
 # Pulp
 # Configure pulp to fetch from Fedora
@@ -132,6 +145,16 @@ single_exec{"migrate_deltacloud_database":
 file {"/etc/init.d/deltacloud-core":
       source => "puppet:///deltacloud_appliance/deltacloud-core",
       mode   => 755
+}
+
+# XXX hack, until the compass stylesheets are precompiled for the aggregator
+# rpm, precompile them here
+single_exec{"precompile_compass_stylesheets":
+     command => "/usr/bin/compass compile -e production --force --trace \
+                --config   /usr/share/deltacloud-aggregator/config/compass.rb   \
+                --sass-dir /usr/share/deltacloud-aggregator/app/stylesheets/ \
+                --css-dir  /usr/share/deltacloud-aggregator/public/stylesheets/compiled",
+     require => Single_exec[install_required_gems]
 }
 
 # Startup Deltacloud services

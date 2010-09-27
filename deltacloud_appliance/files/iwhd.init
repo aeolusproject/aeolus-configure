@@ -1,0 +1,73 @@
+#!/bin/bash
+#
+#
+# iwhd       startup script for iwhd server
+#
+# chkconfig: - 97 03
+# description: iwhd is primary server process for the \
+#    IWHD component.
+#
+
+[ -r /etc/sysconfig/iwhd ] && . /etc/sysconfig/iwhd
+
+LOCKFILE="${LOCKFILE:-/var/lock/subsys/iwhd }"
+
+PROG=/usr/sbin/iwhd
+CONF=/etc/iwhd/conf.js
+
+. /etc/init.d/functions
+
+start() {
+    echo -n "Starting iwhd: "
+
+    $PROG -c $CONF&
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ] && touch $LOCKFILE ; then
+      echo_success
+      echo
+    else
+      echo_failure
+      echo
+    fi
+}
+
+stop() {
+    echo -n "Shutting down iwhd: "
+    RETVAL=$?
+    killall iwhd
+    if [ $RETVAL -eq 0 ] && rm -f $LOCKFILE ; then
+      echo_success
+      echo
+    else
+      echo_failure
+      echo
+    fi
+}
+
+case "$1" in
+    start)
+      start
+      ;;
+    stop)
+      stop
+      ;;
+    restart)
+      stop
+      start
+      ;;
+    reload)
+      ;;
+    force-reload)
+      restart
+      ;;
+    status)
+      status $PROG
+      RETVAL=$?
+      ;;
+    *)
+      echo "Usage: iwhd {start|stop|restart|status}"
+      exit 1
+  ;;
+esac
+
+exit $RETVAL

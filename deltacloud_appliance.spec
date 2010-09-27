@@ -38,6 +38,11 @@ Requires:   rubygem-haml
 # eventually replace with the corresponding rpms
 Requires:   wget
 
+# To send a request to iwhd rest interface to
+# create buckets, eventually replace w/ an
+# iwhd client
+Requires:  curl
+
 # Image warehouse deps, remove when we pull in rpm
 Requires: jansson
 Requires: libmicrohttpd
