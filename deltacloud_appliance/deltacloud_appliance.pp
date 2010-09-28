@@ -203,3 +203,14 @@ single_exec{"set_dcuser_background":
             user    => 'dcuser',
             require => [Single_exec[create_dcuser], File["/home/dcuser/background.png"]]
 }
+
+#TODO:  Fix me, find a better way to do this...
+#Issues:
+#  - There isn't a yum repo, just a single file so we can't add repo and use normal package syntac
+#  - specifying source to package doesn't seem to make yum do a localinstall instead
+#  - package isn't signed (not fixable by us, but makes me sad)
+
+single_exec{"ec2-ami-tools":
+	command => "/usr/bin/yum localinstall http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.noarach.rpm -y --nogpg",
+	user => 'root'
+}
