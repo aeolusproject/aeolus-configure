@@ -40,7 +40,7 @@ timezone  US/Eastern
 bootloader --append="5" --location=mbr --timeout=1
 
 # Disk partitioning information
-part /  --fstype="ext3" --ondisk=sda --size=2048 # 2GB, try to keep this as small as possible
+part /  --fstype="ext3" --ondisk=sda --size=2304 # 2.25GB, try to keep this as small as possible
 
 # No need for additional config
 firstboot --disable

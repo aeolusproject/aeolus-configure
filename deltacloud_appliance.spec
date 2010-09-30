@@ -4,7 +4,7 @@
 Summary:  DeltaCloud Appliance
 Name:     deltacloud_appliance
 Version:  0.0.2
-Release:  1%{?dist}
+Release:  3%{?dist}
 
 Group:    Applications/Internet
 License:  GPLv2+
@@ -28,6 +28,7 @@ Requires:   rubygem-rails
 Requires:   gcc-c++
 Requires:   libxml2-devel
 Requires:   libxslt-devel
+Requires:   libcurl-devel
 Requires:   pulp
 Requires:   pulp-client
 
@@ -73,10 +74,16 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Thu Mar 26 2008 Mohammed Morsi <mmorsi@redhat.com> 0.0.2-1
+* Wed Sep 29 2010 Mohammed Morsi <mmorsi@redhat.com> 0.0.2-3
+- Include curl-devel for typhoeus gem
+
+* Wed Sep 29 2010 Mohammed Morsi <mmorsi@redhat.com> 0.0.2-2
+- Updated to pull in latest git changes
+
+* Fri Sep 17 2010 Mohammed Morsi <mmorsi@redhat.com> 0.0.2-1
 - Updated packages pulled in to latest versions
 - Various fixes
 - Added initial image warehouse bits
 
-* Thu Mar 26 2008 Mohammed Morsi <mmorsi@redhat.com> 0.0.1-1
+* Thu Sep 02 2010 Mohammed Morsi <mmorsi@redhat.com> 0.0.1-1
 - Initial package

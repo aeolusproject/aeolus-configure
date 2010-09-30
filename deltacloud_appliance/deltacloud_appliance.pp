@@ -40,7 +40,7 @@ firewall::setup{$appliance_name: status=>"enabled"}
 
 # Install required gems
 single_exec{"install_required_gems":
-            command => "/usr/bin/gem install authlogic gnuplot scruffy compass builder compass-960-plugin simple-navigation amazon-ec2"
+            command => "/usr/bin/gem install authlogic gnuplot scruffy compass builder compass-960-plugin simple-navigation amazon-ec2 typhoeus rb-inotify"
 }
 
 # TODO setup a gem repo w/ latest snapshots of image builder, deltacloud core if we need those
