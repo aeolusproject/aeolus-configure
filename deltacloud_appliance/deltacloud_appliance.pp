@@ -210,7 +210,8 @@ single_exec{"set_dcuser_background":
 #  - specifying source to package doesn't seem to make yum do a localinstall instead
 #  - package isn't signed (not fixable by us, but makes me sad)
 
-single_exec{"ec2-ami-tools":
-	command => "/usr/bin/yum localinstall http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.noarach.rpm -y --nogpg",
-	user => 'root'
+package{"ec2-ami-tools":
+        provider => "rpm",
+	source => "http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.noarch.rpm",
+	ensure => installed
 }
