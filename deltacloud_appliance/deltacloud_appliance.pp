@@ -24,9 +24,9 @@
 
 # Modules used by the appliance
 import "appliance_base"
+import "deltacloud_appliance"
 import "banners"
 import "firewall"
-#import "console"
 
 # Information about our appliance
 $appliance_name = "Deltacloud Appliance"
@@ -38,48 +38,67 @@ appliance_base::enable_updates{$appliance_name:}
 banners::all{$appliance_name:}
 firewall::setup{$appliance_name: status=>"enabled"}
 
-# Install required gems
-single_exec{"install_required_gems":
-            command => "/usr/bin/gem install authlogic gnuplot scruffy compass builder compass-960-plugin simple-navigation amazon-ec2 typhoeus rb-inotify"
-}
+# TODO put most of this recipe into the deltacloud manifest, replace with:
+#
+# deltacloud::package{["dependencies", "core", "client",
+#                      "factory-agent", "factory-console", "iwhd"]:
+#                       ensure => 'installed' }
+# deltacloud::db{"postgres":}
+# deltacloud::service{["condor", "condor_refreshd",
+#                      "httpd", "iwhd",
+#                      "core", "dbomatic", "aggregator"]:
+#                      ensure => 'running',
+#                      require => Deltacloud::Db[postgres]}
+# deltacloud::create_bucket{"my_bucket": require => Deltacloud::Service[iwhd]}
+# deltacloud::create_users{"dcloud":}
+#
 
-# TODO setup a gem repo w/ latest snapshots of image builder, deltacloud core if we need those
+# Install gems for deltacloud dependencies and deltacloud core
+$deltacloud_deps=["authlogic", "gnuplot", "scruffy", "compass",
+                  "compass-960-plugin", "simple-navigation", "amazon-ec2",
+                  "typhoeus", "rb-inotify", "right_aws",
+                  "deltacloud-client", "deltacloud-core"]
+package{$deltacloud_deps:
+            provider => 'gem',
+            ensure   => 'installed' , require => Single_exec[builder] }
 
-# Deltacloud core
-single_exec{"install_deltacloud_core":
-            command => "/usr/bin/gem install deltacloud-client deltacloud-core"
-}
+# XXX hack, builder is failing to install via 'package' above, since it outputs
+# the text 'ERROR' when installing (yet still succeeds to install).
+# /usr/lib/ruby/site_ruby/1.8/puppet/provider/package/gem.rb:104 checks this and
+# will report the package as failing to have installed. Temporary workaround until
+# this is resolved
+single_exec{"builder": command => "/usr/bin/gem install builder"}
 
 # Image builder / warehouse
 
-# FIXME when image builder and warehouse are pushed to rubygems and/or rpm is available
-# install via that means and remove this wget
-single_exec{"download_image_builder":
-            command => "/usr/bin/wget http://projects.morsi.org/deltacloud/deltacloud-image-builder-agent-0.0.1.gem http://projects.morsi.org/deltacloud/deltacloud-image-builder-console-0.0.1.gem"
-}
-single_exec{"install_image_builder":
-            command => "/usr/bin/gem install deltacloud-image-builder-agent-0.0.1.gem deltacloud-image-builder-console-0.0.1.gem",
-            require => Single_exec[download_image_builder]
-}
-single_exec{"download_image_warehouse":
-            command => "/usr/bin/wget http://projects.morsi.org/deltacloud/iwhd -O /usr/sbin/iwhd && chmod +x /usr/sbin/iwhd"
-}
-file{"/etc/iwhd/":
-     ensure => "directory"
-}
-file{"/etc/iwhd/conf.js":
-     source => "puppet:///deltacloud_appliance/iwhd-conf.js",
-     require => File["/etc/iwhd"]
-}
-file{"/etc/init.d/iwhd":
-     source => "puppet:///deltacloud_appliance/iwhd.init",
-     mode   => 755
-}
-service {"iwhd" :
-       ensure => running,
-       enable => true,
-       require => [File["/etc/iwhd/conf.js"], File["/etc/init.d/iwhd"]]
-}
+# FIXME when image builder and warehouse are pushed to rubygems
+# and/or rpm is available install via that means and remove this download
+standalone_gem { "deltacloud-image-builder-agent-0.0.1.gem":
+                    source => "http://projects.morsi.org/deltacloud/deltacloud-image-builder-agent-0.0.1.gem",
+                    ensure => installed;
+                 "deltacloud-image-builder-console-0.0.1.gem":
+                    source => "http://projects.morsi.org/deltacloud/deltacloud-image-builder-console-0.0.1.gem",
+                    ensure => installed }
+
+download { "iwhd":
+             source => "http://projects.morsi.org/deltacloud/iwhd",
+             cwd    => '/usr/sbin/',
+             mode   => 755 }
+
+file_with_dir { "conf.js":
+                     dir    => "/etc/iwhd",
+                     source => "puppet:///deltacloud_appliance/iwhd-conf.js",
+                     mode   => 644}
+
+file { "/etc/init.d/iwhd":
+         source => "puppet:///deltacloud_appliance/iwhd.init",
+         mode   => 755 }
+
+service { "iwhd":
+            ensure => running,
+            enable => true,
+            require => [Download[iwhd], File["/etc/iwhd/conf.js"], File["/etc/init.d/iwhd"]] }
+
 single_exec{"create-bucket":
        command => "/usr/bin/curl -X PUT http://localhost:9090/my_bucket",
        require => Service[iwhd]
@@ -102,44 +121,33 @@ service {"condor" :
        ensure => running,
        enable => true
 }
+# TODO uncomment when we pull this in
+#service {"condor_refreshd" :
+#       ensure => running,
+#       enable => true
+#}
 
 # Configure and start postgres
-single_exec {"initialize_db":
-      command => "/sbin/service postgresql initdb"
-}
-file {"/var/lib/pgsql/data/pg_hba.conf":
-       source => "puppet:///deltacloud_appliance/pg_hba.conf",
-       require => Single_exec[initialize_db]
-}
-service {"postgresql" :
-       ensure => running,
-       enable => true,
-       require => File["/var/lib/pgsql/data/pg_hba.conf"]
-}
-# XXX ugly hack, postgres takes sometime to startup even though reporting as running
-# need to pause for a bit to ensure it is running before we try to access the db
-single_exec{"postgresql_startup_pause":
-            command => "/bin/sleep 5",
-            require => Service[postgresql]
-}
-single_exec{"create_dcloud_postgres_user":
-            command => "/usr/bin/psql postgres postgres -c \"CREATE USER dcloud WITH PASSWORD 'v23zj59an' CREATEDB\"",
-            require => Single_exec[postgresql_startup_pause]
-}
+file { "/var/lib/pgsql/data/pg_hba.conf":
+         source => "puppet:///deltacloud_appliance/pg_hba.conf",
+         require => Postgres::Initialize[init_db] }
+postgres::initialize{'init_db':}
+postgres::start{'start_db': require => File["/var/lib/pgsql/data/pg_hba.conf"]}
+postgres::user{"dcloud":
+                 password => "v23zj59an",
+                 roles    => "CREATEDB",
+                 require  => Postgres::Start[start_db]}
+
 
 # Create deltacloud database
-single_exec{"create_deltacloud_database":
-            cwd     => "/usr/share/deltacloud-aggregator",
-            environment     => "RAILS_ENV=production",
-            command         => "/usr/bin/rake db:create:all",
-            require => [Single_exec[create_dcloud_postgres_user], Single_exec[install_required_gems], Single_exec[install_deltacloud_core]]
-}
-single_exec{"migrate_deltacloud_database":
+rails::create::db{"create_deltacloud_database":
+            cwd        => "/usr/share/deltacloud-aggregator",
+            rails_env  => "production",
+            require    => [Postgres::User[dcloud], Package[$deltacloud_deps]]}
+rails::migrate::db{"migrate_deltacloud_database":
             cwd             => "/usr/share/deltacloud-aggregator",
-            environment     => "RAILS_ENV=production",
-            command => "/usr/bin/rake db:migrate",
-            require => Single_exec[create_deltacloud_database]
-}
+            rails_env       => "production",
+            require         => Rails::Create::Db[create_deltacloud_database]}
 
 # install init.d control script for deltacloudd
 file {"/etc/init.d/deltacloud-core":
@@ -154,34 +162,63 @@ single_exec{"precompile_compass_stylesheets":
                 --config   /usr/share/deltacloud-aggregator/config/compass.rb   \
                 --sass-dir /usr/share/deltacloud-aggregator/app/stylesheets/ \
                 --css-dir  /usr/share/deltacloud-aggregator/public/stylesheets/compiled",
-     require => Single_exec[install_required_gems]
+     require => [Package[compass], Package[compass-960-plugin]]
 }
 
 # Startup Deltacloud services
 service {"deltacloud-aggregator" :
        ensure => running,
        enable => true,
-       require => [Single_exec[install_required_gems], Single_exec[migrate_deltacloud_database]]
+       require => [Package[$deltacloud_deps], Rails::Migrate::Db[migrate_deltacloud_database]]
+}
+# TODO uncomment when we pull dbomatic init script via updated aggregator rpm
+#service {"deltacloud-dbomatic" :
+#       ensure => running,
+#       enable => true,
+#       require => [Package[$deltacloud_deps], Rails::Migrate::Db[migrate_deltacloud_database]]
+#}
+service {"httpd" :
+       ensure => running,
+       enable => true
 }
 service{"deltacloud-core":
        ensure => running,
        enable => true,
-       require => [Single_exec[install_deltacloud_core], File["/etc/init.d/deltacloud-core"]]
+       require => [Package[$deltacloud_deps], File["/etc/init.d/deltacloud-core"]]
 }
 
-# Create dcuser, setup account
-single_exec{"create_dcuser":
-            command => "/usr/sbin/useradd dcuser -p ''"
-}
+# Create dcuser aggregator web user
+# FIXME uncomment when rake dc:create_user is in aggregator
+#dc::site_admin{"dcuser":
+#     cwd             => "/usr/share/deltacloud-aggregator",
+#     rails_env       => "production",
+#     email           => 'dcuser@deltacloud.org',
+#     password        => 'dcuser'}
+
+# Create dcuser system user, setup account
+user{"dcuser":
+      password => "",
+      home     => "/home/dcuser"}
 file{"/etc/gdm/custom.conf":
      source => "puppet:///deltacloud_appliance/gdm-custom.conf",
-     mode   => 755,
-     require => Single_exec[create_dcuser]
+     mode   => 755
 }
-file{["/home/dcuser/.config/", "/home/dcuser/.config/autostart/",
+file{"/home/dcuser":
+        ensure  => "directory",
+        require => User[dcuser],
+        owner   => 'dcuser',
+        group   => 'dcuser';
+     ["/home/dcuser/.config/",
       "/home/dcuser/Desktop"]:
-       ensure => "directory",
-       require => Single_exec[create_dcuser]
+        ensure  => "directory",
+        require => File["/home/dcuser"],
+        owner   => 'dcuser',
+        group   => 'dcuser';
+     "/home/dcuser/.config/autostart/":
+        ensure  => "directory",
+        require => File["/home/dcuser/.config"],
+        owner   => 'dcuser',
+        group   => 'dcuser';
 }
 file{"/home/dcuser/.config/autostart/deltacloud.desktop":
      source => "puppet:///deltacloud_appliance/deltacloud.desktop",
@@ -196,12 +233,12 @@ file{"/home/dcuser/Desktop/deltacloud.desktop":
 file{"/home/dcuser/background.png":
      source => "puppet:///deltacloud_appliance/background.png",
      mode   => 755,
-     require => Single_exec[create_dcuser]
+     require => File["/home/dcuser"]
 }
 single_exec{"set_dcuser_background":
             command => "/usr/bin/gconftool-2 --type string --set /desktop/gnome/background/picture_filename '/home/dcuser/background.png'",
             user    => 'dcuser',
-            require => [Single_exec[create_dcuser], File["/home/dcuser/background.png"]]
+            require => [File["/home/dcuser"], File["/home/dcuser/background.png"]]
 }
 
 #TODO:  Fix me, find a better way to do this...
@@ -212,6 +249,6 @@ single_exec{"set_dcuser_background":
 
 package{"ec2-ami-tools":
         provider => "rpm",
-	source => "http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.noarch.rpm",
-	ensure => installed
+       source => "http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.noarch.rpm",
+       ensure => installed
 }

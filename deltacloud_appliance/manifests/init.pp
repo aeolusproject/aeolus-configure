@@ -1,0 +1,6 @@
+import "deltacloud_appliance/deltacloud"
+import "deltacloud_appliance/file_with_dir"
+import "deltacloud_appliance/standalone_gem"
+import "deltacloud_appliance/download"
+import "deltacloud_appliance/postgres"
+import "deltacloud_appliance/rails"
