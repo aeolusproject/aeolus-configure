@@ -1,6 +1,7 @@
 [
   {
     "name": "primary",
-    "type": "fs"
+    "type": "fs",
+    "path": "."
   }
 ]

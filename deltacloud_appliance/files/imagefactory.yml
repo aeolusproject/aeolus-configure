@@ -1,0 +1,12 @@
+bg_command: /usr/bin/boxgrinder-build
+bg_working_dir: /boxgrinder/appliances
+bg_local_delivery: /boxgrinder/packaged_builds
+warehouse_active: true # if false Factory will not attempt any warehouse actions at all
+warehouse_host: localhost
+warehouse_port: 9090
+warehouse_bucket: templates
+# Which entity should actually bundle and upload the EC2 AMI
+ami_delivery: boxgrinder # Valid values are boxgrinder or warehouse
+ami_s3_bucket: deltacloud # S3 bucket to use when uploading bundle
+# Note that directory must exist
+mock_dir: /var/tmp/clalance-mock # Directory to use when building mock target

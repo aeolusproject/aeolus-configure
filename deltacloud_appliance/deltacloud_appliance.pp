@@ -49,7 +49,7 @@ firewall::setup{$appliance_name: status=>"enabled"}
 #                      "core", "dbomatic", "aggregator"]:
 #                      ensure => 'running',
 #                      require => Deltacloud::Db[postgres]}
-# deltacloud::create_bucket{"my_bucket": require => Deltacloud::Service[iwhd]}
+# deltacloud::create_bucket{"deltacloud": require => Deltacloud::Service[iwhd]}
 # deltacloud::create_users{"dcloud":}
 #
 
@@ -100,9 +100,32 @@ service { "iwhd":
             require => [Download[iwhd], File["/etc/iwhd/conf.js"], File["/etc/init.d/iwhd"]] }
 
 single_exec{"create-bucket":
-       command => "/usr/bin/curl -X PUT http://localhost:9090/my_bucket",
+       command => "/usr/bin/curl -X PUT http://localhost:9090/deltacloud",
        require => Service[iwhd]
 }
+
+file { "/boxgrinder": ensure => "directory"}
+file { "/boxgrinder/appliances":
+          ensure => "directory",
+          require => File["/boxgrinder"]}
+file { "/boxgrinder/packaged_builders":
+          ensure => "directory",
+          require => File["/boxgrinder"]}
+file { "/root/.boxgrinder": ensure => "directory"}
+file { "/root/.boxgrinder/plugins":
+          ensure => "directory",
+          require => File["/root/.boxgrinder"]}
+file { "/root/.boxgrinder/plugins/local":
+            source => "puppet:///deltacloud_appliance/root-boxgrinder-plugins-local",
+            mode   => 644 }
+
+file { "/etc/qpidd.conf":
+            source => "puppet:///deltacloud_appliance/qpidd.conf",
+            mode   => 644 }
+
+file { "/etc/imagefactory.yml":
+            source => "puppet:///deltacloud_appliance/imagefactory.yml",
+            mode   => 644 }
 
 # Pulp
 # Configure pulp to fetch from Fedora
@@ -121,11 +144,6 @@ service {"condor" :
        ensure => running,
        enable => true
 }
-# TODO uncomment when we pull this in
-#service {"condor_refreshd" :
-#       ensure => running,
-#       enable => true
-#}
 
 # Configure and start postgres
 file { "/var/lib/pgsql/data/pg_hba.conf":
@@ -171,29 +189,35 @@ service {"deltacloud-aggregator" :
        enable => true,
        require => [Package[$deltacloud_deps], Rails::Migrate::Db[migrate_deltacloud_database]]
 }
-# TODO uncomment when we pull dbomatic init script via updated aggregator rpm
-#service {"deltacloud-dbomatic" :
-#       ensure => running,
-#       enable => true,
-#       require => [Package[$deltacloud_deps], Rails::Migrate::Db[migrate_deltacloud_database]]
-#}
-service {"httpd" :
+service {"deltacloud-condor_refreshd" :
        ensure => running,
-       enable => true
+       enable => true,
+       require => [Package[$deltacloud_deps], Rails::Migrate::Db[migrate_deltacloud_database]]
+}
+service {"deltacloud-dbomatic" :
+       ensure => running,
+       enable => true,
+       require => [Package[$deltacloud_deps], Rails::Migrate::Db[migrate_deltacloud_database]]
 }
 service{"deltacloud-core":
        ensure => running,
        enable => true,
        require => [Package[$deltacloud_deps], File["/etc/init.d/deltacloud-core"]]
 }
+service {"httpd" :
+       ensure => running,
+       enable => true
+}
 
 # Create dcuser aggregator web user
-# FIXME uncomment when rake dc:create_user is in aggregator
-#dc::site_admin{"dcuser":
-#     cwd             => "/usr/share/deltacloud-aggregator",
-#     rails_env       => "production",
-#     email           => 'dcuser@deltacloud.org',
-#     password        => 'dcuser'}
+dc::site_admin{"dcuser":
+     cwd             => "/usr/share/deltacloud-aggregator",
+     rails_env       => "production",
+     email           => 'dcuser@deltacloud.org',
+     password        => 'dcuser',
+     first_name      => 'deltacloud',
+     last_name       => 'user',
+     require         => Rails::Migrate::Db["migrate_deltacloud_database"]}
 
 # Create dcuser system user, setup account
 user{"dcuser":
