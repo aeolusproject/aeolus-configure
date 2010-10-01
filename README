@@ -21,14 +21,20 @@ Building deltacloud_appliance.rpm and creating the appliance
 ---------------------------------
 
 The build process is largely automated via rake:
-$ rake create_image
+$ rake image:create
 
 Starting the Appliance
 -----------------------------------
 
 Run the following command from the appliance project checkout directory
 
-$ sudo virt-image deltacloud/deltacloud.xml
+$ rake image:deploy
 
-This will start the appliance via libvirt. Bring up your preferred vm or vnc
-viewer to access.
+This will start the appliance via libvirt bringing up virt-viewer for
+graphical access. If the appliance is already found running locally this
+will fail, and you will have to run the following to destroy and delete
+the appliance.
+
+$ rake image:destroy
+
+NOTE this will destroy the image, make sure to backup any changes to it
