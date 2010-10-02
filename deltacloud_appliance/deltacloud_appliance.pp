@@ -38,6 +38,8 @@ appliance_base::enable_updates{$appliance_name:}
 banners::all{$appliance_name:}
 firewall::setup{$appliance_name: status=>"enabled"}
 
+firewall_open_port{"httpd": port => "80", policy => "tcp"}
+
 # TODO put most of this recipe into the deltacloud manifest, replace with:
 #
 # deltacloud::package{["dependencies", "core", "client",

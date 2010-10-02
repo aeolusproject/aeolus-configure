@@ -37,7 +37,7 @@ lang en_US.UTF-8
 timezone  US/Eastern
 
 # System bootloader configuration
-bootloader --append="5" --location=mbr --timeout=1
+bootloader --append="5 console=tty0 console=ttyS0,115200" --location=mbr --timeout=1
 
 # Disk partitioning information
 part /  --fstype="ext3" --ondisk=sda --size=3072
