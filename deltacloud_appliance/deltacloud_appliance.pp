@@ -189,17 +189,17 @@ single_exec{"precompile_compass_stylesheets":
 service {"deltacloud-aggregator" :
        ensure => running,
        enable => true,
-       require => [Package[$deltacloud_deps], Rails::Migrate::Db[migrate_deltacloud_database]]
+       require => [Package[$deltacloud_deps], Rails::Migrate::Db[migrate_deltacloud_database], Service[condor]]
 }
 service {"deltacloud-condor_refreshd" :
        ensure => running,
        enable => true,
-       require => [Package[$deltacloud_deps], Rails::Migrate::Db[migrate_deltacloud_database]]
+       require => [Package[$deltacloud_deps], Rails::Migrate::Db[migrate_deltacloud_database], Service[condor]]
 }
 service {"deltacloud-dbomatic" :
        ensure => running,
        enable => true,
-       require => [Package[$deltacloud_deps], Rails::Migrate::Db[migrate_deltacloud_database]]
+       require => [Package[$deltacloud_deps], Rails::Migrate::Db[migrate_deltacloud_database], Service[condor]]
 }
 service{"deltacloud-core":
        ensure => running,
