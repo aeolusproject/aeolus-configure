@@ -1,4 +1,4 @@
-The Deltacloud Appliance
+The Deltacloud Recipe and Appliance
 
 You can find more documentation at the Deltacloud web site at
 http://deltacloud.org/
@@ -7,9 +7,9 @@ http://deltacloud.org/
 Prerequisites
 -------------
 
-To fully build the appliance from source you will need to create the the
-deltacloud_appliance rpm containing the puppet recipe. Create the appliance
-using the Thincrust appliance creator. And boot the appliance using libvirt.
+The deltacloud appliance makes uses of the deltacloud recipe rpm
+to install and configure all components. The appliance is built
+using the appliance tools and is deployed via libvirt
 
 See http://thincrust.net/ and http://libvirt.org/ for more information.
 
@@ -17,11 +17,20 @@ Some commands require root access.  Those commands will be executed using sudo, 
 the user building the appliance has an appropriate entry in /etc/sudoers.
 
 
-Building deltacloud_appliance.rpm and creating the appliance
+Building and Installing the Deltacloud Recipe
 ---------------------------------
 
-The build process is largely automated via rake:
-$ rake image:create
+$ rake rpms
+
+The rpm will be placed into the pkg build dir, install it via yum
+$ sudo yum install --nogpgcheck \
+    build/rpmbuild/RPMS/noarch/deltacloud_recipe-0.0.3-1.fc13.noarch.rpm
+
+Install the recipe via
+$ sudo /usr/sbin/dc-install
+
+Uninstall it via
+$ sudo /usr/sbin/dc-uninstall
 
 Starting the Appliance
 -----------------------------------
