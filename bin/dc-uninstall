@@ -1,0 +1,4 @@
+#!/bin/sh
+
+puppet /usr/share/deltacloud-recipe/deltacloud_uninstall.pp \
+       --modulepath=/usr/share/deltacloud-recipe/modules/:/usr/share/ace/modules/
