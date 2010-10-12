@@ -10,15 +10,15 @@ YUM_REPO     = "#{CURRENT_DIR}/repo"
 
 CLEAN.include('pkg', 'build', 'repo', 'deltacloud_appliance.ks.new')
 CLOBBER.include('deltacloud')
-PKG_NAME = "deltacloud_appliance"
-RPM_SPEC = "deltacloud_appliance.spec"
+PKG_NAME = "deltacloud_recipe"
+RPM_SPEC = "deltacloud_recipe.spec"
 
 task :default => :"image:create"
 
 # Build the rpm
 Rake::RpmTask.new(RPM_SPEC) do |rpm|
   rpm.need_tar = true
-  rpm.package_files.include("#{PKG_NAME}/**/*")
+  rpm.package_files.include("bin/*", "#{PKG_NAME}/**/*")
   rpm.topdir = "#{RPMBUILD_DIR}"
 end
 
