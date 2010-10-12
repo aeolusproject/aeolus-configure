@@ -19,37 +19,23 @@
 #--
 
 #
-# deltacloud installation recipe
+# deltacloud uninstallation recipe
 #
 
 # Modules used by the recipe
 import "deltacloud_recipe/deltacloud"
 
-# setup the deltacloud repositories
-dc::repos{"deltacloud":}
+$packages = ["aggregator", "core"]
+
+# stop deltacloud services
+dc::service::stop{["aggregator", "core", 'iwhd', 'image-factory']:}
+
+# destroy deltacloud db
+dc::db::destroy{"postgres":
+                require => Dc::Service::Stop['aggregator']}
 
 # install deltacloud components
-dc::package::install{["aggregator", "core"]:
-                        require => Dc::Repos["deltacloud"]}
+dc::package::uninstall{$packages:
+                        require => Dc::Db::Destroy['postgres']}
 
-# setup selinux
-dc::selinux{'deltacloud':}
-
-# setup the firewall
-dc::firewall{'deltacloud':}
-
-# setup deltacloud db
-dc::db{"postgres":}
-
-# start deltacloud services
-dc::service::start{["aggregator", "core", 'iwhd', 'image-factory']:}
-
-# create bucket in image warehouse
-dc::create_bucket{"deltacloud":}
-
-# Create dcuser aggregator web user
-dc::site_admin{"admin":
-     email           => 'dcuser@deltacloud.org',
-     password        => 'password',
-     first_name      => 'deltacloud',
-     last_name       => 'user'}
+dc::cleanup{"deltacloud": require => Dc::Package::Uninstall[$packages]}

@@ -14,3 +14,11 @@ define rails::migrate::db($cwd="", $rails_env=""){
          environment => "RAILS_ENV=${rails_env}",
          command     => "/usr/bin/rake db:migrate"}
 }
+
+define rails::drop::db($cwd="", $rails_env=""){
+  exec{"drop_rails_database":
+         cwd         => $cwd,
+         onlyif      => "/usr/bin/test -f ${cwd}/Rakefile",
+         environment => "RAILS_ENV=${rails_env}",
+         command     => "/usr/bin/rake db:drop:all"}
+}

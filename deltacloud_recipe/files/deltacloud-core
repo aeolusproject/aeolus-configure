@@ -12,7 +12,9 @@
 
 ENV="${ENV:-production}"
 DRIVER="${DRIVER:-ec2}"
+PORT="${PORT:-3002}"
 LOCKFILE="${LOCKFILE:-/var/lock/subsys/deltacloud-core }"
+LOGFILE="${LOGFILE:-/var/log/deltacloud-core/$DRIVER.log}"
 
 PROG=/usr/bin/deltacloudd
 
@@ -21,7 +23,7 @@ PROG=/usr/bin/deltacloudd
 start() {
     echo -n "Starting deltacloud-core: "
 
-    $PROG -i $DRIVER -e $ENV&
+    $PROG -i $DRIVER -e $ENV -p $PORT >> $LOGFILE 2>&1 &
     RETVAL=$?
     if [ $RETVAL -eq 0 ] && touch $LOCKFILE ; then
       echo_success
