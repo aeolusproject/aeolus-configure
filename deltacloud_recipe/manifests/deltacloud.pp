@@ -94,22 +94,40 @@ define dc::package::uninstall(){
                    provider => 'yum', ensure => 'absent',
                    require  => Package['deltacloud-aggregator']}
 
-       package { 'appliance-tools':
-                  provider => 'yum', ensure => absent,
+       # FIXME these lingering dependencies, pulled in for
+       # rubygem-deltacloud-image-builder-agent, need to be removed as
+       # ec2-ami-tools and appliance-tools depend on them and using
+       # 'absent' in the context of the 'yum' provider dispatches
+       # to 'rpm -e' instead of 'yum erase'
+       package { ['rubygem-boxgrinder-build-ec2-platform-plugin',
+                  'rubygem-boxgrinder-build-centos-os-plugin',
+                  'rubygem-boxgrinder-build-fedora-os-plugin']:
+                  provider => "yum", ensure => 'absent',
                   require  => Package['rubygem-deltacloud-image-builder-agent']}
+       package { 'rubygem-boxgrinder-build-rhel-os-plugin':
+                  provider => "yum", ensure => 'absent',
+                  require  => Package['rubygem-boxgrinder-build-centos-os-plugin']}
+       package { 'rubygem-boxgrinder-build-rpm-based-os-plugin':
+                  provider => "yum", ensure => 'absent',
+                  require  => Package['rubygem-boxgrinder-build-rhel-os-plugin',
+                                      'rubygem-boxgrinder-build-fedora-os-plugin']}
+
+       package { 'ec2-ami-tools':
+                  provider => "yum", ensure => 'absent',
+                  require  => Package['rubygem-boxgrinder-build-ec2-platform-plugin']}
+       package { 'appliance-tools':
+                  provider => 'yum', ensure => 'absent',
+                  require  => Package['rubygem-boxgrinder-build-rpm-based-os-plugin']}
        package { 'livecd-tools':
-                  provider => 'rpm', ensure => absent,
+                  provider => 'yum', ensure => 'absent',
                   require  => Package['appliance-tools']}
        package { 'python-imgcreate':
-                  provider => 'rpm', ensure => absent,
+                  provider => 'yum', ensure => 'absent',
                   require  => Package['appliance-tools', 'livecd-tools']}
 
     }
 
     'core': {
-      package{"ec2-ami-tools":
-              provider => "rpm", ensure => 'absent',
-              require  => Package['rubygem-deltacloud-core']}
       package { 'rubygem-deltacloud-core':
                   provider => 'yum', ensure => 'absent'}
     }
