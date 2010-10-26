@@ -78,7 +78,12 @@ define dc::package::uninstall(){
     'aggregator':  {
        package {['deltacloud-aggregator-daemons',
                  'deltacloud-aggregator-doc']:
-                 provider => 'yum', ensure => 'absent'}
+                 provider => 'yum', ensure => 'absent',
+                 require  => Service['deltacloud-aggregator',
+                                     'deltacloud-condor_refreshd',
+                                     'deltacloud-dbomatic',
+                                     'imagefactoryd',
+                                     'deltacloud-image_builder_service']}
 
        package {'deltacloud-aggregator':
                  provider => 'yum', ensure => 'absent',
@@ -92,7 +97,7 @@ define dc::package::uninstall(){
                    require  => Package['deltacloud-aggregator']}
        package { 'iwhd':
                    provider => 'yum', ensure => 'absent',
-                   require  => Package['deltacloud-aggregator']}
+                   require  => [Package['deltacloud-aggregator'], Service['iwhd']]}
 
        # FIXME these lingering dependencies, pulled in for
        # rubygem-deltacloud-image-builder-agent, need to be removed as
@@ -129,7 +134,8 @@ define dc::package::uninstall(){
 
     'core': {
       package { 'rubygem-deltacloud-core':
-                  provider => 'yum', ensure => 'absent'}
+                  provider => 'yum', ensure => 'absent',
+                  require  => Service['deltacloud-core']}
     }
   }
 }
