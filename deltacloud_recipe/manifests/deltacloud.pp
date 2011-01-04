@@ -27,18 +27,6 @@ define dc::repos(){
 define dc::package::install(){
   case $name {
     'aggregator':  {
-       # specific versions of these two packages are needed and we need to pull the third in
-       package { 'python-imgcreate':
-                  provider => 'rpm', ensure => installed,
-                  source   => 'http://repos.fedorapeople.org/repos/deltacloud/appliance/fedora-13/x86_64/python-imgcreate-031-1.fc12.1.x86_64.rpm'}
-       package { 'livecd-tools':
-                  provider => 'rpm', ensure => installed,
-                  source   => 'http://repos.fedorapeople.org/repos/deltacloud/appliance/fedora-13/x86_64/livecd-tools-031-1.fc12.1.x86_64.rpm',
-                  require  => Package['python-imgcreate']}
-       package { 'appliance-tools':
-                  provider => 'yum', ensure => installed,
-                  require  => Package["livecd-tools", "python-imgcreate"] }
-
       # TODO:  Fix me, find a better way to do this...
       # We need to also install this rpm from amazon
       package{"ec2-ami-tools":
@@ -50,7 +38,7 @@ define dc::package::install(){
                    provider => 'yum', ensure => 'installed' }
        package { 'rubygem-deltacloud-image-builder-agent':
                    provider => 'yum', ensure => 'installed',
-                   require  => Package['appliance-tools', 'livecd-tools', 'python-imgcreate', 'ec2-ami-tools']}
+                   require  => Package['ec2-ami-tools']}
        package { 'iwhd':
                   provider => 'yum', ensure => 'installed' }
 
@@ -109,27 +97,10 @@ define dc::package::uninstall(){
                   'rubygem-boxgrinder-build-fedora-os-plugin']:
                   provider => "yum", ensure => 'absent',
                   require  => Package['rubygem-deltacloud-image-builder-agent']}
-       package { 'rubygem-boxgrinder-build-rhel-os-plugin':
-                  provider => "yum", ensure => 'absent',
-                  require  => Package['rubygem-boxgrinder-build-centos-os-plugin']}
-       package { 'rubygem-boxgrinder-build-rpm-based-os-plugin':
-                  provider => "yum", ensure => 'absent',
-                  require  => Package['rubygem-boxgrinder-build-rhel-os-plugin',
-                                      'rubygem-boxgrinder-build-fedora-os-plugin']}
 
        package { 'ec2-ami-tools':
                   provider => "yum", ensure => 'absent',
                   require  => Package['rubygem-boxgrinder-build-ec2-platform-plugin']}
-       package { 'appliance-tools':
-                  provider => 'yum', ensure => 'absent',
-                  require  => Package['rubygem-boxgrinder-build-rpm-based-os-plugin']}
-       package { 'livecd-tools':
-                  provider => 'yum', ensure => 'absent',
-                  require  => Package['appliance-tools']}
-       package { 'python-imgcreate':
-                  provider => 'yum', ensure => 'absent',
-                  require  => Package['appliance-tools', 'livecd-tools']}
-
     }
 
     'core': {
