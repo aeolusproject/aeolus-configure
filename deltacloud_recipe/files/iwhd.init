@@ -12,7 +12,7 @@
 
 LOCKFILE="${LOCKFILE:-/var/lock/subsys/iwhd }"
 
-PROG=/usr/sbin/iwhd
+PROG=/usr/bin/iwhd
 CONF=/etc/iwhd/conf.js
 
 . /etc/init.d/functions
