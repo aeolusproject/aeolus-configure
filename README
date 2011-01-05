@@ -1,4 +1,4 @@
-The Deltacloud Recipe and Appliance
+The Deltacloud Recipe
 
 You can find more documentation at the Deltacloud web site at
 http://deltacloud.org/
@@ -7,14 +7,10 @@ http://deltacloud.org/
 Prerequisites
 -------------
 
-The deltacloud appliance makes uses of the deltacloud recipe rpm
-to install and configure all components. The appliance is built
-using the appliance tools and is deployed via libvirt
-
-See http://thincrust.net/ and http://libvirt.org/ for more information.
-
-Some commands require root access.  Those commands will be executed using sudo, so ensure that
-the user building the appliance has an appropriate entry in /etc/sudoers.
+The deltacloud recipe is a puppet module which can be used
+to install and configure deltacloud components. To make use
+of this recipe, drop it into your puppet module path or
+alternatively build and install the recipe rpm.
 
 
 Building and Installing the Deltacloud Recipe
@@ -22,28 +18,12 @@ Building and Installing the Deltacloud Recipe
 
 $ rake rpms
 
-The rpm will be placed into the pkg build dir, install it via yum
+The rpm will be placed into the build dir, install it via yum
 $ sudo yum install --nogpgcheck \
     build/rpmbuild/RPMS/noarch/deltacloud_recipe-0.0.3-1.fc13.noarch.rpm
 
-Install the recipe via
+Install deltacloud via the recipe via
 $ sudo /usr/sbin/dc-install
 
-Uninstall it via
+Uninstall deltacloud via
 $ sudo /usr/sbin/dc-uninstall
-
-Starting the Appliance
------------------------------------
-
-Run the following command from the appliance project checkout directory
-
-$ rake image:deploy
-
-This will start the appliance via libvirt bringing up virt-viewer for
-graphical access. If the appliance is already found running locally this
-will fail, and you will have to run the following to destroy and delete
-the appliance.
-
-$ rake image:destroy
-
-NOTE this will destroy the image, make sure to backup any changes to it
