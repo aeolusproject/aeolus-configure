@@ -130,7 +130,7 @@ define dc::service::start(){
   case $name {
     'aggregator':  {
       file {"/var/lib/condor/condor_config.local":
-             source => "puppet:///deltacloud_recipe/condor_config.local",
+             source => "puppet:///modules/deltacloud_recipe/condor_config.local",
              require => Package['deltacloud-aggregator-daemons'] }
       service { ['condor', 'httpd']:
         ensure  => 'running',
@@ -150,7 +150,7 @@ define dc::service::start(){
     'core':  {
       include ntp::client # we need to sync time to communicate w/ cloud providers
       file {"/etc/init.d/deltacloud-core":
-            source => "puppet:///deltacloud_recipe/deltacloud-core",
+            source => "puppet:///modules/deltacloud_recipe/deltacloud-core",
             mode   => 755 }
      service { 'deltacloud-core':
         ensure  => 'running',
@@ -176,7 +176,7 @@ define dc::service::start(){
     'image-factory':  {
       dc::configure_boxgrinder{'conf_bxg':}
       file { "/etc/qpidd.conf":
-                 source => "puppet:///deltacloud_recipe/qpidd.conf",
+                 source => "puppet:///modules/deltacloud_recipe/qpidd.conf",
                  mode   => 644 }
       service {'qpidd':
                  ensure  => 'running',
@@ -184,7 +184,7 @@ define dc::service::start(){
                  require => [File['/etc/qpidd.conf'],
                              Package['deltacloud-aggregator-daemons']]}
       file { "/etc/imagefactory.yml":
-                 source => "puppet:///deltacloud_recipe/imagefactory.yml",
+                 source => "puppet:///modules/deltacloud_recipe/imagefactory.yml",
                  mode   => 644 }
       $requires = [Package['rubygem-deltacloud-image-builder-agent'],
                    Package['deltacloud-aggregator-daemons'],
@@ -271,7 +271,7 @@ define dc::configure_boxgrinder(){
             ensure => "directory",
             require => File["/root/.boxgrinder"]}
   file { "/root/.boxgrinder/plugins/local":
-              source => "puppet:///deltacloud_recipe/root-boxgrinder-plugins-local",
+              source => "puppet:///modules/deltacloud_recipe/root-boxgrinder-plugins-local",
               mode   => 644 }
 }
 
@@ -298,7 +298,7 @@ define dc::db(){
   # Right now we configure and start postgres, at some point I want
   # to make the db that gets setup configurable
   file { "/var/lib/pgsql/data/pg_hba.conf":
-           source => "puppet:///deltacloud_recipe/pg_hba.conf",
+           source => "puppet:///modules/deltacloud_recipe/pg_hba.conf",
            require => Exec["pginitdb"] }
   include postgres::server
   postgres::user{"dcloud":
