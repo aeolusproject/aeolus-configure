@@ -28,9 +28,8 @@ module Rake
 
     def define
       desc "Build the yum repo"
-      task :create_repo => :rpms do
+      task :create_repo => @rpms do
         @rpms.each { |rpm|
-          rpm  = Dir.glob(rpm).first
           rpmc = rpm.split('.')
           arch = rpmc[rpmc.size-2]
           arch_dir = @yum_repo + "/" + arch

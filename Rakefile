@@ -14,6 +14,7 @@ PKG_NAME = "deltacloud_recipe"
 RPM_SPEC = "contrib/deltacloud_recipe.spec"
 
 # Build the rpm
+rpm_task =
 Rake::RpmTask.new(RPM_SPEC) do |rpm|
   rpm.need_tar = true
   rpm.package_files.include("bin/*", "#{PKG_NAME}/**/*")
@@ -22,5 +23,5 @@ end
 
 # Construct yum repo
 Rake::YumTask.new(YUM_REPO) do |repo|
-  repo.rpms << "#{RPMBUILD_DIR}/RPMS/noarch/#{PKG_NAME}*.rpm"
+  repo.rpms << rpm_task.rpm_file
 end
