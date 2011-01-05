@@ -17,7 +17,7 @@ RPM_SPEC = "contrib/deltacloud_recipe.spec"
 rpm_task =
 Rake::RpmTask.new(RPM_SPEC) do |rpm|
   rpm.need_tar = true
-  rpm.package_files.include("bin/*", "#{PKG_NAME}/**/*")
+  rpm.package_files.include("bin/*", "recipes/**/*")
   rpm.topdir = "#{RPMBUILD_DIR}"
 end
 

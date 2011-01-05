@@ -14,11 +14,6 @@ BuildRoot:  %{_tmppath}/%{name}-%{version}
 BuildArch:  noarch
 Requires:   ruby
 
-# We only leverage the firewall module from this,
-# not worth the overhead of pulling this in, so
-# we should implmenet our own
-Requires:   ace
-
 # To send a request to iwhd rest interface to
 # create buckets, eventually replace w/ an
 # iwhd client
@@ -35,9 +30,12 @@ Deltacloud Puppet Recipe
 %install
 rm -rf %{buildroot}
 %{__mkdir} -p %{buildroot}/%{dchome}/modules/%{name} %{buildroot}/%{_sbindir}
-%{__cp} -R %{pbuild}/%{name}/deltacloud_recipe.pp %{buildroot}/%{dchome}
-%{__cp} -R %{pbuild}/%{name}/deltacloud_uninstall.pp %{buildroot}/%{dchome}
-%{__cp} -R %{pbuild}/%{name}/*/ %{buildroot}/%{dchome}/modules/%{name}
+%{__cp} -R %{pbuild}/recipes/%{name}/deltacloud_recipe.pp %{buildroot}/%{dchome}
+%{__cp} -R %{pbuild}/recipes/%{name}/deltacloud_uninstall.pp %{buildroot}/%{dchome}
+%{__cp} -R %{pbuild}/recipes/%{name}/*/ %{buildroot}/%{dchome}/modules/%{name}
+%{__cp} -R %{pbuild}/recipes/firewall/ %{buildroot}/%{dchome}/modules/firewall
+%{__cp} -R %{pbuild}/recipes/ntp/ %{buildroot}/%{dchome}/modules/ntp
+%{__cp} -R %{pbuild}/recipes/postgres/ %{buildroot}/%{dchome}/modules/postgres
 %{__cp} -R %{pbuild}/bin/dc-install %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/dc-uninstall %{buildroot}/%{_sbindir}/
 

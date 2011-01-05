@@ -5,7 +5,7 @@ import "firewall"
 import "postgres"
 import "rails"
 import "selinux"
-import "time"
+import "ntp"
 
 # Setup repos which to pull deltacloud components
 define dc::repos(){
@@ -27,6 +27,18 @@ define dc::repos(){
 define dc::package::install(){
   case $name {
     'aggregator':  {
+       # specific versions of these two packages are needed and we need to pull the third in
+       package { 'python-imgcreate':
+                  provider => 'rpm', ensure => installed,
+                  source   => 'http://repos.fedorapeople.org/repos/deltacloud/appliance/fedora-13/x86_64/python-imgcreate-031-1.fc12.1.x86_64.rpm'}
+       package { 'livecd-tools':
+                  provider => 'rpm', ensure => installed,
+                  source   => 'http://repos.fedorapeople.org/repos/deltacloud/appliance/fedora-13/x86_64/livecd-tools-031-1.fc12.1.x86_64.rpm',
+                  require  => Package['python-imgcreate']}
+       package { 'appliance-tools':
+                  provider => 'yum', ensure => installed,
+                  require  => Package["livecd-tools", "python-imgcreate"] }
+
       # TODO:  Fix me, find a better way to do this...
       # We need to also install this rpm from amazon
       package{"ec2-ami-tools":
@@ -38,7 +50,7 @@ define dc::package::install(){
                    provider => 'yum', ensure => 'installed' }
        package { 'rubygem-deltacloud-image-builder-agent':
                    provider => 'yum', ensure => 'installed',
-                   require  => Package['ec2-ami-tools']}
+                   require  => Package['appliance-tools', 'livecd-tools', 'python-imgcreate', 'ec2-ami-tools']}
        package { 'iwhd':
                   provider => 'yum', ensure => 'installed' }
 
@@ -97,10 +109,27 @@ define dc::package::uninstall(){
                   'rubygem-boxgrinder-build-fedora-os-plugin']:
                   provider => "yum", ensure => 'absent',
                   require  => Package['rubygem-deltacloud-image-builder-agent']}
+       package { 'rubygem-boxgrinder-build-rhel-os-plugin':
+                  provider => "yum", ensure => 'absent',
+                  require  => Package['rubygem-boxgrinder-build-centos-os-plugin']}
+       package { 'rubygem-boxgrinder-build-rpm-based-os-plugin':
+                  provider => "yum", ensure => 'absent',
+                  require  => Package['rubygem-boxgrinder-build-rhel-os-plugin',
+                                      'rubygem-boxgrinder-build-fedora-os-plugin']}
 
        package { 'ec2-ami-tools':
                   provider => "yum", ensure => 'absent',
                   require  => Package['rubygem-boxgrinder-build-ec2-platform-plugin']}
+       package { 'appliance-tools':
+                  provider => 'yum', ensure => 'absent',
+                  require  => Package['rubygem-boxgrinder-build-rpm-based-os-plugin']}
+       package { 'livecd-tools':
+                  provider => 'yum', ensure => 'absent',
+                  require  => Package['appliance-tools']}
+       package { 'python-imgcreate':
+                  provider => 'yum', ensure => 'absent',
+                  require  => Package['appliance-tools', 'livecd-tools']}
+
     }
 
     'core': {
@@ -118,8 +147,7 @@ define dc::selinux(){
 
 # Setup firewall for deltacloud
 define dc::firewall(){
-  firewall::setup{'deltacloud': status=>"enabled"}
-  firewall_open_port{"httpd":   port => "80", policy => "tcp"}
+  firewall::rule{"http": destination_port => '80'}
 }
 
 # TODO disable selinux until we're sure everything works w/ it enabled
@@ -147,7 +175,7 @@ define dc::service::start(){
     }
 
     'core':  {
-      time::sync{"deltacloud":} # we need to sync time to communicate w/ cloud providers
+      include ntp::client # we need to sync time to communicate w/ cloud providers
       file {"/etc/init.d/deltacloud-core":
             source => "puppet:///deltacloud_recipe/deltacloud-core",
             mode   => 755 }
@@ -161,16 +189,6 @@ define dc::service::start(){
     'iwhd':  {
       file { "/data":    ensure => 'directory' }
       file { "/data/db": ensure => 'directory' }
-      file { "/etc/iwhd": ensure => 'directory'}
-      file { "/etc/iwhd/conf.js":
-             source => "puppet:///modules/deltacloud_recipe/iwhd-conf.js",
-             mode   => 755, require => File['/etc/iwhd'] }
-
-      #TODO The service wrapper should probably be in the rpm itself
-      file { "/etc/rc.d/init.d/iwhd":
-             source => "puppet:///modules/deltacloud_recipe/iwhd.init",
-             mode   => 755 }
-
       service { 'mongod':
         ensure  => 'running',
         enable  => true,
@@ -178,8 +196,7 @@ define dc::service::start(){
       service { 'iwhd':
         ensure  => 'running',
         enable  => true,
-        require => [File['/etc/rc.d/init.d/iwhd','/etc/iwhd/conf.js'],
-                    Package['iwhd'],
+        require => [Package['iwhd'],
                     Service[mongod]]}
     }
 
@@ -309,13 +326,12 @@ define dc::db(){
   # to make the db that gets setup configurable
   file { "/var/lib/pgsql/data/pg_hba.conf":
            source => "puppet:///deltacloud_recipe/pg_hba.conf",
-           require => Postgres::Initialize[init_db] }
-  postgres::initialize{'init_db':}
-  postgres::start{'start_db': require => File["/var/lib/pgsql/data/pg_hba.conf"]}
+           require => Exec["pginitdb"] }
+  include postgres::server
   postgres::user{"dcloud":
                    password => "v23zj59an",
                    roles    => "CREATEDB",
-                   require  => Postgres::Start[start_db]}
+                   require  => Service["postgresql"]}
 
 
   # Create deltacloud database
@@ -338,7 +354,9 @@ define dc::db::destroy(){
                                     "deltacloud-condor_refreshd",
                                     "deltacloud-dbomatic",
                                     "deltacloud-image_builder_service"]}
-  postgres::user::remove{"dcloud": require => Rails::Drop::Db["drop_deltacloud_database"]}
+  postgres::user{"dcloud":
+                  ensure => 'dropped',
+                  require => Rails::Drop::Db["drop_deltacloud_database"]}
 }
 
 # Create a new site admin aggregator web user
