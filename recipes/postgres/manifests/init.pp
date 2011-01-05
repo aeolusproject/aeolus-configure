@@ -39,7 +39,7 @@ class postgres::server inherits postgres {
     }
 
     exec { "pginitdb":
-        command         => "/usr/bin/initdb --pgdata='/var/lib/pgsql/data'",
+        command         => "/usr/bin/initdb --pgdata='/var/lib/pgsql/data' -E UTF8",
         user            => "postgres",
         group           => "postgres",
         creates         => "/var/lib/pgsql/data/PG_VERSION",

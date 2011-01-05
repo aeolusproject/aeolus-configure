@@ -1,6 +1,10 @@
 # Deltacloud iwhd puppet definitions
 
 class deltacloud::iwhd inherits deltacloud {
+  ### Install the deltacloud components
+    package { 'iwhd':
+               provider => 'yum', ensure => 'installed' }
+
   ### Start the deltacloud services
     file { "/data":    ensure => 'directory' }
     file { "/data/db": ensure => 'directory' }
@@ -11,8 +15,15 @@ class deltacloud::iwhd inherits deltacloud {
     service { 'iwhd':
       ensure  => 'running',
       enable  => true,
+      hasstatus => true,
       require => [Package['iwhd'],
                   Service[mongod]]}
+
+    # XXX ugly hack but iwhd might take some time to come up
+    exec{"iwhd_startup_pause":
+                command => "/bin/sleep 2",
+                unless  => '/usr/bin/curl http://localhost:9090',
+                require => Service[iwhd]}
 }
 
 class deltacloud::iwhd::disabled {
@@ -25,15 +36,17 @@ class deltacloud::iwhd::disabled {
       ensure  => 'stopped',
       enable  => false,
       hasstatus => true}
+
+
+  ### Uninstall the deltacloud components
+    package { 'iwhd':
+                provider => 'yum', ensure => 'absent',
+                require  => [Package['deltacloud-aggregator'], Service['iwhd']]}
 }
 
 # Create a named bucket in iwhd
 define deltacloud::create_bucket(){
   package{'curl': ensure => 'installed'}
-  # XXX ugly hack but iwhd might take some time to come up
-  exec{"iwhd_startup_pause":
-              command => "/bin/sleep 2",
-              require => Service[iwhd]}
   exec{"create-bucket-${name}":
          command => "/usr/bin/curl -X PUT http://localhost:9090/templates",
          require => [Exec['iwhd_startup_pause'], Package[curl]] }

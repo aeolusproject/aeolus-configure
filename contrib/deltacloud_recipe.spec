@@ -3,7 +3,7 @@
 
 Summary:  DeltaCloud Puppet Recipe
 Name:     deltacloud_recipe
-Version:  0.0.3
+Version:  0.0.4
 Release:  1%{?dist}
 
 Group:    Applications/Internet
@@ -49,6 +49,11 @@ rm -rf %{buildroot}
 %{dchome}
 
 %changelog
+* Wed Dec 22 2010 Mohammed Morsi <mmorsi@redhat.com> 0.0.4-1
+- Revamp deltacloud recipe to make it more puppetized,
+  use general purpose firewall, postgres, ntp modules,
+  and to fix many various things
+
 * Wed Sep 29 2010 Mohammed Morsi <mmorsi@redhat.com> 0.0.3-1
 - Renamed package from deltacloud appliance
 - to deltacloud recipe
