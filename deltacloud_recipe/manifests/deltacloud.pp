@@ -161,6 +161,16 @@ define dc::service::start(){
     'iwhd':  {
       file { "/data":    ensure => 'directory' }
       file { "/data/db": ensure => 'directory' }
+      file { "/etc/iwhd": ensure => 'directory'}
+      file { "/etc/iwhd/conf.js":
+             source => "puppet:///modules/deltacloud_recipe/iwhd-conf.js",
+             mode   => 755, require => File['/etc/iwhd'] }
+
+      #TODO The service wrapper should probably be in the rpm itself
+      file { "/etc/rc.d/init.d/iwhd":
+             source => "puppet:///modules/deltacloud_recipe/iwhd.init",
+             mode   => 755 }
+
       service { 'mongod':
         ensure  => 'running',
         enable  => true,
@@ -168,7 +178,8 @@ define dc::service::start(){
       service { 'iwhd':
         ensure  => 'running',
         enable  => true,
-        require => [Package['iwhd'],
+        require => [File['/etc/rc.d/init.d/iwhd','/etc/iwhd/conf.js'],
+                    Package['iwhd'],
                     Service[mongod]]}
     }
 
