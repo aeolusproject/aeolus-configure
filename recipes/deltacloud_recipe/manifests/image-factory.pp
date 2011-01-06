@@ -1,19 +1,6 @@
 # Deltacloud image factory puppet definitions
 
 class deltacloud::image-factory inherits deltacloud {
-  ### Install the deltacloud components
-    # specific versions of these two packages are needed and we need to pull the third in
-    package { 'python-imgcreate':
-               provider => 'rpm', ensure => installed,
-               source   => 'http://repos.fedorapeople.org/repos/deltacloud/appliance/fedora-13/x86_64/python-imgcreate-031-1.fc12.1.x86_64.rpm'}
-    package { 'livecd-tools':
-               provider => 'rpm', ensure => installed,
-               source   => 'http://repos.fedorapeople.org/repos/deltacloud/appliance/fedora-13/x86_64/livecd-tools-031-1.fc12.1.x86_64.rpm',
-               require  => Package['python-imgcreate']}
-    package { 'appliance-tools':
-               provider => 'yum', ensure => installed,
-               require  => Package["livecd-tools", "python-imgcreate"]}
-
     # TODO:  Fix me, find a better way to do this...
     # We need to also install this rpm from amazon
     package{"ec2-ami-tools":
@@ -23,7 +10,7 @@ class deltacloud::image-factory inherits deltacloud {
 
     package { 'rubygem-deltacloud-image-builder-agent':
                 provider => 'yum', ensure => 'installed',
-                require  => Package['appliance-tools', 'livecd-tools', 'python-imgcreate', 'ec2-ami-tools']}
+                require  => Package['ec2-ami-tools']}
 
 
   ### Configure boxgrinder, this should go into the boxgrinder rpms eventually
