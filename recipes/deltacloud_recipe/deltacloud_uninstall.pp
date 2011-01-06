@@ -25,17 +25,8 @@
 # Modules used by the recipe
 import "deltacloud_recipe/deltacloud"
 
-$packages = ["aggregator", "core"]
-
-# stop deltacloud services
-dc::service::stop{["aggregator", "core", 'iwhd', 'image-factory']:}
-
-# destroy deltacloud db
-dc::db::destroy{"postgres":
-                require => Dc::Service::Stop['aggregator']}
-
-# install deltacloud components
-dc::package::uninstall{$packages:
-                        require => Dc::Db::Destroy['postgres']}
-
-dc::cleanup{"deltacloud": require => Dc::Package::Uninstall[$packages]}
+# disable the various deltacloud components
+include deltacloud::aggregator::disabled
+include deltacloud::core::disabled
+include deltacloud::iwhd::disabled
+include deltacloud::image-factory::disabled
