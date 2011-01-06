@@ -12,7 +12,7 @@ URL:      http://deltacloud.org
 Source0:  %{name}-%{version}.tgz
 BuildRoot:  %{_tmppath}/%{name}-%{version}
 BuildArch:  noarch
-Requires:   ruby
+Requires:   puppet
 
 # To send a request to iwhd rest interface to
 # create buckets, eventually replace w/ an
