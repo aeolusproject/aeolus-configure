@@ -3,14 +3,14 @@
 #
 # iwhd       startup script for iwhd server
 #
-# chkconfig: - 97 03
+# chkconfig: - 40 60
 # description: iwhd is primary server process for the \
 #    IWHD component.
 #
 
 [ -r /etc/sysconfig/iwhd ] && . /etc/sysconfig/iwhd
 
-LOCKFILE="${LOCKFILE:-/var/lock/subsys/iwhd }"
+LOCKFILE="${LOCKFILE:-/var/lock/subsys/iwhd}"
 
 PROG=/usr/bin/iwhd
 CONF=/etc/iwhd/conf.js
@@ -19,8 +19,11 @@ CONF=/etc/iwhd/conf.js
 
 start() {
     echo -n "Starting iwhd: "
+    # FIXME: we sleep 2 here to make sure that mongod has really come up.
+    # Yes, it's a hack
+    sleep 2
 
-    $PROG -c $CONF&
+    $PROG -c $CONF >& /var/log/iwhd.log &
     RETVAL=$?
     if [ $RETVAL -eq 0 ] && touch $LOCKFILE ; then
       echo_success
@@ -34,7 +37,7 @@ start() {
 stop() {
     echo -n "Shutting down iwhd: "
     RETVAL=$?
-    killall iwhd
+    killall $PROG
     if [ $RETVAL -eq 0 ] && rm -f $LOCKFILE ; then
       echo_success
       echo
@@ -69,3 +72,5 @@ case "$1" in
       exit 1
   ;;
 esac
+
+exit $RETVAL
