@@ -10,8 +10,8 @@ YUM_REPO     = "#{CURRENT_DIR}/repo"
 
 CLEAN.include('pkg', 'build', 'repo')
 CLOBBER.include('deltacloud')
-PKG_NAME = "deltacloud_recipe"
-RPM_SPEC = "contrib/deltacloud_recipe.spec"
+PKG_NAME = "deltacloud-configure"
+RPM_SPEC = "contrib/deltacloud-configure.spec"
 
 # Build the rpm
 rpm_task =

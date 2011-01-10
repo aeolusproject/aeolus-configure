@@ -1,0 +1,4 @@
+#!/bin/sh
+
+puppet /usr/share/deltacloud-configure/deltacloud_stop_services.pp \
+       --modulepath=/usr/share/deltacloud-configure/modules/

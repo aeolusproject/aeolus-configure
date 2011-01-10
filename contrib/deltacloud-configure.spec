@@ -1,9 +1,9 @@
-%define dchome /usr/share/deltacloud-recipe
+%define dchome /usr/share/deltacloud-configure
 %define pbuild %{_builddir}/%{name}-%{version}
 
-Summary:  DeltaCloud Puppet Recipe
-Name:     deltacloud_recipe
-Version:  0.0.4
+Summary:  DeltaCloud Configure Puppet Recipe
+Name:     deltacloud-configure
+Version:  2.0.0
 Release:  1%{?dist}
 
 Group:    Applications/Internet
@@ -20,7 +20,7 @@ Requires:   puppet
 Requires:  curl
 
 %description
-Deltacloud Puppet Recipe
+Deltacloud Configure Puppet Recipe
 
 %prep
 %setup -q
@@ -29,26 +29,29 @@ Deltacloud Puppet Recipe
 
 %install
 rm -rf %{buildroot}
-%{__mkdir} -p %{buildroot}/%{dchome}/modules/%{name} %{buildroot}/%{_sbindir}
-%{__cp} -R %{pbuild}/recipes/%{name}/deltacloud_recipe.pp %{buildroot}/%{dchome}
-%{__cp} -R %{pbuild}/recipes/%{name}/deltacloud_uninstall.pp %{buildroot}/%{dchome}
-%{__cp} -R %{pbuild}/recipes/%{name}/*/ %{buildroot}/%{dchome}/modules/%{name}
+%{__mkdir} -p %{buildroot}/%{dchome}/modules/deltacloud_recipe %{buildroot}/%{_sbindir}
+%{__cp} -R %{pbuild}/recipes/deltacloud_recipe/deltacloud_recipe.pp %{buildroot}/%{dchome}
+%{__cp} -R %{pbuild}/recipes/deltacloud_recipe/deltacloud_uninstall.pp %{buildroot}/%{dchome}
+%{__cp} -R %{pbuild}/recipes/deltacloud_recipe/*/ %{buildroot}/%{dchome}/modules/deltacloud_recipe
 %{__cp} -R %{pbuild}/recipes/firewall/ %{buildroot}/%{dchome}/modules/firewall
 %{__cp} -R %{pbuild}/recipes/ntp/ %{buildroot}/%{dchome}/modules/ntp
 %{__cp} -R %{pbuild}/recipes/postgres/ %{buildroot}/%{dchome}/modules/postgres
-%{__cp} -R %{pbuild}/bin/dc-install %{buildroot}/%{_sbindir}/
-%{__cp} -R %{pbuild}/bin/dc-uninstall %{buildroot}/%{_sbindir}/
+%{__cp} -R %{pbuild}/bin/deltacloud-configure %{buildroot}/%{_sbindir}/
+%{__cp} -R %{pbuild}/bin/deltacloud-cleanup %{buildroot}/%{_sbindir}/
 
 %clean
 rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%attr(0755, root, root) %{_sbindir}/dc-install
-%attr(0755, root, root) %{_sbindir}/dc-uninstall
+%attr(0755, root, root) %{_sbindir}/deltacloud-configure
+%attr(0755, root, root) %{_sbindir}/deltacloud-cleanup
 %{dchome}
 
 %changelog
+* Mon Jan 10 2011 Mike Orazi <morazi@redhat.com> 2.0.0-1
+- Make this a drop in replacement for the old deltacloud-configure scripts
+
 * Wed Dec 22 2010 Mohammed Morsi <mmorsi@redhat.com> 0.0.4-1
 - Revamp deltacloud recipe to make it more puppetized,
   use general purpose firewall, postgres, ntp modules,
