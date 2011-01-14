@@ -29,5 +29,6 @@ class deltacloud::core::disabled {
   ### Stop the deltacloud services
     service { 'deltacloud-core':
       ensure  => 'stopped',
-      enable  => false}
+      enable  => false, 
+      hasstatus => true}
 }
