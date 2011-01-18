@@ -10,7 +10,7 @@ class deltacloud::image-factory inherits deltacloud {
 
     package { 'rubygem-deltacloud-image-builder-agent':
                 provider => 'yum', ensure => 'installed',
-                require  => Package['ec2-ami-tools']}
+                require  => [Package['ec2-ami-tools'], Yumrepo['deltacloud_arch', 'deltacloud_noarch']]}
 
 
   ### Configure boxgrinder, this should go into the boxgrinder rpms eventually
@@ -128,3 +128,4 @@ class deltacloud::image-factory::disabled {
     exec{"remove_deltacloud_templates": command => "/bin/rm -rf /templates"}
     exec{"remove_boxgrinder_dir":       command => "/bin/rm -rf /boxgrinder"}
 }
+

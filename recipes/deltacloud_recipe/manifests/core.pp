@@ -3,7 +3,7 @@
 class deltacloud::core inherits deltacloud {
   ### Install the deltacloud components
     package { 'rubygem-deltacloud-core':
-                provider => 'yum', ensure => 'installed'}
+                provider => 'yum', ensure => 'installed', require => Yumrepo['deltacloud_arch', 'deltacloud_noarch']}
     file { "/var/log/deltacloud-core": ensure => 'directory' }
 
   ### we need to sync time to communicate w/ cloud providers
@@ -29,6 +29,7 @@ class deltacloud::core::disabled {
   ### Stop the deltacloud services
     service { 'deltacloud-core':
       ensure  => 'stopped',
-      enable  => false, 
+      enable  => false,
       hasstatus => true}
 }
+

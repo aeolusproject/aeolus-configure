@@ -3,7 +3,9 @@
 class deltacloud::iwhd inherits deltacloud {
   ### Install the deltacloud components
     package { 'iwhd':
-               provider => 'yum', ensure => 'installed' }
+               provider => 'yum', ensure => 'installed',
+               require => Yumrepo['deltacloud_arch', 'deltacloud_noarch']
+               }
 
   ### Start the deltacloud services
     file { "/data":    ensure => 'directory' }
@@ -62,3 +64,4 @@ define deltacloud::create_bucket(){
          command => "/usr/bin/curl -X PUT http://localhost:9090/templates",
          require => [Exec['iwhd_startup_pause'], Package[curl]] }
 }
+

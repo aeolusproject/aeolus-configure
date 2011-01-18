@@ -4,7 +4,7 @@ class deltacloud::aggregator inherits deltacloud {
   ### Install the deltacloud components
     # specific versions of these two packages are needed and we need to pull the third in
      package { 'rubygem-deltacloud-client':
-                 provider => 'yum', ensure => 'installed' }
+                 provider => 'yum', ensure => 'installed', require => Yumrepo['deltacloud_arch', 'deltacloud_noarch'] }
 
      package {['deltacloud-aggregator',
                'deltacloud-aggregator-daemons',
@@ -125,3 +125,4 @@ define deltacloud::site_admin($email="", $password="", $first_name="", $last_nam
          unless      => "/usr/bin/test `psql dcloud dcloud -P tuples_only -c \"select count(*) FROM roles INNER JOIN permissions ON (roles.id = permissions.role_id) INNER JOIN users ON (permissions.user_id = users.id) where roles.name = 'Administrator' AND users.login = '${name}';\"` = \"1\"",
          require     => Exec[create_site_admin_user]}
 }
+
