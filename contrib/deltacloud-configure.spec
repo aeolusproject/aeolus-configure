@@ -36,6 +36,7 @@ rm -rf %{buildroot}
 %{__cp} -R %{pbuild}/recipes/firewall/ %{buildroot}/%{dchome}/modules/firewall
 %{__cp} -R %{pbuild}/recipes/ntp/ %{buildroot}/%{dchome}/modules/ntp
 %{__cp} -R %{pbuild}/recipes/postgres/ %{buildroot}/%{dchome}/modules/postgres
+%{__cp} -R %{pbuild}/recipes/openssl/ %{buildroot}/%{dchome}/modules/openssl
 %{__cp} -R %{pbuild}/bin/deltacloud-configure %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/deltacloud-cleanup %{buildroot}/%{_sbindir}/
 
@@ -49,6 +50,9 @@ rm -rf %{buildroot}
 %{dchome}
 
 %changelog
+* Thu Jan 14 2011 Mohammed Morsi <mmorsi@redhat.com> 2.0.0-2
+- include openssl module
+
 * Mon Jan 10 2011 Mike Orazi <morazi@redhat.com> 2.0.0-1
 - Make this a drop in replacement for the old deltacloud-configure scripts
 

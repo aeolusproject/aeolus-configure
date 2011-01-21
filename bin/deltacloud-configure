@@ -1,4 +1,5 @@
 #!/bin/sh
 
+export FACTER_DELTACLOUD_ENABLE_SECURITY=true
 puppet /usr/share/deltacloud-configure/deltacloud_recipe.pp \
        --modulepath=/usr/share/deltacloud-configure/modules/

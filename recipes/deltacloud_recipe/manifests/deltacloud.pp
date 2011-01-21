@@ -12,6 +12,14 @@ import "core"
 import "iwhd"
 import "image-factory"
 
+if $deltacloud_enable_security == "true" or $deltacloud_enable_security == "1" {
+  import "openssl"
+  $enable_security = true
+} else {
+  $enable_security = false
+}
+
+
 # Base deltacloud class
 class deltacloud {
   # Setup repos which to pull deltacloud components
