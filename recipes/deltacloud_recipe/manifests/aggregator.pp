@@ -21,13 +21,14 @@ class deltacloud::aggregator inherits deltacloud {
     selinux::mode{"permissive":}
 
   ### Setup firewall for deltacloud
-    firewall::rule{"http": destination_port => '80'}
+    firewall::rule{"http":  destination_port => '80' }
+    firewall::rule{"https": destination_port => '443'}
 
   ### Start the deltacloud services
     file {"/var/lib/condor/condor_config.local":
            source => "puppet:///modules/deltacloud_recipe/condor_config.local",
            require => Package['deltacloud-aggregator-daemons'] }
-    service { ['condor', 'httpd']:
+    service { 'condor':
       ensure  => 'running',
       enable  => true,
       require => File['/var/lib/condor/condor_config.local'] }
@@ -83,6 +84,14 @@ class deltacloud::aggregator inherits deltacloud {
                 command     => "/usr/bin/rake sunspot:reindex",
                 environment => "RAILS_ENV=production",
                 require     => Rails::Migrate::Db['migrate_deltacloud_database']}
+
+  ### Setup apache for deltacloud
+    include apache
+    if $enable_security {
+      apache::site{"deltacloud-aggregator": source => 'puppet:///modules/deltacloud_recipe/aggregator-httpd-ssl.conf'}
+    } else{
+      apache::site{"deltacloud-aggregator": source => 'puppet:///modules/deltacloud_recipe/aggregator-httpd.conf'}
+    }
 }
 
 class deltacloud::aggregator::disabled {
@@ -113,7 +122,7 @@ class deltacloud::aggregator::disabled {
                 require  => Package['deltacloud-aggregator']}
 
   ### Stop the deltacloud services
-    service { ['condor', 'httpd']:
+    service { 'condor':
       ensure  => 'stopped',
       enable  => false,
       require => Service['deltacloud-aggregator',

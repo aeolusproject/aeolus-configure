@@ -33,6 +33,7 @@ rm -rf %{buildroot}
 %{__cp} -R %{pbuild}/recipes/deltacloud_recipe/deltacloud_recipe.pp %{buildroot}/%{dchome}
 %{__cp} -R %{pbuild}/recipes/deltacloud_recipe/deltacloud_uninstall.pp %{buildroot}/%{dchome}
 %{__cp} -R %{pbuild}/recipes/deltacloud_recipe/*/ %{buildroot}/%{dchome}/modules/deltacloud_recipe
+%{__cp} -R %{pbuild}/recipes/apache/ %{buildroot}/%{dchome}/modules/apache
 %{__cp} -R %{pbuild}/recipes/firewall/ %{buildroot}/%{dchome}/modules/firewall
 %{__cp} -R %{pbuild}/recipes/ntp/ %{buildroot}/%{dchome}/modules/ntp
 %{__cp} -R %{pbuild}/recipes/postgres/ %{buildroot}/%{dchome}/modules/postgres

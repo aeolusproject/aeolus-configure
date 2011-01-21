@@ -3,6 +3,7 @@
 import "firewall"
 
 import "postgres"
+import "apache"
 import "rails"
 import "selinux"
 import "ntp"
