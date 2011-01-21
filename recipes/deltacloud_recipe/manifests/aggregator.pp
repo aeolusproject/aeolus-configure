@@ -46,9 +46,37 @@ class deltacloud::aggregator inherits deltacloud {
     # Right now we configure and start postgres, at some point I want
     # to make the db that gets setup configurable
     include postgres::server
-    file { "/var/lib/pgsql/data/pg_hba.conf":
-             source => "puppet:///modules/deltacloud_recipe/pg_hba.conf",
-             require => Exec["pginitdb"] }
+    if $enable_security {
+      openssl::certificate{"/var/lib/pgsql/data/server":
+               user    => 'postgres',
+               group   => 'postgres',
+               require => Exec["pginitdb"],
+               notify  => Service['postgresql']}
+      # since we're self signing for now, use the same certificate for the root
+      file { "/var/lib/pgsql/data/root.crt":
+               require => Openssl::Certificate["/var/lib/pgsql/data/server"],
+               source => "/var/lib/pgsql/data/server.crt",
+               owner   => 'postgres',
+               group   => 'postgres',
+               notify  => Service['postgresql'] }
+      file { "/var/lib/pgsql/data/pg_hba.conf":
+               source  => "puppet:///modules/deltacloud_recipe/pg_hba-ssl.conf",
+               require => Exec["pginitdb"],
+               owner   => 'postgres',
+               group   => 'postgres',
+               notify  => Service['postgresql']}
+      file { "/var/lib/pgsql/data/postgresql.conf":
+               source  => "puppet:///modules/deltacloud_recipe/postgresql.conf",
+               require => Exec["pginitdb"],
+               owner   => 'postgres',
+               group   => 'postgres',
+               notify  => Service['postgresql']}
+    } else {
+      file { "/var/lib/pgsql/data/pg_hba.conf":
+               source => "puppet:///modules/deltacloud_recipe/pg_hba.conf",
+               require => Exec["pginitdb"],
+               notify  => Service['postgresql']}
+    }
     postgres::user{"dcloud":
                      password => "v23zj59an",
                      roles    => "CREATEDB",
