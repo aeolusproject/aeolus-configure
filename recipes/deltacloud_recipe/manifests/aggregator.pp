@@ -35,7 +35,7 @@ class deltacloud::aggregator inherits deltacloud {
       enable    => true,
       hasstatus => true,
       require => [Package['deltacloud-aggregator-daemons'],
-                  Rails::Migrate::Db[migrate_deltacloud_database],
+                  Rails::Seed::Db[seed_deltacloud_database],
                   Service[condor]] }
 
   ### Initialize and start the deltacloud database
@@ -60,6 +60,23 @@ class deltacloud::aggregator inherits deltacloud {
                 cwd             => "/usr/share/deltacloud-aggregator",
                 rails_env       => "production",
                 require         => Rails::Create::Db[create_deltacloud_database]}
+    rails::seed::db{"seed_deltacloud_database":
+                cwd             => "/usr/share/deltacloud-aggregator",
+                rails_env       => "production",
+                require         => Rails::Migrate::Db[migrate_deltacloud_database]}
+
+
+  ### Setup/start solr search service
+    exec{"start_solr":
+                cwd         => "/usr/share/deltacloud-aggregator",
+                command     => "/usr/bin/rake sunspot:solr:start",
+                environment => "RAILS_ENV=production",
+                require     => Package['deltacloud-aggregator']}
+    exec{"build_solr_index":
+                cwd         => "/usr/share/deltacloud-aggregator",
+                command     => "/usr/bin/rake sunspot:reindex",
+                environment => "RAILS_ENV=production",
+                require     => Exec['start_solr']}
 }
 
 class deltacloud::aggregator::disabled {
@@ -108,6 +125,13 @@ class deltacloud::aggregator::disabled {
     postgres::user{"dcloud":
                     ensure => 'dropped',
                     require => Rails::Drop::Db["drop_deltacloud_database"]}
+
+  ### stop solr search service
+    exec{"stop_solr":
+                cwd         => "/usr/share/deltacloud-aggregator",
+                command     => "/usr/bin/rake sunspot:solr:stop",
+                environment => "RAILS_ENV=production",
+                require     => Service['deltacloud-aggregator']}
 }
 
 # Create a new site admin aggregator web user
@@ -117,7 +141,7 @@ define deltacloud::site_admin($email="", $password="", $first_name="", $last_nam
          environment => "RAILS_ENV=production",
          command     => "/usr/bin/rake dc:create_user[${name}] email=${email} password=${password} first_name=${first_name} last_name=${last_name}",
          unless      => "/usr/bin/test `psql dcloud dcloud -P tuples_only -c \"select count(*) from users where login = '${name}';\"` = \"1\"",
-         require     => Rails::Migrate::Db["migrate_deltacloud_database"]}
+         require     => Rails::Seed::Db["seed_deltacloud_database"]}
   exec{"grant_site_admin_privs":
          cwd         => '/usr/share/deltacloud-aggregator',
          environment => "RAILS_ENV=production",

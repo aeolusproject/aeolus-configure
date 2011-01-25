@@ -57,7 +57,7 @@ class deltacloud::image-factory inherits deltacloud {
                  Package['deltacloud-aggregator-daemons'],
                  File['/etc/imagefactory.yml'],
                  Service[qpidd],
-                 Rails::Migrate::Db[migrate_deltacloud_database],
+                 Rails::Seed::Db[seed_deltacloud_database],
                  Notify['boxgrinder_configured']]
     service { 'imagefactoryd':
       ensure  => 'running',

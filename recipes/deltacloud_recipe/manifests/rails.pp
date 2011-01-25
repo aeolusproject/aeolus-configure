@@ -15,6 +15,13 @@ define rails::migrate::db($cwd="", $rails_env=""){
          command     => "/usr/bin/rake db:migrate"}
 }
 
+define rails::seed::db($cwd="", $rails_env=""){
+  exec{"seed_rails_database":
+         cwd         => $cwd,
+         environment => "RAILS_ENV=${rails_env}",
+         command     => "/usr/bin/rake db:seed"}
+}
+
 define rails::drop::db($cwd="", $rails_env=""){
   exec{"drop_rails_database":
          cwd         => $cwd,
