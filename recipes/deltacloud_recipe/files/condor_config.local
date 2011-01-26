@@ -1,7 +1,10 @@
-CONDOR_HOST = $(FULL_HOSTNAME)
 ALLOW_WRITE = *
+ALLOW_ADMINISTRATOR = *
+ALLOW_NEGOTIATOR = *
+ALLOW_NEGOTIATOR_SCHEDD = *
+COLLECTOR_HOST = localhost
 
-DAEMON_LIST = MASTER, SCHEDD, COLLECTOR, NEGOTIATOR, STARTD
+DAEMON_LIST = MASTER, SCHEDD, COLLECTOR, NEGOTIATOR
 
 MAX_GRIDMANAGER_LOG = 500000000
 GRIDMANAGER_JOB_PROBE_INTERVAL = 30
@@ -14,13 +17,10 @@ DCLOUD_GAHP = $(SBIN)/dcloud_gahp
 
 CLASSAD_LIFETIME = 0
 
-# for re-advertising classads (i.e. condor_refreshd)
-CONDOR_DEVELOPERS_COLLECTOR = localhost:7890
-COLLECTOR_UPDATE_INTERVAL = 900
-
 # for the event log parsing (i.e. dbomatic)
 EVENT_LOG=$(LOG)/EventLog
 EVENT_LOG_USE_XML=True
-EVENT_LOG_JOB_AD_INFORMATION_ATTRS=Owner,GlobalJobId,Cmd,JobStartDate,JobCurrentStartDate,JobFinishedHookDone
+EVENT_LOG_JOB_AD_INFORMATION_ATTRS=Owner,GlobalJobId,Cmd,JobStartDate,JobCurrentStartDate,JobFinishedHookDone,DeltacloudProviderId,DeltacloudPublicNetworkAddresses,DeltacloudPrivateNetworkAddresses,DeltacloudAvailableActions,JobStatus
 
 CLASSAD_USER_LIBS = /usr/share/deltacloud-aggregator/classad_plugin/deltacloud_classad_plugin.so
+
