@@ -1,4 +1,4 @@
-# Deltacloud puppet definitions
+# Aeolus puppet definitions
 
 import "firewall"
 
@@ -26,8 +26,9 @@ if $aeolus_enable_packages == "true" or $aeolus_enable_packages == "1" {
   $enable_packages = false
 }
 
-# Base deltacloud class
-class deltacloud {
+# Base aeolus class
+class aeolus {
+  # Setup repos which to pull aeolus components
   # TODO:  Don't hardcode these repos to RHEL-6
   #  The issue is that $releasever resolves to something like 6Server
   #  so we either need to have a repo per RHEL variant, or we need
@@ -37,7 +38,6 @@ class deltacloud {
   $pulp_base_url_release = $operatingsystem ? { 'fedora' => "fedora-13",
                                                  'redhat' => 'rhel5' }
 
-  # Setup repos which to pull deltacloud components
   yumrepo{"${name}_arch":
             name     => "${name}_arch",
             descr    => "${name}_arch",
@@ -54,3 +54,4 @@ class deltacloud {
             baseurl  => "http://repos.fedorapeople.org/repos/pulp/pulp/${pulp_base_url_release}/\$basearch/",
             enabled  => 1, gpgcheck => 0}
 }
+

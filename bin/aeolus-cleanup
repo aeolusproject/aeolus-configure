@@ -1,0 +1,4 @@
+#!/bin/sh
+
+puppet /usr/share/aeolus-configure/aeolus_uninstall.pp \
+       --modulepath=/usr/share/aeolus-configure/modules/

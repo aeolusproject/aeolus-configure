@@ -1,12 +1,11 @@
-# Deltacloud image factory puppet definitions
+# Aeolus image factory puppet definitions
 
-class deltacloud::image-factory inherits deltacloud {
+class aeolus::image-factory inherits aeolus {
     if $enable_packages {
       package { 'rubygem-deltacloud-image-builder-agent':
                   provider => 'yum', ensure => 'installed',
-                  require  => [Yumrepo['deltacloud_arch', 'deltacloud_noarch']]}
+                  require  => [Yumrepo['aeolus_arch', 'aeolus_noarch']]}
     }
-
 
   ### Configure boxgrinder, this should go into the boxgrinder rpms eventually
     file { "/boxgrinder": ensure => "directory"}
@@ -21,7 +20,7 @@ class deltacloud::image-factory inherits deltacloud {
               ensure => "directory",
               require => File["/root/.boxgrinder"]}
     file { "/root/.boxgrinder/plugins/local":
-                source => "puppet:///modules/deltacloud_recipe/root-boxgrinder-plugins-local",
+                source => "puppet:///modules/aeolus_recipe/root-boxgrinder-plugins-local",
                 mode   => 644,
                 require => File["/root/.boxgrinder/plugins"]}
     notify { 'boxgrinder_configured':
@@ -36,9 +35,9 @@ class deltacloud::image-factory inherits deltacloud {
     #      command => "/usr/bin/pulp-admin -u admin -p admin repo create --id=fedora-repo --feed yum:http://download.fedora.redhat.com/pub/fedora/linux/updates/13/x86_64/"
     #}
 
-  ### Start the deltacloud services
+  ### Start the aeolus services
     file { "/etc/qpidd.conf":
-               source => "puppet:///modules/deltacloud_recipe/qpidd.conf",
+               source => "puppet:///modules/aeolus_recipe/qpidd.conf",
                mode   => 644 }
     service {'qpidd':
                ensure  => 'running',
@@ -46,13 +45,13 @@ class deltacloud::image-factory inherits deltacloud {
                require => [File['/etc/qpidd.conf'],
                            return_if($enable_packages, Package['deltacloud-aggregator-daemons'])]}
     file { "/etc/imagefactory.yml":
-               source => "puppet:///modules/deltacloud_recipe/imagefactory.yml",
+               source => "puppet:///modules/aeolus_recipe/imagefactory.yml",
                mode   => 644 }
     $requires = [return_if($enable_packages, Package['rubygem-deltacloud-image-builder-agent']),
                  return_if($enable_packages, Package['deltacloud-aggregator-daemons']),
                  File['/etc/imagefactory.yml'],
                  Service[qpidd],
-                 Rails::Seed::Db[seed_deltacloud_database],
+                 Rails::Seed::Db[seed_aeolus_database],
                  Notify['boxgrinder_configured']]
     service { 'imagefactoryd':
       ensure  => 'running',
@@ -65,8 +64,8 @@ class deltacloud::image-factory inherits deltacloud {
       require   => $requires}
 }
 
-class deltacloud::image-factory::disabled {
-  ### Stop the deltacloud services
+class aeolus::image-factory::disabled {
+  ### Stop the aeolus services
     service {'qpidd':
                ensure  => 'stopped',
                enable  => false,
@@ -80,7 +79,6 @@ class deltacloud::image-factory::disabled {
         ensure  => 'stopped',
         hasstatus => true,
         enable  => false}
-
 
   ### Uninstall the deltacloud components
     if $enable_packages {
@@ -117,9 +115,8 @@ class deltacloud::image-factory::disabled {
                  require  => Package['appliance-tools', 'livecd-tools']}
     }
 
-
-  ### Destroy and cleanup deltacloud artifacts
-    exec{"remove_deltacloud_templates": command => "/bin/rm -rf /templates"}
+  ### Destroy and cleanup aeolus artifacts
+    exec{"remove_aeolus_templates":     command => "/bin/rm -rf /templates"}
     exec{"remove_boxgrinder_dir":       command => "/bin/rm -rf /boxgrinder"}
 }
 

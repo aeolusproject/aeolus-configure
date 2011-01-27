@@ -19,14 +19,14 @@
 #--
 
 #
-# deltacloud uninstallation recipe
+# aeolus uninstallation recipe
 #
 
 # Modules used by the recipe
-import "deltacloud_recipe/deltacloud"
+import "aeolus_recipe/aeolus"
 
-# disable the various deltacloud components
-include deltacloud::aggregator::disabled
-include deltacloud::core::disabled
-include deltacloud::iwhd::disabled
-include deltacloud::image-factory::disabled
+# disable the various aeolus components
+include aeolus::aggregator::disabled
+include aeolus::core::disabled
+include aeolus::iwhd::disabled
+include aeolus::image-factory::disabled

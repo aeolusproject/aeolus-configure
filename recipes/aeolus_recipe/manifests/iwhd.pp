@@ -1,6 +1,6 @@
-# Deltacloud iwhd puppet definitions
+# aeolus iwhd puppet definitions
 
-class deltacloud::iwhd inherits deltacloud {
+class aeolus::iwhd inherits aeolus {
   ### Install the deltacloud components
     if $enable_packages{
       package { 'iwhd':
@@ -9,17 +9,17 @@ class deltacloud::iwhd inherits deltacloud {
                  }
     }
 
-  ### Start the deltacloud services
+  ### Start the aeolus services
     file { "/data":    ensure => 'directory' }
     file { "/data/db": ensure => 'directory' }
     file { "/etc/iwhd": ensure => 'directory'}
     file { "/etc/iwhd/conf.js":
-           source => "puppet:///modules/deltacloud_recipe/iwhd-conf.js",
+           source => "puppet:///modules/aeolus_recipe/iwhd-conf.js",
            mode   => 755, require => File['/etc/iwhd'] }
 
      #TODO The service wrapper should probably be in the rpm itself
      file { "/etc/rc.d/init.d/iwhd":
-            source => "puppet:///modules/deltacloud_recipe/iwhd.init",
+            source => "puppet:///modules/aeolus_recipe/iwhd.init",
             mode   => 755 }
 
     service { 'mongod':
@@ -42,8 +42,8 @@ class deltacloud::iwhd inherits deltacloud {
                 require => Service[iwhd]}
 }
 
-class deltacloud::iwhd::disabled {
-  ### Stop the deltacloud services
+class aeolus::iwhd::disabled {
+  ### Stop the aeolus services
     service { 'mongod':
       ensure  => 'stopped',
       enable  => false,
@@ -59,11 +59,10 @@ class deltacloud::iwhd::disabled {
                   provider => 'yum', ensure => 'absent',
                   require  => [Package['deltacloud-aggregator'], Service['iwhd']]}
     }
-
 }
 
 # Create a named bucket in iwhd
-define deltacloud::create_bucket(){
+define aeolus::create_bucket(){
   package{'curl': ensure => 'installed'}
   exec{"create-bucket-${name}":
          command => "/usr/bin/curl -X PUT http://localhost:9090/templates",

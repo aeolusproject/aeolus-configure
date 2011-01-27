@@ -1,6 +1,0 @@
-#!/bin/sh
-
-export FACTER_DELTACLOUD_ENABLE_SECURITY=false
-export FACTER_AEOLUS_ENABLE_PACKAGES=false
-puppet /usr/share/deltacloud-configure/deltacloud_uninstall.pp \
-       --modulepath=/usr/share/deltacloud-configure/modules/

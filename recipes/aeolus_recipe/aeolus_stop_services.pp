@@ -19,22 +19,14 @@
 #--
 
 #
-# deltacloud installation recipe
+# aeolus uninstallation recipe
 #
 
 # Modules used by the recipe
-import "deltacloud_recipe/deltacloud"
+import "aeolus_recipe/aeolus"
 
-# include the various deltacloud components
-include deltacloud::aggregator
-include deltacloud::core
-include deltacloud::image-factory
-include deltacloud::iwhd
+$services = ["aggregator", "core", 'iwhd', 'image-factory']
 
-deltacloud::create_bucket{"deltacloud":}
-
-deltacloud::site_admin{"admin":
-     email           => 'dcuser@deltacloud.org',
-     password        => 'password',
-     first_name      => 'deltacloud',
-     last_name       => 'user'}
+# stop aeolus services
+dc::service{$services:
+            ensure => 'stopped', enable => false}
