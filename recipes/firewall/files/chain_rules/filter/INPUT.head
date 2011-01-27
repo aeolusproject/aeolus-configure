@@ -1,8 +1,9 @@
 # INPUT.head
 -P INPUT ACCEPT
-#-i lo -m comment --comment "localhost access" -j ACCEPT 
--i lo -j ACCEPT 
+#-i lo -m comment --comment "localhost access" -j ACCEPT
+-i lo -j ACCEPT
 #-m state --state RELATED,ESTABLISHED -m comment --comment "All established/related" -j ACCEPT
 -m state --state RELATED,ESTABLISHED -j ACCEPT
 # -p icmp -m comment --comment "allow icmp/ping traffic" -j ACCEPT
 -p icmp -j ACCEPT
+

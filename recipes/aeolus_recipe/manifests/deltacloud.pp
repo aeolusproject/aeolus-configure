@@ -1,6 +1,6 @@
-# Aeolus core puppet definitions
+# Aeolus deltacloud puppet definitions
 
-class aeolus::core inherits aeolus {
+class aeolus::deltacloud inherits aeolus {
   ### Install the aeolus components
     if $enable_packages {
       package { 'rubygem-deltacloud-core':
@@ -28,8 +28,8 @@ class aeolus::core inherits aeolus {
                    File['/etc/init.d/deltacloud-core', '/var/log/deltacloud-core']] }
 }
 
-class aeolus::core::disabled {
-  ### Uninstall the deltacloud components
+class aeolus::deltacloud::disabled {
+  ### Uninstall the aeolus components
     if $enable_packages {
       package { 'rubygem-deltacloud-core':
                   provider => 'yum', ensure => 'absent',

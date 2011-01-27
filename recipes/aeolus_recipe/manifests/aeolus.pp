@@ -9,7 +9,7 @@ import "selinux"
 import "ntp"
 
 import "conductor"
-import "core"
+import "deltacloud"
 import "iwhd"
 import "image-factory"
 

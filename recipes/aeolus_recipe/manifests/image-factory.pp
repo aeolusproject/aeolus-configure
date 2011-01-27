@@ -43,12 +43,12 @@ class aeolus::image-factory inherits aeolus {
                ensure  => 'running',
                enable  => true,
                require => [File['/etc/qpidd.conf'],
-                           return_if($enable_packages, Package['deltacloud-aggregator-daemons'])]}
+                           return_if($enable_packages, Package['aeolus-conductor-daemons'])]}
     file { "/etc/imagefactory.yml":
                source => "puppet:///modules/aeolus_recipe/imagefactory.yml",
                mode   => 644 }
     $requires = [return_if($enable_packages, Package['rubygem-deltacloud-image-builder-agent']),
-                 return_if($enable_packages, Package['deltacloud-aggregator-daemons']),
+                 return_if($enable_packages, Package['aeolus-conductor-daemons']),
                  File['/etc/imagefactory.yml'],
                  Service[qpidd],
                  Rails::Seed::Db[seed_aeolus_database],
@@ -57,7 +57,7 @@ class aeolus::image-factory inherits aeolus {
       ensure  => 'running',
       enable  => true,
       require => $requires}
-    service { 'deltacloud-image_builder_service':
+    service { 'conductor-image_builder_service':
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
@@ -69,13 +69,13 @@ class aeolus::image-factory::disabled {
     service {'qpidd':
                ensure  => 'stopped',
                enable  => false,
-               require => Service['imagefactoryd', 'deltacloud-image_builder_service']}
+               require => Service['imagefactoryd', 'conductor-image_builder_service']}
 
     service { 'imagefactoryd':
       ensure  => 'stopped',
       enable  => false}
 
-    service { 'deltacloud-image_builder_service':
+    service { 'conductor-image_builder_service':
         ensure  => 'stopped',
         hasstatus => true,
         enable  => false}
@@ -84,7 +84,7 @@ class aeolus::image-factory::disabled {
     if $enable_packages {
       package { 'rubygem-deltacloud-image-builder-agent':
                   provider => 'yum', ensure => 'absent',
-                  require  => Package['deltacloud-aggregator']}
+                  require  => Package['aeolus-conductor']}
 
       # FIXME these lingering dependencies, pulled in for
       # rubygem-deltacloud-image-builder-agent, need to be removed as

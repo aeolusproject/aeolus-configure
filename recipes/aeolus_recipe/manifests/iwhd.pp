@@ -54,10 +54,11 @@ class aeolus::iwhd::disabled {
       enable  =>  false,
       hasstatus =>  true}
 
+  ### Uninstall the aeolus components
     if $enable_packages {
       package { 'iwhd':
                   provider => 'yum', ensure => 'absent',
-                  require  => [Package['deltacloud-aggregator'], Service['iwhd']]}
+                  require  => [Package['aeolus-conductor'], Service['iwhd']]}
     }
 }
 
