@@ -8,7 +8,7 @@ import "rails"
 import "selinux"
 import "ntp"
 
-import "aggregator"
+import "conductor"
 import "core"
 import "iwhd"
 import "image-factory"

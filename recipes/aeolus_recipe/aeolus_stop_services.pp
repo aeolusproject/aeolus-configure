@@ -25,7 +25,7 @@
 # Modules used by the recipe
 import "aeolus_recipe/aeolus"
 
-$services = ["aggregator", "core", 'iwhd', 'image-factory']
+$services = ["conductor", "core", 'iwhd', 'image-factory']
 
 # stop aeolus services
 dc::service{$services:

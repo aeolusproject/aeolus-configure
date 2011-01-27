@@ -1,6 +1,6 @@
-# Aeolus aggregator puppet definitions
+# Aeolus conductor puppet definitions
 
-class aeolus::aggregator inherits aeolus {
+class aeolus::conductor inherits aeolus {
   ### Install the aeolus components
     # specific versions of these two packages are needed and we need to pull the third in
      if $enable_packages {
@@ -156,7 +156,7 @@ class aeolus::aggregator inherits aeolus {
              enable  =>  'true' }
 }
 
-class aeolus::aggregator::disabled {
+class aeolus::conductor::disabled {
   ### Uninstall the aeolus components
     if $enable_packages {
       package {['deltacloud-aggregator-daemons',
@@ -228,7 +228,7 @@ class aeolus::aggregator::disabled {
                 require   => Service['deltacloud-aggregator']}
 }
 
-# Create a new site admin aggregator web user
+# Create a new site admin conductor web user
 define aeolus::site_admin($email="", $password="", $first_name="", $last_name=""){
   exec{"create_site_admin_user":
          cwd         => '/usr/share/deltacloud-aggregator',

@@ -26,7 +26,7 @@
 import "aeolus_recipe/aeolus"
 
 # disable the various aeolus components
-include aeolus::aggregator::disabled
+include aeolus::conductor::disabled
 include aeolus::core::disabled
 include aeolus::iwhd::disabled
 include aeolus::image-factory::disabled
