@@ -70,16 +70,23 @@ class deltacloud::aggregator inherits deltacloud {
 
 
   ### Setup/start solr search service
-    exec{"start_solr":
-                cwd         => "/usr/share/deltacloud-aggregator",
-                command     => "/usr/bin/rake sunspot:solr:start",
-                environment => "RAILS_ENV=production",
-                require     => Package['deltacloud-aggregator']}
+    service{"solr":
+             start       => "cd /usr/share/deltacloud-aggregator; RAILS_ENV=production /usr/bin/rake sunspot:solr:start",
+             stop        => "cd /usr/share/deltacloud-aggregator; RAILS_ENV=production /usr/bin/rake sunspot:solr:stop",
+             hasstatus   => "false",
+             pattern     => "solr",
+             ensure      => 'running',
+             require     => Package['deltacloud-aggregator']}
+
+    # XXX ugly hack but solr might take some time to come up
+    exec{"solr_startup_pause":
+                command => "/bin/sleep 4",
+                require => Service['solr']}
     exec{"build_solr_index":
                 cwd         => "/usr/share/deltacloud-aggregator",
                 command     => "/usr/bin/rake sunspot:reindex",
                 environment => "RAILS_ENV=production",
-                require     => Exec['start_solr']}
+                require     => Exec['solr_startup_pause']}
 }
 
 class deltacloud::aggregator::disabled {
@@ -97,6 +104,7 @@ class deltacloud::aggregator::disabled {
               provider => 'yum', ensure => 'absent',
               require  => [Package['deltacloud-aggregator-daemons',
                                    'deltacloud-aggregator-doc'],
+                           Service['solr'],
                            Rails::Drop::Db["drop_deltacloud_database"]] }
 
     file {"/var/lib/deltacloud-aggregator":
@@ -135,11 +143,12 @@ class deltacloud::aggregator::disabled {
                     require => Rails::Drop::Db["drop_deltacloud_database"]}
 
   ### stop solr search service
-    exec{"stop_solr":
-                cwd         => "/usr/share/deltacloud-aggregator",
-                command     => "/usr/bin/rake sunspot:solr:stop",
-                environment => "RAILS_ENV=production",
-                require     => Service['deltacloud-aggregator']}
+    service{"solr":
+                hasstatus => false,
+                stop      => "cd /usr/share/deltacloud-aggregator;RAILS_ENV=production /usr/bin/rake sunspot:solr:stop",
+                pattern   => "solr",
+                ensure    => 'stopped',
+                require   => Service['deltacloud-aggregator']}
 }
 
 # Create a new site admin aggregator web user
