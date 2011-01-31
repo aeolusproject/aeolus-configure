@@ -14,6 +14,9 @@ class deltacloud::aggregator inherits deltacloud {
                                    'rubygem-deltacloud-image-builder-agent',
                                    'iwhd']}
 
+    file {"/var/lib/deltacloud-aggregator":
+            ensure => directory,
+    }
   ### Setup selinux for deltacloud
     selinux::mode{"permissive":}
 
@@ -95,6 +98,11 @@ class deltacloud::aggregator::disabled {
               require  => [Package['deltacloud-aggregator-daemons',
                                    'deltacloud-aggregator-doc'],
                            Rails::Drop::Db["drop_deltacloud_database"]] }
+
+    file {"/var/lib/deltacloud-aggregator":
+            ensure => absent,
+            force  => true
+    }
 
     package { 'rubygem-deltacloud-client':
                 provider => 'yum', ensure => 'absent',

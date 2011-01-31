@@ -19,7 +19,14 @@ define rails::seed::db($cwd="", $rails_env=""){
   exec{"seed_rails_database":
          cwd         => $cwd,
          environment => "RAILS_ENV=${rails_env}",
-         command     => "/usr/bin/rake db:seed"}
+         command     => "/usr/bin/rake db:seed",
+         creates     => "/var/lib/deltacloud-aggregator/${rails_env}.seed"
+         }
+
+   file{"/var/lib/deltacloud-aggregator/${rails_env}.seed":
+         ensure  => present,
+         recurse => true
+       }
 }
 
 define rails::drop::db($cwd="", $rails_env=""){
@@ -29,3 +36,4 @@ define rails::drop::db($cwd="", $rails_env=""){
          environment => "RAILS_ENV=${rails_env}",
          command     => "/usr/bin/rake db:drop:all"}
 }
+
