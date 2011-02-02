@@ -62,7 +62,7 @@ class deltacloud::aggregator inherits deltacloud {
     rails::migrate::db{"migrate_deltacloud_database":
                 cwd             => "/usr/share/deltacloud-aggregator",
                 rails_env       => "production",
-                require         => Rails::Create::Db[create_deltacloud_database]}
+                require         => [Rails::Create::Db[create_deltacloud_database], Service['solr']]}
     rails::seed::db{"seed_deltacloud_database":
                 cwd             => "/usr/share/deltacloud-aggregator",
                 rails_env       => "production",
@@ -76,17 +76,13 @@ class deltacloud::aggregator inherits deltacloud {
              hasstatus   => "false",
              pattern     => "solr",
              ensure      => 'running',
-             require     => Package['deltacloud-aggregator']}
+             require     => [Package['deltacloud-aggregator'], Rails::Create::Db['create_deltacloud_database']]}
 
-    # XXX ugly hack but solr might take some time to come up
-    exec{"solr_startup_pause":
-                command => "/bin/sleep 4",
-                require => Service['solr']}
     exec{"build_solr_index":
                 cwd         => "/usr/share/deltacloud-aggregator",
                 command     => "/usr/bin/rake sunspot:reindex",
                 environment => "RAILS_ENV=production",
-                require     => Exec['solr_startup_pause']}
+                require     => Rails::Migrate::Db['migrate_deltacloud_database']}
 }
 
 class deltacloud::aggregator::disabled {
