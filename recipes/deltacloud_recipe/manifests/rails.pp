@@ -25,7 +25,8 @@ define rails::seed::db($cwd="", $rails_env=""){
 
    file{"/var/lib/deltacloud-aggregator/${rails_env}.seed":
          ensure  => present,
-         recurse => true
+         recurse => true,
+         require => [Exec['seed_rails_database'], File['/var/lib/deltacloud-aggregator']]
        }
 }
 
