@@ -4,7 +4,7 @@
 Summary:  DeltaCloud Configure Puppet Recipe
 Name:     deltacloud-configure
 Version:  2.0.0
-Release:  1%{?dist}
+Release:  2%{?dist}
 
 Group:    Applications/Internet
 License:  GPLv2+
