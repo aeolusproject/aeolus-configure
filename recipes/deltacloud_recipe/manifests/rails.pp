@@ -4,7 +4,7 @@ define rails::create::db($cwd="", $rails_env=""){
   exec{"create_rails_database":
          cwd         => $cwd,
          environment => "RAILS_ENV=${rails_env}",
-         command     => "/usr/bin/rake db:create:all"}
+         command     => "/usr/bin/rake db:create"}
 
 }
 
@@ -35,6 +35,6 @@ define rails::drop::db($cwd="", $rails_env=""){
          cwd         => $cwd,
          onlyif      => "/usr/bin/test -f ${cwd}/Rakefile",
          environment => "RAILS_ENV=${rails_env}",
-         command     => "/usr/bin/rake db:drop:all"}
+         command     => "/usr/bin/rake db:drop"}
 }
 
