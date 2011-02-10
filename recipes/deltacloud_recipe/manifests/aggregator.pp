@@ -3,16 +3,18 @@
 class deltacloud::aggregator inherits deltacloud {
   ### Install the deltacloud components
     # specific versions of these two packages are needed and we need to pull the third in
-     package { 'rubygem-deltacloud-client':
-                 provider => 'yum', ensure => 'installed', require => Yumrepo['deltacloud_arch', 'deltacloud_noarch'] }
+     if $enable_packages {
+       package { 'rubygem-deltacloud-client':
+                   provider => 'yum', ensure => 'installed', require => Yumrepo['deltacloud_arch', 'deltacloud_noarch'] }
 
-     package {['deltacloud-aggregator',
-               'deltacloud-aggregator-daemons',
-               'deltacloud-aggregator-doc']:
-               provider => 'yum', ensure => 'installed',
-               require  => Package['rubygem-deltacloud-client',
-                                   'rubygem-deltacloud-image-builder-agent',
-                                   'iwhd']}
+       package {['deltacloud-aggregator',
+                 'deltacloud-aggregator-daemons',
+                 'deltacloud-aggregator-doc']:
+                 provider => 'yum', ensure => 'installed',
+                 require  => Package['rubygem-deltacloud-client',
+                                     'rubygem-deltacloud-image-builder-agent',
+                                     'iwhd']}
+     }
 
     file {"/var/lib/deltacloud-aggregator":
             ensure => directory,
@@ -27,7 +29,7 @@ class deltacloud::aggregator inherits deltacloud {
   ### Start the deltacloud services
     file {"/var/lib/condor/condor_config.local":
            source => "puppet:///modules/deltacloud_recipe/condor_config.local",
-           require => Package['deltacloud-aggregator-daemons'] }
+           require => return_if($enable_packages, Package['deltacloud-aggregator-daemons']) }
     service { 'condor':
       ensure  => 'running',
       enable  => true,
@@ -38,7 +40,7 @@ class deltacloud::aggregator inherits deltacloud {
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
-      require => [Package['deltacloud-aggregator-daemons'],
+      require => [return_if($enable_packages, Package['deltacloud-aggregator-daemons']),
                   Rails::Seed::Db[seed_deltacloud_database],
                   Service[condor]] }
 
@@ -87,7 +89,7 @@ class deltacloud::aggregator inherits deltacloud {
     rails::create::db{"create_deltacloud_database":
                 cwd        => "/usr/share/deltacloud-aggregator",
                 rails_env  => "production",
-                require    => [Postgres::User[dcloud], Package['deltacloud-aggregator']]}
+                require    => [Postgres::User[dcloud], return_if($enable_packages, Package['deltacloud-aggregator'])] }
     rails::migrate::db{"migrate_deltacloud_database":
                 cwd             => "/usr/share/deltacloud-aggregator",
                 rails_env       => "production",
@@ -105,7 +107,7 @@ class deltacloud::aggregator inherits deltacloud {
              hasstatus   => "false",
              pattern     => "solr",
              ensure      => 'running',
-             require     => [Package['deltacloud-aggregator'], Rails::Create::Db['create_deltacloud_database']]}
+             require     => [return_if($enable_packages, Package['deltacloud-aggregator']), Rails::Create::Db['create_deltacloud_database']]}
 
     exec{"build_solr_index":
                 cwd         => "/usr/share/deltacloud-aggregator",
@@ -124,30 +126,34 @@ class deltacloud::aggregator inherits deltacloud {
 
 class deltacloud::aggregator::disabled {
   ### Uninstall the deltacloud components
-    package {['deltacloud-aggregator-daemons',
-              'deltacloud-aggregator-doc']:
-              provider => 'yum', ensure => 'absent',
-              require  => Service['deltacloud-aggregator',
-                                  'deltacloud-condor_refreshd',
-                                  'deltacloud-dbomatic',
-                                  'imagefactoryd',
-                                  'deltacloud-image_builder_service']}
+    if $enable_packages {
+      package {['deltacloud-aggregator-daemons',
+                'deltacloud-aggregator-doc']:
+                provider => 'yum', ensure => 'absent',
+                require  => Service['deltacloud-aggregator',
+                                    'deltacloud-condor_refreshd',
+                                    'deltacloud-dbomatic',
+                                    'imagefactoryd',
+                                    'deltacloud-image_builder_service']}
 
-    package {'deltacloud-aggregator':
-              provider => 'yum', ensure => 'absent',
-              require  => [Package['deltacloud-aggregator-daemons',
-                                   'deltacloud-aggregator-doc'],
-                           Service['solr'],
-                           Rails::Drop::Db["drop_deltacloud_database"]] }
+      package {'deltacloud-aggregator':
+                provider => 'yum', ensure => 'absent',
+                require  => [Package['deltacloud-aggregator-daemons',
+                                     'deltacloud-aggregator-doc'],
+                             Service['solr'],
+                             Rails::Drop::Db["drop_deltacloud_database"]] }
+    }
 
     file {"/var/lib/deltacloud-aggregator":
             ensure => absent,
             force  => true
     }
 
-    package { 'rubygem-deltacloud-client':
-                provider => 'yum', ensure => 'absent',
-                require  => Package['deltacloud-aggregator']}
+    if $enable_packages {
+      package { 'rubygem-deltacloud-client':
+                  provider => 'yum', ensure => 'absent',
+                  require  => Package['deltacloud-aggregator']}
+    }
 
   ### Stop the deltacloud services
     service { 'condor':

@@ -2,10 +2,12 @@
 
 class deltacloud::iwhd inherits deltacloud {
   ### Install the deltacloud components
-    package { 'iwhd':
-               provider => 'yum', ensure => 'installed',
-               require => Yumrepo['deltacloud_arch', 'deltacloud_noarch']
-               }
+    if $enable_packages{
+      package { 'iwhd':
+                 provider => 'yum', ensure => 'installed',
+                 require => Yumrepo['deltacloud_arch', 'deltacloud_noarch']
+                 }
+    }
 
   ### Start the deltacloud services
     file { "/data":    ensure => 'directory' }
@@ -23,13 +25,13 @@ class deltacloud::iwhd inherits deltacloud {
     service { 'mongod':
       ensure  => 'running',
       enable  => true,
-      require => [Package['iwhd'], File["/data/db"]]}
+      require => [return_if($enable_package, Package['iwhd']), File["/data/db"]]}
     service { 'iwhd':
       ensure  => 'running',
       enable  => true,
       hasstatus => true,
       require => [File['/etc/rc.d/init.d/iwhd', '/etc/iwhd/conf.js'],
-                  Package['iwhd'],
+                  return_if($enable_package, Package['iwhd']),
                   Service[mongod]]}
 
     # XXX ugly hack but iwhd might take some time to come up
@@ -45,16 +47,18 @@ class deltacloud::iwhd::disabled {
       ensure  => 'stopped',
       enable  => false,
       require => Service[iwhd]}
+
     service { 'iwhd':
-      ensure  => 'stopped',
-      enable  => false,
-      hasstatus => true}
+      ensure  =>  'stopped',
+      enable  =>  false,
+      hasstatus =>  true}
 
+    if $enable_packages {
+      package { 'iwhd':
+                  provider => 'yum', ensure => 'absent',
+                  require  => [Package['deltacloud-aggregator'], Service['iwhd']]}
+    }
 
-  ### Uninstall the deltacloud components
-    package { 'iwhd':
-                provider => 'yum', ensure => 'absent',
-                require  => [Package['deltacloud-aggregator'], Service['iwhd']]}
 }
 
 # Create a named bucket in iwhd

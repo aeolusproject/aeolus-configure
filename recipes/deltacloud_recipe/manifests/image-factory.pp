@@ -3,14 +3,16 @@
 class deltacloud::image-factory inherits deltacloud {
     # TODO:  Fix me, find a better way to do this...
     # We need to also install this rpm from amazon
-    package{"ec2-ami-tools":
-            provider => "rpm",
-            source => "http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.noarch.rpm",
-            ensure => 'installed' }
+    if $enable_packages {
+      package{"ec2-ami-tools":
+              provider => "rpm",
+              source => "http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.noarch.rpm",
+              ensure => 'installed' }
 
-    package { 'rubygem-deltacloud-image-builder-agent':
-                provider => 'yum', ensure => 'installed',
-                require  => [Package['ec2-ami-tools'], Yumrepo['deltacloud_arch', 'deltacloud_noarch']]}
+      package { 'rubygem-deltacloud-image-builder-agent':
+                  provider => 'yum', ensure => 'installed',
+                  require  => [Package['ec2-ami-tools'], Yumrepo['deltacloud_arch', 'deltacloud_noarch']]}
+    }
 
 
   ### Configure boxgrinder, this should go into the boxgrinder rpms eventually
@@ -49,12 +51,12 @@ class deltacloud::image-factory inherits deltacloud {
                ensure  => 'running',
                enable  => true,
                require => [File['/etc/qpidd.conf'],
-                           Package['deltacloud-aggregator-daemons']]}
+                           return_if($enable_packages, Package['deltacloud-aggregator-daemons'])]}
     file { "/etc/imagefactory.yml":
                source => "puppet:///modules/deltacloud_recipe/imagefactory.yml",
                mode   => 644 }
-    $requires = [Package['rubygem-deltacloud-image-builder-agent'],
-                 Package['deltacloud-aggregator-daemons'],
+    $requires = [return_if($enable_packages, Package['rubygem-deltacloud-image-builder-agent']),
+                 return_if($enable_packages, Package['deltacloud-aggregator-daemons']),
                  File['/etc/imagefactory.yml'],
                  Service[qpidd],
                  Rails::Seed::Db[seed_deltacloud_database],
@@ -88,40 +90,42 @@ class deltacloud::image-factory::disabled {
 
 
   ### Uninstall the deltacloud components
-    package { 'rubygem-deltacloud-image-builder-agent':
-                provider => 'yum', ensure => 'absent',
-                require  => Package['deltacloud-aggregator']}
+    if $enable_packages {
+      package { 'rubygem-deltacloud-image-builder-agent':
+                  provider => 'yum', ensure => 'absent',
+                  require  => Package['deltacloud-aggregator']}
 
-    # FIXME these lingering dependencies, pulled in for
-    # rubygem-deltacloud-image-builder-agent, need to be removed as
-    # ec2-ami-tools and appliance-tools depend on them and using
-    # 'absent' in the context of the 'yum' provider dispatches
-    # to 'rpm -e' instead of 'yum erase'
-    package { ['rubygem-boxgrinder-build-ec2-platform-plugin',
-               'rubygem-boxgrinder-build-centos-os-plugin',
-               'rubygem-boxgrinder-build-fedora-os-plugin']:
-               provider => "yum", ensure => 'absent',
-               require  => Package['rubygem-deltacloud-image-builder-agent']}
-    package { 'rubygem-boxgrinder-build-rhel-os-plugin':
-               provider => "yum", ensure => 'absent',
-               require  => Package['rubygem-boxgrinder-build-centos-os-plugin']}
-    package { 'rubygem-boxgrinder-build-rpm-based-os-plugin':
-               provider => "yum", ensure => 'absent',
-               require  => Package['rubygem-boxgrinder-build-rhel-os-plugin',
-                                   'rubygem-boxgrinder-build-fedora-os-plugin']}
+      # FIXME these lingering dependencies, pulled in for
+      # rubygem-deltacloud-image-builder-agent, need to be removed as
+      # ec2-ami-tools and appliance-tools depend on them and using
+      # 'absent' in the context of the 'yum' provider dispatches
+      # to 'rpm -e' instead of 'yum erase'
+      package { ['rubygem-boxgrinder-build-ec2-platform-plugin',
+                 'rubygem-boxgrinder-build-centos-os-plugin',
+                 'rubygem-boxgrinder-build-fedora-os-plugin']:
+                 provider => "yum", ensure => 'absent',
+                 require  => Package['rubygem-deltacloud-image-builder-agent']}
+      package { 'rubygem-boxgrinder-build-rhel-os-plugin':
+                 provider => "yum", ensure => 'absent',
+                 require  => Package['rubygem-boxgrinder-build-centos-os-plugin']}
+      package { 'rubygem-boxgrinder-build-rpm-based-os-plugin':
+                 provider => "yum", ensure => 'absent',
+                 require  => Package['rubygem-boxgrinder-build-rhel-os-plugin',
+                                     'rubygem-boxgrinder-build-fedora-os-plugin']}
 
-    package { 'ec2-ami-tools':
-               provider => "yum", ensure => 'absent',
-               require  => Package['rubygem-boxgrinder-build-ec2-platform-plugin']}
-    package { 'appliance-tools':
-               provider => 'yum', ensure => 'absent',
-               require  => Package['rubygem-boxgrinder-build-rpm-based-os-plugin']}
-    package { 'livecd-tools':
-               provider => 'yum', ensure => 'absent',
-               require  => Package['appliance-tools']}
-    package { 'python-imgcreate':
-               provider => 'yum', ensure => 'absent',
-               require  => Package['appliance-tools', 'livecd-tools']}
+      package { 'ec2-ami-tools':
+                 provider => "yum", ensure => 'absent',
+                 require  => Package['rubygem-boxgrinder-build-ec2-platform-plugin']}
+      package { 'appliance-tools':
+                 provider => 'yum', ensure => 'absent',
+                 require  => Package['rubygem-boxgrinder-build-rpm-based-os-plugin']}
+      package { 'livecd-tools':
+                 provider => 'yum', ensure => 'absent',
+                 require  => Package['appliance-tools']}
+      package { 'python-imgcreate':
+                 provider => 'yum', ensure => 'absent',
+                 require  => Package['appliance-tools', 'livecd-tools']}
+    }
 
 
   ### Destroy and cleanup deltacloud artifacts
