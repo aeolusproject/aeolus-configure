@@ -82,7 +82,7 @@ class deltacloud::aggregator inherits deltacloud {
     postgres::user{"dcloud":
                      password => "v23zj59an",
                      roles    => "CREATEDB",
-                     require  => Service["postgresql"]}
+                     require  => [Service["postgresql"], File["/var/lib/pgsql/data/pg_hba.conf"]] }
 
 
     # Create deltacloud database
