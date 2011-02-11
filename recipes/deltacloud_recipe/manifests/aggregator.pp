@@ -101,13 +101,23 @@ class deltacloud::aggregator inherits deltacloud {
 
 
   ### Setup/start solr search service
+   file{"/etc/init.d/solr":
+        source => 'puppet:///modules/deltacloud_recipe/solr.init',
+        mode => 755
+   }
+
+   file{"/etc/sysconfig/solr":
+        source => 'puppet:///modules/deltacloud_recipe/solr.conf',
+        mode => 755
+   }
     service{"solr":
-             start       => "cd /usr/share/deltacloud-aggregator; RAILS_ENV=production /usr/bin/rake sunspot:solr:start",
-             stop        => "cd /usr/share/deltacloud-aggregator; RAILS_ENV=production /usr/bin/rake sunspot:solr:stop",
              hasstatus   => "false",
-             pattern     => "solr",
+             pattern     => "jetty.port=8983",
              ensure      => 'running',
-             require     => [return_if($enable_packages, Package['deltacloud-aggregator']), Rails::Create::Db['create_deltacloud_database']]}
+             enable      => 'true',
+             require     => [File['/etc/init.d/solr', '/etc/init.d/solr'],
+                             return_if($enable_packages, Package['deltacloud-aggregator']),
+                             Rails::Create::Db['create_deltacloud_database']]}
 
     exec{"build_solr_index":
                 cwd         => "/usr/share/deltacloud-aggregator",
