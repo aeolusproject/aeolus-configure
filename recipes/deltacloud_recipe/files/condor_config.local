@@ -20,7 +20,7 @@ CLASSAD_LIFETIME = 0
 # for the event log parsing (i.e. dbomatic)
 EVENT_LOG=$(LOG)/EventLog
 EVENT_LOG_USE_XML=True
-EVENT_LOG_JOB_AD_INFORMATION_ATTRS=Owner,GlobalJobId,Cmd,JobStartDate,JobCurrentStartDate,JobFinishedHookDone,DeltacloudProviderId,DeltacloudPublicNetworkAddresses,DeltacloudPrivateNetworkAddresses,DeltacloudAvailableActions,JobStatus
+EVENT_LOG_JOB_AD_INFORMATION_ATTRS=Owner,GlobalJobId,Cmd,JobStartDate,JobCurrentStartDate,JobFinishedHookDone,DeltacloudProviderId,DeltacloudPublicNetworkAddresses,DeltacloudPrivateNetworkAddresses,DeltacloudAvailableActions,JobStatus,DeltacloudUsername
 
 CLASSAD_USER_LIBS = /usr/share/deltacloud-aggregator/classad_plugin/deltacloud_classad_plugin.so
 
