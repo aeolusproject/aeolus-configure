@@ -25,6 +25,7 @@ class deltacloud::aggregator inherits deltacloud {
   ### Setup firewall for deltacloud
     firewall::rule{"http":  destination_port => '80' }
     firewall::rule{"https": destination_port => '443'}
+    firewall::rule{"ssh":   destination_port => '22'}
 
   ### Start the deltacloud services
     file {"/var/lib/condor/condor_config.local":
