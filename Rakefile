@@ -5,10 +5,10 @@ require 'rake/rpmtask'
 require 'rake/yumtask'
 
 CURRENT_DIR  = File.dirname(__FILE__)
-RPMBUILD_DIR = "#{CURRENT_DIR}/build/rpmbuild"
+RPMBUILD_DIR = "#{File.expand_path('~')}/rpmbuild"
 YUM_REPO     = "#{CURRENT_DIR}/repo"
 
-CLEAN.include('pkg', 'build', 'repo')
+CLEAN.include('pkg', 'repo')
 CLOBBER.include('deltacloud')
 PKG_NAME = "deltacloud-configure"
 RPM_SPEC = "contrib/deltacloud-configure.spec"
