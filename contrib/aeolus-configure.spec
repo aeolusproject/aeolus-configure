@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.0.0
-Release:  4%{?dist}
+Release:  4%{?dist}%{timestamp}
 
 Group:    Applications/Internet
 License:  GPLv2+
