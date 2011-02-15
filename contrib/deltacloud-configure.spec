@@ -4,7 +4,7 @@
 Summary:  DeltaCloud Configure Puppet Recipe
 Name:     deltacloud-configure
 Version:  2.0.0
-Release:  2%{?dist}
+Release:  3%{?dist}
 
 Group:    Applications/Internet
 License:  GPLv2+
@@ -51,6 +51,9 @@ rm -rf %{buildroot}
 %{dchome}
 
 %changelog
+* Tue Feb 15 2011 Mohammed Morsi <mmorsi@redhat.com> 2.0.0-3
+- various fixes to recipe
+
 * Thu Jan 14 2011 Mohammed Morsi <mmorsi@redhat.com> 2.0.0-2
 - include openssl module
 
