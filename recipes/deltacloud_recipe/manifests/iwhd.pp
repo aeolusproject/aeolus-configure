@@ -38,6 +38,7 @@ class deltacloud::iwhd inherits deltacloud {
     exec{"iwhd_startup_pause":
                 command => "/bin/sleep 2",
                 unless  => '/usr/bin/curl http://localhost:9090',
+                logoutput => true,
                 require => Service[iwhd]}
 }
 
@@ -66,6 +67,7 @@ define deltacloud::create_bucket(){
   package{'curl': ensure => 'installed'}
   exec{"create-bucket-${name}":
          command => "/usr/bin/curl -X PUT http://localhost:9090/templates",
+         logoutput => true,
          require => [Exec['iwhd_startup_pause'], Package[curl]] }
 }
 

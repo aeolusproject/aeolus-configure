@@ -4,6 +4,7 @@ define rails::create::db($cwd="", $rails_env=""){
   exec{"create_rails_database":
          cwd         => $cwd,
          environment => "RAILS_ENV=${rails_env}",
+         logoutput   => true,
          command     => "/usr/bin/rake db:create"}
 
 }
@@ -12,6 +13,7 @@ define rails::migrate::db($cwd="", $rails_env=""){
   exec{"migrate_rails_database":
          cwd         => $cwd,
          environment => "RAILS_ENV=${rails_env}",
+         logoutput   => true,
          command     => "/usr/bin/rake db:migrate"}
 }
 
@@ -20,6 +22,7 @@ define rails::seed::db($cwd="", $rails_env=""){
          cwd         => $cwd,
          environment => "RAILS_ENV=${rails_env}",
          command     => "/usr/bin/rake db:seed",
+         logoutput   => true,
          creates     => "/var/lib/deltacloud-aggregator/${rails_env}.seed"
          }
 
@@ -35,6 +38,7 @@ define rails::drop::db($cwd="", $rails_env=""){
          cwd         => $cwd,
          onlyif      => "/usr/bin/test -f ${cwd}/Rakefile",
          environment => "RAILS_ENV=${rails_env}",
+         logoutput   => true,
          command     => "/usr/bin/rake db:drop"}
 }
 

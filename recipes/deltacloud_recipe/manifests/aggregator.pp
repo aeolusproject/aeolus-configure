@@ -123,6 +123,7 @@ class deltacloud::aggregator inherits deltacloud {
     exec{"build_solr_index":
                 cwd         => "/usr/share/deltacloud-aggregator",
                 command     => "/usr/bin/rake sunspot:reindex",
+                logoutput   => true,
                 environment => "RAILS_ENV=production",
                 require     => Rails::Migrate::Db['migrate_deltacloud_database']}
 
@@ -214,12 +215,14 @@ define deltacloud::site_admin($email="", $password="", $first_name="", $last_nam
          cwd         => '/usr/share/deltacloud-aggregator',
          environment => "RAILS_ENV=production",
          command     => "/usr/bin/rake dc:create_user[${name}] email=${email} password=${password} first_name=${first_name} last_name=${last_name}",
+         logoutput   => true,
          unless      => "/usr/bin/test `psql dcloud dcloud -P tuples_only -c \"select count(*) from users where login = '${name}';\"` = \"1\"",
          require     => Rails::Seed::Db["seed_deltacloud_database"]}
   exec{"grant_site_admin_privs":
          cwd         => '/usr/share/deltacloud-aggregator',
          environment => "RAILS_ENV=production",
          command     => "/usr/bin/rake dc:site_admin[${name}]",
+         logoutput   => true,
          unless      => "/usr/bin/test `psql dcloud dcloud -P tuples_only -c \"select count(*) FROM roles INNER JOIN permissions ON (roles.id = permissions.role_id) INNER JOIN users ON (permissions.user_id = users.id) where roles.name = 'Administrator' AND users.login = '${name}';\"` = \"1\"",
          require     => Exec[create_site_admin_user]}
 }
