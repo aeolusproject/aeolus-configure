@@ -133,6 +133,13 @@ class deltacloud::aggregator inherits deltacloud {
     } else{
       apache::site{"deltacloud-aggregator": source => 'puppet:///modules/deltacloud_recipe/aggregator-httpd.conf'}
     }
+
+  ### Setup sshd for deltacloud
+	  package { "openssh-server": ensure => installed }
+    service{"sshd":
+             require  => Package["openssh-server"],
+             ensure   =>  'running',
+             enable  =>  'true' }
 }
 
 class deltacloud::aggregator::disabled {
