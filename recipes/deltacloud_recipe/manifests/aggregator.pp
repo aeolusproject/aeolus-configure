@@ -111,12 +111,17 @@ class deltacloud::aggregator inherits deltacloud {
         source => 'puppet:///modules/deltacloud_recipe/solr.conf',
         mode => 755
    }
+   # TODO we manually have to install java for solr, we should remove this once this is a dep in the solr rpm
+   package{"java-1.6.0-openjdk":
+             provider => "yum",
+             ensure   => "installed" }
     service{"solr":
              hasstatus   => "false",
              pattern     => "jetty.port=8983",
              ensure      => 'running',
              enable      => 'true',
              require     => [File['/etc/init.d/solr', '/etc/init.d/solr'],
+                             Package["java-1.6.0-openjdk"],
                              return_if($enable_packages, Package['deltacloud-aggregator']),
                              Rails::Create::Db['create_deltacloud_database']]}
 
