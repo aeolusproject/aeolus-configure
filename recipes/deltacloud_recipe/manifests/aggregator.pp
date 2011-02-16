@@ -100,6 +100,14 @@ class deltacloud::aggregator inherits deltacloud {
                 rails_env       => "production",
                 require         => Rails::Migrate::Db[migrate_deltacloud_database]}
 
+  ### Prepare the image package repositories
+    exec{"dc_prepare_repos":
+           cwd         => '/usr/share/deltacloud-aggregator',
+           environment => "RAILS_ENV=production",
+           command     => "/usr/bin/rake dc:prepare_repos",
+           logoutput   => true,
+           require     => Package['deltacloud-aggregator'] }
+
 
   ### Setup/start solr search service
    file{"/etc/init.d/solr":
