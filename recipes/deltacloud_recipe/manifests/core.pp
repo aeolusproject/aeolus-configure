@@ -19,7 +19,7 @@ class deltacloud::core inherits deltacloud {
        ensure  => 'running',
        enable  => true,
        require => [return_if($enable_packages, Package['rubygem-deltacloud-core']),
-                   File['/etc/init.d/deltacloud-core']] }
+                   File['/etc/init.d/deltacloud-core', '/var/log/deltacloud-core']] }
 }
 
 class deltacloud::core::disabled {
