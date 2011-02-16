@@ -1,17 +1,10 @@
 # Deltacloud image factory puppet definitions
 
 class deltacloud::image-factory inherits deltacloud {
-    # TODO:  Fix me, find a better way to do this...
-    # We need to also install this rpm from amazon
     if $enable_packages {
-      package{"ec2-ami-tools":
-              provider => "rpm",
-              source => "http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.noarch.rpm",
-              ensure => 'installed' }
-
       package { 'rubygem-deltacloud-image-builder-agent':
                   provider => 'yum', ensure => 'installed',
-                  require  => [Package['ec2-ami-tools'], Yumrepo['deltacloud_arch', 'deltacloud_noarch']]}
+                  require  => [Yumrepo['deltacloud_arch', 'deltacloud_noarch']]}
     }
 
 
@@ -97,7 +90,7 @@ class deltacloud::image-factory::disabled {
 
       # FIXME these lingering dependencies, pulled in for
       # rubygem-deltacloud-image-builder-agent, need to be removed as
-      # ec2-ami-tools and appliance-tools depend on them and using
+      # appliance-tools depend on them and using
       # 'absent' in the context of the 'yum' provider dispatches
       # to 'rpm -e' instead of 'yum erase'
       package { ['rubygem-boxgrinder-build-ec2-platform-plugin',
@@ -113,9 +106,6 @@ class deltacloud::image-factory::disabled {
                  require  => Package['rubygem-boxgrinder-build-rhel-os-plugin',
                                      'rubygem-boxgrinder-build-fedora-os-plugin']}
 
-      package { 'ec2-ami-tools':
-                 provider => "yum", ensure => 'absent',
-                 require  => Package['rubygem-boxgrinder-build-ec2-platform-plugin']}
       package { 'appliance-tools':
                  provider => 'yum', ensure => 'absent',
                  require  => Package['rubygem-boxgrinder-build-rpm-based-os-plugin']}
