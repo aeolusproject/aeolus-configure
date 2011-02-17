@@ -31,7 +31,7 @@ class aeolus::conductor inherits aeolus {
     file {"/var/lib/condor/condor_config.local":
            source => "puppet:///modules/aeolus_recipe/condor_config.local",
            require => return_if($enable_packages, Package['aeolus-conductor-daemons']) }
-    service { ['condor', 'httpd']:
+    service { ['condor']:
       ensure  => 'running',
       enable  => true,
       require => File['/var/lib/condor/condor_config.local'] }
@@ -43,7 +43,7 @@ class aeolus::conductor inherits aeolus {
       hasstatus => true,
       require => [return_if($enable_packages, Package['aeolus-conductor-daemons']),
                   Rails::Migrate::Db[migrate_aeolus_database],
-                  Service[condor]] }
+                  Service['condor', 'httpd']] }
 
   ### Initialize and start the aeolus database
     # Right now we configure and start postgres, at some point I want
