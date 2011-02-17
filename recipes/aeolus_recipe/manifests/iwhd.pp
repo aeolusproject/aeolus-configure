@@ -25,13 +25,14 @@ class aeolus::iwhd inherits aeolus {
     service { 'mongod':
       ensure  => 'running',
       enable  => true,
-      require => [return_if($enable_package, Package['iwhd']), File["/data/db"]]}
+      require => [return_if($enable_packages, Package['iwhd']), File["/data/db"]]}
+
     service { 'iwhd':
       ensure  => 'running',
       enable  => true,
       hasstatus => true,
       require => [File['/etc/rc.d/init.d/iwhd', '/etc/iwhd/conf.js'],
-                  return_if($enable_package, Package['iwhd']),
+                  return_if($enable_packages, Package['iwhd']),
                   Service[mongod]]}
 
     # XXX ugly hack but iwhd might take some time to come up
@@ -39,7 +40,7 @@ class aeolus::iwhd inherits aeolus {
                 command => "/bin/sleep 2",
                 unless  => '/usr/bin/curl http://localhost:9090',
                 logoutput => true,
-                require => Service[iwhd]}
+                require => Service['mongod']}
 }
 
 class aeolus::iwhd::disabled {
