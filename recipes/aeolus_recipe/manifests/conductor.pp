@@ -16,7 +16,7 @@ class aeolus::conductor inherits aeolus {
                                      'iwhd']}
      }
 
-    file {"/var/lib/deltacloud-aggregator":
+    file {"/var/lib/aeolus-conductor":
             ensure => directory,
     }
   ### Setup selinux for deltacloud
@@ -95,18 +95,18 @@ class aeolus::conductor inherits aeolus {
                 cwd             => "/usr/share/aeolus-conductor",
                 rails_env       => "production",
                 require         => [Rails::Create::Db[create_aeolus_database], Service['solr']]}
-    rails::seed::db{"seed_deltacloud_database":
-                cwd             => "/usr/share/deltacloud-aggregator",
+    rails::seed::db{"seed_aeolus_database":
+                cwd             => "/usr/share/aeolus-conductor",
                 rails_env       => "production",
                 require         => Rails::Migrate::Db[migrate_aeolus_database]}
 
   ### Prepare the image package repositories
     exec{"dc_prepare_repos":
-           cwd         => '/usr/share/deltacloud-aggregator',
+           cwd         => '/usr/share/aeolus-conductor',
            environment => "RAILS_ENV=production",
            command     => "/usr/bin/rake dc:prepare_repos",
            logoutput   => true,
-           require     => Package['deltacloud-aggregator'] }
+           require     => return_if($enable_packages, Package['aeolus-conductor']) }
 
 
   ### Setup/start solr search service
@@ -130,11 +130,11 @@ class aeolus::conductor inherits aeolus {
              enable      => 'true',
              require     => [File['/etc/init.d/solr', '/etc/init.d/solr'],
                              Package["java-1.6.0-openjdk"],
-                             return_if($enable_packages, Package['deltacloud-aggregator']),
+                             return_if($enable_packages, Package['aeolus-conductor']),
                              Rails::Create::Db['create_aeolus_database']]}
 
     exec{"build_solr_index":
-                cwd         => "/usr/share/deltacloud-aggregator",
+                cwd         => "/usr/share/aeolus-conductor",
                 command     => "/usr/bin/rake sunspot:reindex",
                 logoutput   => true,
                 environment => "RAILS_ENV=production",
@@ -143,9 +143,9 @@ class aeolus::conductor inherits aeolus {
   ### Setup apache for deltacloud
     include apache
     if $enable_security {
-      apache::site{"deltacloud-aggregator": source => 'puppet:///modules/aeolus_recipe/aggregator-httpd-ssl.conf'}
+      apache::site{"aeolus-conductor": source => 'puppet:///modules/aeolus_recipe/aggregator-httpd-ssl.conf'}
     } else{
-      apache::site{"deltacloud-aggregator": source => 'puppet:///modules/aeolus_recipe/aggregator-httpd.conf'}
+      apache::site{"aeolus-conductor": source => 'puppet:///modules/aeolus_recipe/aggregator-httpd.conf'}
     }
 
   ### Setup sshd for deltacloud
@@ -180,7 +180,7 @@ class aeolus::conductor::disabled {
                 require  => [Package['aeolus-conductor']]}
     }
 
-    file {"/var/lib/deltacloud-aggregator":
+    file {"/var/lib/aeolus-conductor":
             ensure => absent,
             force  => true
     }
@@ -214,10 +214,10 @@ class aeolus::conductor::disabled {
   ### stop solr search service
     service{"solr":
                 hasstatus => false,
-                stop      => "cd /usr/share/deltacloud-aggregator;RAILS_ENV=production /usr/bin/rake sunspot:solr:stop",
+                stop      => "cd /usr/share/aeolus-conductor;RAILS_ENV=production /usr/bin/rake sunspot:solr:stop",
                 pattern   => "solr",
                 ensure    => 'stopped',
-                require   => Service['deltacloud-aggregator']}
+                require   => Service['aeolus-conductor']}
 }
 
 # Create a new site admin conductor web user

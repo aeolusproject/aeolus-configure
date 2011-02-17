@@ -23,13 +23,13 @@ define rails::seed::db($cwd="", $rails_env=""){
          environment => "RAILS_ENV=${rails_env}",
          command     => "/usr/bin/rake db:seed",
          logoutput   => true,
-         creates     => "/var/lib/deltacloud-aggregator/${rails_env}.seed"
+         creates     => "/var/lib/aeolus-conductor/${rails_env}.seed"
          }
 
-   file{"/var/lib/deltacloud-aggregator/${rails_env}.seed":
+   file{"/var/lib/aeolus-conductor/${rails_env}.seed":
          ensure  => present,
          recurse => true,
-         require => [Exec['seed_rails_database'], File['/var/lib/deltacloud-aggregator']]
+         require => [Exec['seed_rails_database'], File['/var/lib/aeolus-conductor']]
        }
 }
 
