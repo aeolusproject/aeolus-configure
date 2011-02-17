@@ -20,7 +20,7 @@ PROG=/usr/bin/rake
 start() {
     echo -n "Starting solr: "
 
-    cd /usr/share/deltacloud-aggregator; RAILS_ENV=$RAILS_ENV $PROG sunspot:solr:start
+    cd /usr/share/aeolus-conductor; RAILS_ENV=$RAILS_ENV $PROG sunspot:solr:start
     RETVAL=$?
     if [ $RETVAL -eq 0 ] && touch $LOCKFILE ; then
       echo_success
@@ -34,7 +34,7 @@ start() {
 stop() {
     echo -n "Shutting down solr: "
     RETVAL=$?
-    cd /usr/share/deltacloud-aggregator; RAILS_ENV=$RAILS_ENV $PROG sunspot:solr:stop
+    cd /usr/share/aeolus-conductor; RAILS_ENV=$RAILS_ENV $PROG sunspot:solr:stop
 
     if [ $RETVAL -eq 0 ] && rm -f $LOCKFILE ; then
       echo_success
