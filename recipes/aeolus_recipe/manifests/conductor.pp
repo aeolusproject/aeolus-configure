@@ -4,16 +4,17 @@ class aeolus::conductor inherits aeolus {
   ### Install the aeolus components
     # specific versions of these two packages are needed and we need to pull the third in
      if $enable_packages {
-     package { 'rubygem-deltacloud-client':
+       package { 'rubygem-deltacloud-client':
                  provider => 'yum', ensure => 'installed', require => Yumrepo['aeolus_arch', 'aeolus_noarch'] }
 
-     package {['aeolus-conductor',
-               'aeolus-conductor-daemons',
-               'aeolus-conductor-doc']:
-               provider => 'yum', ensure => 'installed',
-               require  => Package['rubygem-deltacloud-client',
-                                   'rubygem-deltacloud-image-builder-agent',
-                                   'iwhd']}
+       package {['aeolus-conductor',
+                 'aeolus-conductor-daemons',
+                 'aeolus-conductor-doc']:
+                 provider => 'yum', ensure => 'installed',
+                 require  => Package['rubygem-deltacloud-client',
+                                     'rubygem-deltacloud-image-builder-agent',
+                                     'iwhd']}
+     }
 
     file {"/var/lib/deltacloud-aggregator":
             ensure => directory,
@@ -171,13 +172,12 @@ class aeolus::conductor::disabled {
               provider => 'yum', ensure => 'absent',
               require  => [Package['aeolus-conductor-daemons',
                                    'aeolus-conductor-doc'],
-                           Rails::Drop::Db["drop_aeolus_database"]] }
+                           Rails::Drop::Db["drop_aeolus_database"],
+                           Service['solr']] }
 
     package { 'rubygem-deltacloud-client':
                 provider => 'yum', ensure => 'absent',
-                require  => [Package['aeolus-conductor-daemons',
-                                     'aeolus-conductor-doc'],
-                             Service['solr'] }
+                require  => [Package['aeolus-conductor']]}
     }
 
     file {"/var/lib/deltacloud-aggregator":
