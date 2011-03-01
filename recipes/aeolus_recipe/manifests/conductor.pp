@@ -43,7 +43,8 @@ class aeolus::conductor inherits aeolus {
       require => File['/var/lib/condor/condor_config.local'] }
     service { ['aeolus-conductor',
                'conductor-condor_refreshd',
-               'conductor-dbomatic']:
+               'conductor-dbomatic',
+               'conductor-delayed_job']:
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
@@ -146,6 +147,7 @@ class aeolus::conductor inherits aeolus {
                 environment => "RAILS_ENV=production",
                 require     => Rails::Migrate::Db['migrate_aeolus_database']}
 
+
   ### Setup apache for deltacloud
     include apache
     if $enable_security {
@@ -172,7 +174,8 @@ class aeolus::conductor::disabled {
                                     'conductor-condor_refreshd',
                                     'conductor-dbomatic',
                                     'imagefactoryd',
-                                    'conductor-image_builder_service']}
+                                    'conductor-image_builder_service',
+                                    'conductor-delayed_job']}
 
       package {'aeolus-conductor':
               provider => 'yum', ensure => 'absent',
@@ -197,10 +200,12 @@ class aeolus::conductor::disabled {
       enable  => false,
       require => Service['aeolus-conductor',
                          'conductor-condor_refreshd',
-                         'conductor-dbomatic'] }
+                         'conductor-dbomatic',
+                         'conductor-delayed_job'] }
     service { ['aeolus-conductor',
                'conductor-condor_refreshd',
-               'conductor-dbomatic']:
+               'conductor-dbomatic',
+               'conductor-delayed_job']:
       ensure => 'stopped',
       enable => false,
       hasstatus => true }
@@ -212,7 +217,8 @@ class aeolus::conductor::disabled {
                 require    => Service["aeolus-conductor",
                                       "conductor-condor_refreshd",
                                       "conductor-dbomatic",
-                                      "conductor-image_builder_service"]}
+                                      "conductor-image_builder_service",
+                                      "conductor-delayed_job"]}
     postgres::user{"aeolus":
                     ensure => 'dropped',
                     require => Rails::Drop::Db["drop_aeolus_database"]}
