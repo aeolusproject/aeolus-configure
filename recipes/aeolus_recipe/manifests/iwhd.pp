@@ -40,7 +40,7 @@ class aeolus::iwhd inherits aeolus {
                 command => "/bin/sleep 2",
                 unless  => '/usr/bin/curl http://localhost:9090',
                 logoutput => true,
-                require => Service['mongod']}
+                require => Service['iwhd']}
 }
 
 class aeolus::iwhd::disabled {
