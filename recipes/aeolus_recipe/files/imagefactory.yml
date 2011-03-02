@@ -9,4 +9,4 @@ warehouse_bucket: templates
 ami_delivery: boxgrinder # Valid values are boxgrinder or warehouse
 ami_s3_bucket: deltacloud # S3 bucket to use when uploading bundle
 # Note that directory must exist
-mock_dir: /var/tmp/clalance-mock # Directory to use when building mock target
+mock_dir: /var/tmp/imagefactory-mock # Directory to use when building mock target

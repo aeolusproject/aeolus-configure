@@ -44,12 +44,16 @@ class aeolus::image-factory inherits aeolus {
                enable  => true,
                require => [File['/etc/qpidd.conf'],
                            return_if($enable_packages, Package['aeolus-conductor-daemons'])]}
+    file { "/var/tmp/imagefactory-mock":
+               ensure => "directory",
+               mode   => 755 }
     file { "/etc/imagefactory.yml":
                source => "puppet:///modules/aeolus_recipe/imagefactory.yml",
                mode   => 644 }
     $requires = [return_if($enable_packages, Package['rubygem-deltacloud-image-builder-agent']),
                  return_if($enable_packages, Package['aeolus-conductor-daemons']),
                  File['/etc/imagefactory.yml'],
+                 File['/var/tmp/imagefactory-mock'],
                  Service[qpidd],
                  Rails::Seed::Db[seed_aeolus_database],
                  Notify['boxgrinder_configured']]
