@@ -31,6 +31,12 @@ class aeolus::conductor inherits aeolus {
     file {"/var/lib/condor/condor_config.local":
            source => "puppet:///modules/aeolus_recipe/condor_config.local",
            require => return_if($enable_packages, Package['aeolus-conductor-daemons']) }
+     # condor requires an explicit non-localhost hostname
+     # TODO we can also kill the configure sequence here instead
+     exec{"/bin/echo 'hostname/domain should be explicitly set and should not be localhost.localdomain'":
+            logoutput => true,
+            onlyif    => "/usr/bin/test `/bin/hostname` = 'localhost.localdomain'"
+     }
     service { ['condor']:
       ensure  => 'running',
       enable  => true,
