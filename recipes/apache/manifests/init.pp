@@ -13,7 +13,8 @@ class apache {
 		ensure     => running,
 		require    => Package["httpd"],
 		hasrestart => true,
-    hasstatus  => true
+    hasstatus  => true,
+    enable     => true,
 	}
 
 	exec { "reload-apache":
