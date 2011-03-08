@@ -1,4 +1,6 @@
 #!/bin/sh
 
+export FACTER_AEOLUS_ENABLE_SECURITY=false
+export FACTER_AEOLUS_ENABLE_PACKAGES=true
 puppet /usr/share/aeolus-configure/aeolus_recipe.pp \
        --modulepath=/usr/share/aeolus-configure/modules/
