@@ -5,7 +5,7 @@ class aeolus::iwhd inherits aeolus {
     if $enable_packages{
       package { 'iwhd':
                  provider => 'yum', ensure => 'installed',
-                 require => Yumrepo['deltacloud_arch', 'deltacloud_noarch']
+                 require => Yumrepo['aeolus_arch', 'aeolus_noarch']
                  }
     }
 
