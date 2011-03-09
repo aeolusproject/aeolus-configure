@@ -18,8 +18,8 @@ module Rake
     # RPM build dir
     attr_accessor :topdir
 
-    # Include a timestamp in the rpm
-    attr_accessor :include_timestamp
+    # Include extra_release information in the rpm
+    attr_accessor :include_extra_release
 
     def initialize(rpm_spec)
       init(rpm_spec)
@@ -28,7 +28,7 @@ module Rake
     end
 
     def init(rpm_spec)
-      @include_timestamp = false
+      @include_extra_release = true
       @rpm_spec = rpm_spec
 
       # parse this out of the rpmbuild macros,
@@ -67,16 +67,18 @@ module Rake
       directory "#{@topdir}/SPECS"
 
       desc "Build the rpms"
-      task :rpms, [:include_timestamp] => [rpm_file]
+      task :rpms, [:include_extra_release] => [rpm_file]
 
       # FIXME properly determine :package build artifact(s) to copy to sources dir
-      file rpm_file, [:include_timestamp] => [:package, "#{@topdir}/SOURCES", "#{@topdir}/SPECS"] do |t,args|
-        @include_timestamp = args.include_timestamp != "false"
+      file rpm_file, [:include_extra_release] => [:package, "#{@topdir}/SOURCES", "#{@topdir}/SPECS"] do |t,args|
+        @include_extra_release = args.include_extra_release != "false"
+        git_head = `git log -1 --pretty=format:%h`
+        extra_release = "." + Time.now.strftime("%Y%m%d%k%M%S").gsub(/\s/, '') + "git" + "#{git_head}"
         cp "#{package_dir}/#{@name}-#{@version}.tgz", "#{@topdir}/SOURCES/"
         cp @rpm_spec, "#{@topdir}/SPECS"
         sh "#{@rpmbuild_cmd} " +
            "--define '_topdir #{@topdir}' " +
-           "--define 'timestamp .#{@include_timestamp ? Time.now.strftime("%Y%m%d%k%M%s").gsub(/\s/, '') : ''}' " +
+           "--define 'extra_release #{@include_extra_release ? extra_release : ''}' " +
            "-ba #{@rpm_spec}"
       end
     end
