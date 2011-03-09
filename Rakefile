@@ -3,6 +3,8 @@
 require 'rake/clean'
 require 'rake/rpmtask'
 require 'rake/yumtask'
+require 'rubygems'
+require 'spec/rake/spectask'
 
 CURRENT_DIR  = File.dirname(__FILE__)
 RPMBUILD_DIR = "#{File.expand_path('~')}/rpmbuild"
@@ -26,3 +28,7 @@ Rake::YumTask.new(YUM_REPO) do |repo|
   repo.rpms << rpm_task.rpm_file
 end
 
+desc "Run remote spec tests, SSH options: hostname=<hostname> username=<username> password=<password>"
+Spec::Rake::SpecTask.new do |t|
+  t.spec_files = FileList['spec/**/*_spec.rb']
+end
