@@ -45,6 +45,15 @@ describe "aeolus-configure" do
                                       "last_name = 'user'"]).should_not be_nil
   end
 
+  it "should properly seed the database" do
+    # make sure data created in seed.db is present
+    BasePermissionObject.find_by_name("general_permission_scope").should_not be_nil
+    Quota.find(:first).should_not be_nil
+    ProviderType.find_by_name("Amazon EC2").should_not be_nil
+    ProviderType.find_by_codename("mock").should_not be_nil
+    # TODO verify metadataobjects and roles exist?
+  end
+
   it "should open the necessary firewall ports" do
     FIREWALL_OPEN_PORTS.each { |port|
       output = `sudo iptables -nvL | grep "tcp dpt:#{port}"`
