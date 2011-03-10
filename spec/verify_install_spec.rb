@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'net/ssh'
 
 def capture_output(command)
   stdout = ""

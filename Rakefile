@@ -3,6 +3,7 @@
 require 'rake/clean'
 require 'rake/rpmtask'
 require 'rake/yumtask'
+require 'rake/remotespectask'
 require 'rubygems'
 require 'spec/rake/spectask'
 
@@ -28,7 +29,10 @@ Rake::YumTask.new(YUM_REPO) do |repo|
   repo.rpms << rpm_task.rpm_file
 end
 
-desc "Run remote spec tests, SSH options: hostname=<hostname> username=<username> password=<password>"
+desc "Run spec tests locally"
 Spec::Rake::SpecTask.new do |t|
   t.spec_files = FileList['spec/**/*_spec.rb']
 end
+
+desc "Run spec tests remotely. SSH options: hostname=<hostname> user=<username> password=<password>"
+Rake::RemoteSpecTask.new
