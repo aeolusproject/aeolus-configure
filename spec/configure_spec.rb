@@ -2,6 +2,7 @@ require 'spec_helper'
 
 require 'nokogiri'
 require 'open-uri'
+require 'postgres'
 
 ENV['RAILS_ENV'] = 'production'
 $: << "#{CONDUCTOR_PATH}/dutils"
@@ -31,6 +32,10 @@ describe "aeolus-configure" do
   it "should correctly create an aeolus templates bucket" do
     doc = Nokogiri::HTML(open(IWHD_URI))
     doc.xpath("//html/body/api/link[@rel='bucket' and @href='#{IWHD_URI}templates']").size.should == 1
+  end
+
+  it "should properly setup the postgres db and user" do
+    PGconn.open('user=aeolus dbname=conductor').should_not raise_error(PGError)
   end
 
   it "should create a site admin for aeolus conductor" do
