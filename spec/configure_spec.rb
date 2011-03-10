@@ -40,4 +40,11 @@ describe "aeolus-configure" do
                                       "last_name = 'user'"]).should_not be_nil
   end
 
+  it "should open the necessary firewall ports" do
+    FIREWALL_OPEN_PORTS.each { |port|
+      output = `sudo iptables -nvL | grep "tcp dpt:#{port}"`
+      output.should_not eql(""), "port '#{port}' should be open but it is not"
+    }
+  end
+
 end
