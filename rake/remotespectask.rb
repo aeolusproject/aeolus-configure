@@ -25,23 +25,28 @@ module Rake
     # remote spec directory
     attr_accessor :remote_spec_path
 
-    def initialize(hostname = 'localhost', user = 'root')
-      init(hostname, user)
+    # specs to execute
+    attr_accessor :spec_files
+
+    def initialize(name = :remote_spec, hostname = 'localhost', user = 'root')
+      init(name, hostname, user)
       yield self if block_given?
       define
     end
 
-    def init(hostname, user)
+    def init(name, hostname, user)
+      @name     = name
       @hostname = hostname
       @user     = user
 
       @local_spec_path  = File.expand_path("spec/")
       @remote_spec_path = "/tmp/remote_spec/"
+      @spec_files       = []
     end
 
     def define
       desc "execute tests against remote host"
-      task :remote_spec, [:hostname, :user, :password] do |t,args|
+      task @name, [:hostname, :user, :password] do |t,args|
         @hostname = args.hostname unless args.hostname.nil?
         @user     = args.user     unless args.user.nil?
         @password = args.password unless args.password.nil?
@@ -51,7 +56,10 @@ module Rake
            s.upload(@local_spec_path, @remote_spec_path, :recursive => true)
           }
           Net::SSH.start(@hostname, @user,  :password => @password) do |ssh|
-            ssh.exec "RUBYLIB=#{@remote_spec_path} spec #{@remote_spec_path}*_spec.rb" do |ch, stream, data|
+            specs = spec_files.empty? ?
+                      "#{@remote_spec_path}*_spec.rb"  :
+                      spec_files.collect { |s| "#{@remote_spec_path}#{s.split('/').last}"}.join(' ')
+            ssh.exec "RUBYLIB=#{@remote_spec_path} spec #{specs}" do |ch, stream, data|
               # capture stdout / stderr
               if stream == :stderr
                 $stderr.print "#{data}"

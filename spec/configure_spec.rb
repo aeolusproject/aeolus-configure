@@ -3,22 +3,29 @@ require 'spec_helper'
 require 'nokogiri'
 require 'open-uri'
 
+ENV['RAILS_ENV'] = 'production'
 $: << "#{CONDUCTOR_PATH}/dutils"
 require "dutils"
- 
-describe "aeolus-configure install" do
+
+describe "aeolus-configure" do
+  before(:all) do
+    # !!! need to comment out "#Defaults    requiretty" via visudo for this to work remotely
+    `sudo /usr/sbin/aeolus-configure`
+    $?.exitstatus.should == 0
+  end
+
   it "should install all aeolus packages" do
     (AEOLUS_PACKAGES + AEOLUS_DEPENDENCY_PACKAGES).each { |pkg|
-      `rpm -q #{pkg}`
-      $?.to_i.should be(0), "package '#{pkg}' should be installed but it is not"
+      `/bin/rpm -q #{pkg}`
+      $?.exitstatus.should be(0), "package '#{pkg}' should be installed but it is not"
     }
   end
 
   it "should start all aeolus services" do
-    (AEOLUS_SERVICES + AEOLUS_DEPENDENCY_SERVICES).each { |srv|
-      `service #{srv} status`
-       $?.to_i.should be(0), "service '#{srv}' should be running but it is not"
-    }
+   (AEOLUS_SERVICES + AEOLUS_DEPENDENCY_SERVICES).each { |srv|
+     `/sbin/service #{srv} status`
+      $?.exitstatus.should be(0), "service '#{srv}' should be running but it is not"
+   }
   end
 
   it "should correctly create an aeolus templates bucket" do

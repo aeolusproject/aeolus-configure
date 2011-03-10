@@ -29,10 +29,22 @@ Rake::YumTask.new(YUM_REPO) do |repo|
   repo.rpms << rpm_task.rpm_file
 end
 
-desc "Run spec tests locally"
-Spec::Rake::SpecTask.new do |t|
-  t.spec_files = FileList['spec/**/*_spec.rb']
+desc "Run configure spec tests locally"
+Spec::Rake::SpecTask.new(:configure_spec) do |t|
+  t.spec_files = FileList['spec/configure_spec.rb']
 end
 
-desc "Run spec tests remotely. SSH options: hostname=<hostname> user=<username> password=<password>"
-Rake::RemoteSpecTask.new
+desc "Run cleanup spec tests locally"
+Spec::Rake::SpecTask.new(:cleanup_spec) do |t|
+  t.spec_files = FileList['spec/cleanup_spec.rb']
+end
+
+desc "Run configure spec tests remotely"
+Rake::RemoteSpecTask.new(:remote_configure_spec) do |t|
+  t.spec_files = FileList['spec/configure_spec.rb']
+end
+
+desc "Run cleanup spec tests remotely"
+Rake::RemoteSpecTask.new(:remote_cleanup_spec) do |t|
+  t.spec_files = FileList['spec/cleanup_spec.rb']
+end
