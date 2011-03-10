@@ -21,6 +21,8 @@ AEOLUS_DEPENDENCY_SERVICES = ['mongod', 'condor', 'solr', 'sshd', 'postgresql']
 
 IWHD_URI='http://localhost:9090/'
 
+CONDUCTOR_URI='http://localhost/conductor'
+
 CONDUCTOR_PATH='/usr/share/aeolus-conductor'
 
 FIREWALL_OPEN_PORTS = [ '22', '80', '443', '5432' ]

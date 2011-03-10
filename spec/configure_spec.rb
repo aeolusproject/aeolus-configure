@@ -47,4 +47,11 @@ describe "aeolus-configure" do
     }
   end
 
+  it "should properly setup apache httpd" do
+    # TODO when we re-enable security, test https here
+    doc = Nokogiri::HTML(open(CONDUCTOR_URI + "/login"))
+    node = doc.xpath("//html/head/title").first
+    node.content.should =~ /.*Red Hat Cloud Engine.*/
+  end
+
 end
