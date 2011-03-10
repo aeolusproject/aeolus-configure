@@ -47,11 +47,6 @@ class postgres::server inherits postgres {
         notify          => Service["postgresql"],
     }
 
-    firewall::rule { "POSTGRES-SERVER":
-        destination_port        => "5432",
-        comment                 => "Postresql inbound 5432/tcp"
-    }
-
 }
 
 define postgres::user($ensure='created', $password="", $roles=""){
