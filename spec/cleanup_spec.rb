@@ -10,6 +10,7 @@ require "dutils"
 describe "aeolus-cleanup" do
   before(:all) do
     # !!! need to comment out "#Defaults    requiretty" via visudo for this to work remotely
+    #     also need to make sure the user this will be running as has passwordless sudo access
     `sudo /usr/sbin/aeolus-cleanup`
     $?.exitstatus.should == 0
   end
