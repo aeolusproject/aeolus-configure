@@ -5,8 +5,10 @@ class aeolus::iwhd inherits aeolus {
     if $enable_packages{
       package { 'iwhd':
                  provider => 'yum', ensure => 'installed',
-                 require => Yumrepo['aeolus_arch', 'aeolus_noarch']
-                 }
+                 require => Yumrepo['aeolus_arch', 'aeolus_noarch'] }
+
+      package { 'mongodb-server':
+                 provider => 'yum', ensure => 'installed' }
     }
 
   ### Start the aeolus services
@@ -25,7 +27,7 @@ class aeolus::iwhd inherits aeolus {
     service { 'mongod':
       ensure  => 'running',
       enable  => true,
-      require => [return_if($enable_packages, Package['iwhd']), File["/data/db"]]}
+      require => [return_if($enable_packages, Package['mongodb-server']), File["/data/db"]]}
 
     service { 'iwhd':
       ensure  => 'running',
