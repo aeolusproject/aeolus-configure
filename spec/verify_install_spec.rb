@@ -1,47 +1,36 @@
 require 'spec_helper'
 
-def capture_output(command)
-  stdout = ""
-  IO.popen(command) { |io| stdout << io.read }
-  stdout
-end
+require 'nokogiri'
+require 'open-uri'
 
+$: << "#{CONDUCTOR_PATH}/dutils"
+require "dutils"
+ 
 describe "aeolus-configure install" do
   it "should install all aeolus packages" do
-    stdout = capture_output("rpm -qa | grep aeolus")
-    stdout.include?("aeolus-conductor-doc").should == true
-    stdout.include?("aeolus-conductor").should == true
-    stdout.include?("aeolus-conductor-daemons").should == true
-    stdout.include?("aeolus-configure").should == true
+    (AEOLUS_PACKAGES + AEOLUS_DEPENDENCY_PACKAGES).each { |pkg|
+      `rpm -q #{pkg}`
+      $?.to_i.should be(0), "package '#{pkg}' should be installed but it is not"
+    }
   end
 
   it "should start all aeolus services" do
-   ["aeolus-conductor", "aeolus-conductor", "iwhd", "conductor-dbomatic", "conductor-condor_refreshd", "postgresql"].each do |service|
-     stdout = capture_output("/etc/init.d/" + service + " status")
-     stdout.include?("is running").should == true
-   end
+    (AEOLUS_SERVICES + AEOLUS_DEPENDENCY_SERVICES).each { |srv|
+      `service #{srv} status`
+       $?.to_i.should be(0), "service '#{srv}' should be running but it is not"
+    }
   end
 
   it "should correctly create an aeolus templates bucket" do
-    stdout = capture_output("/usr/bin/curl -X GET http://localhost:9090")
-    stdout.include?("http://localhost:9090/templates").should == true
+    doc = Nokogiri::HTML(open(IWHD_URI))
+    doc.xpath("//html/body/api/link[@rel='bucket' and @href='#{IWHD_URI}templates']").size.should == 1
   end
 
   it "should create a site admin for aeolus conductor" do
-      File.open("/tmp/check_admin.rb", "w") { |f|
-        f.write("RAILS_ENV='production'\n" +
-                "require '/usr/share/aeolus-conductor/config/environment'\n" +
-                "user=User.find(:all, :conditions => {:login => 'admin'}).first\n" +
-                "puts 'email=' + user.email\n" +
-                "puts 'first_name=' + user.first_name\n" +
-                "puts 'last_name=' + user.last_name")
-
-      }
-      stdout = capture_output("ruby /tmp/check_admin.rb")
-      stdout.include?("email=dcuser@aeolusproject.org").should == true
-      stdout.include?("first_name=aeolus").should == true
-      stdout.include?("last_name=user").should == true
-      `rm -f /tmp/check_admin.rb`
+    User.find(:first, :conditions => ["login = 'admin' AND " +
+                                      "email = 'dcuser@aeolusproject.org' AND " +
+                                      "first_name = 'aeolus' AND " +
+                                      "last_name = 'user'"]).should_not be_nil
   end
 
 end
