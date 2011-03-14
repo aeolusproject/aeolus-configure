@@ -24,4 +24,12 @@ describe "aeolus-cleanup" do
    }
   end
 
+  it "should disable all aeolus services" do
+    (AEOLUS_SERVICES).each { |srv|
+      output = `/sbin/chkconfig --list #{srv}`
+      output.should_not =~ /.*\:on.*/
+    }
+  end
+
+
 end
