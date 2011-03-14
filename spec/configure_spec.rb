@@ -69,4 +69,9 @@ describe "aeolus-configure" do
     node.content.should =~ /.*Red Hat Cloud Engine.*/
   end
 
+  it "should properly configure ntpd" do
+    #This ensures that ntpd is a client to at least one upstream ntp server
+    output = `/bin/echo listpeers | /usr/sbin/ntpdc`
+    output.should =~ /.*client.*/
+  end
 end
