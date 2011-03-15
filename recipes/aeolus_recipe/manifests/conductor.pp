@@ -8,6 +8,10 @@ class aeolus::conductor inherits aeolus {
                  'aeolus-conductor-daemons',
                  'aeolus-conductor-doc']:
                  provider => 'yum', ensure => 'installed'}
+
+       # to be renamed to aeolus-connector
+       package {'rubygem-image_factory_connector':
+                 provider => 'yum', ensure => 'installed'}
      }
 
     file {"/var/lib/aeolus-conductor":
@@ -38,14 +42,19 @@ class aeolus::conductor inherits aeolus {
     service { ['aeolus-conductor',
                'conductor-condor_refreshd',
                'conductor-dbomatic',
-               'conductor-delayed_job',
-               'conductor-image_builder_service']:
+               'conductor-delayed_job']:
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
       require => [return_if($enable_packages, Package['aeolus-conductor-daemons']),
                   Rails::Migrate::Db[migrate_aeolus_database],
                   Service['condor', 'httpd']] }
+
+    service{ 'aeolus-connector':
+      ensure    => 'running',
+      enable    => true,
+      hasstatus => true,
+      require => return_if($enable_packages, Package['rubygem-image_factory_connector'])}
 
   ### Initialize and start the aeolus database
     # Right now we configure and start postgres, at some point I want
@@ -162,13 +171,16 @@ class aeolus::conductor inherits aeolus {
 class aeolus::conductor::disabled {
   ### Uninstall the aeolus components
     if $enable_packages {
+      package {'rubygem-image_factory_connector':
+                provider => 'yum', ensure => 'absent',
+                require  => Service['aeolus-connector']}
+
       package {['aeolus-conductor-daemons',
                 'aeolus-conductor-doc']:
                 provider => 'yum', ensure => 'absent',
                 require  => Service['aeolus-conductor',
                                     'conductor-condor_refreshd',
                                     'conductor-dbomatic',
-                                    'conductor-image_builder_service',
                                     'conductor-delayed_job']}
 
       package {'aeolus-conductor':
@@ -200,7 +212,7 @@ class aeolus::conductor::disabled {
                'conductor-condor_refreshd',
                'conductor-dbomatic',
                'conductor-delayed_job',
-               'conductor-image_builder_service']:
+               'aeolus-connector']:
       ensure => 'stopped',
       enable => false,
       hasstatus => true }
@@ -212,7 +224,6 @@ class aeolus::conductor::disabled {
                 require    => Service["aeolus-conductor",
                                       "conductor-condor_refreshd",
                                       "conductor-dbomatic",
-                                      "conductor-image_builder_service",
                                       "conductor-delayed_job"]}
     postgres::user{"aeolus":
                     ensure => 'dropped',
