@@ -4,21 +4,15 @@ class aeolus::conductor inherits aeolus {
   ### Install the aeolus components
     # specific versions of these two packages are needed and we need to pull the third in
      if $enable_packages {
-       package { 'rubygem-deltacloud-client':
-                 provider => 'yum', ensure => 'installed', require => Yumrepo['aeolus_arch', 'aeolus_noarch'] }
-
        package {['aeolus-conductor',
                  'aeolus-conductor-daemons',
                  'aeolus-conductor-doc']:
-                 provider => 'yum', ensure => 'installed',
-                 require  => Package['rubygem-deltacloud-client',
-                                     'rubygem-deltacloud-image-builder-agent',
-                                     'iwhd']}
+                 provider => 'yum', ensure => 'installed'}
      }
 
     file {"/var/lib/aeolus-conductor":
-            ensure => directory,
-    }
+            ensure => directory }
+
   ### Setup selinux for deltacloud
     selinux::mode{"permissive":}
 
@@ -44,7 +38,8 @@ class aeolus::conductor inherits aeolus {
     service { ['aeolus-conductor',
                'conductor-condor_refreshd',
                'conductor-dbomatic',
-               'conductor-delayed_job']:
+               'conductor-delayed_job',
+               'conductor-image_builder_service']:
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
@@ -173,7 +168,6 @@ class aeolus::conductor::disabled {
                 require  => Service['aeolus-conductor',
                                     'conductor-condor_refreshd',
                                     'conductor-dbomatic',
-                                    'imagefactoryd',
                                     'conductor-image_builder_service',
                                     'conductor-delayed_job']}
 
@@ -205,7 +199,8 @@ class aeolus::conductor::disabled {
     service { ['aeolus-conductor',
                'conductor-condor_refreshd',
                'conductor-dbomatic',
-               'conductor-delayed_job']:
+               'conductor-delayed_job',
+               'conductor-image_builder_service']:
       ensure => 'stopped',
       enable => false,
       hasstatus => true }

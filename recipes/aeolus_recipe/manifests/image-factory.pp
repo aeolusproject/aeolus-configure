@@ -61,11 +61,6 @@ class aeolus::image-factory inherits aeolus {
       ensure  => 'running',
       enable  => true,
       require => $requires}
-    service { 'conductor-image_builder_service':
-      ensure    => 'running',
-      enable    => true,
-      hasstatus => true,
-      require   => $requires}
 }
 
 class aeolus::image-factory::disabled {
@@ -73,16 +68,11 @@ class aeolus::image-factory::disabled {
     service {'qpidd':
                ensure  => 'stopped',
                enable  => false,
-               require => Service['imagefactoryd', 'conductor-image_builder_service']}
+               require => Service['imagefactoryd']}
 
     service { 'imagefactoryd':
       ensure  => 'stopped',
       enable  => false}
-
-    service { 'conductor-image_builder_service':
-        ensure  => 'stopped',
-        hasstatus => true,
-        enable  => false}
 
   ### Uninstall the deltacloud components
     if $enable_packages {
