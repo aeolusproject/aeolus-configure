@@ -5,6 +5,11 @@ class aeolus::image-factory inherits aeolus {
       package { 'rubygem-deltacloud-image-builder-agent':
                   provider => 'yum', ensure => 'installed',
                   require  => [Yumrepo['aeolus_arch', 'aeolus_noarch']]}
+
+      package { 'imagefactory':
+                   provider => 'yum', ensure => 'installed',
+                   require => [Yumrepo['aeolus_arch', 'aeolus_noarch']]
+      }
     }
 
   ### Configure pulp to fetch from Fedora
@@ -30,6 +35,7 @@ class aeolus::image-factory inherits aeolus {
                mode   => 644 }
     $requires = [return_if($enable_packages, Package['rubygem-deltacloud-image-builder-agent']),
                  return_if($enable_packages, Package['aeolus-conductor-daemons']),
+                 return_if($enable_packages, Package['imagefactory']),
                  File['/etc/imagefactory.yml'],
                  File['/var/tmp/imagefactory-mock'],
                  Service[qpidd],
