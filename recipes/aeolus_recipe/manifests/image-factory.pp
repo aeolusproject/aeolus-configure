@@ -32,7 +32,7 @@ class aeolus::image-factory inherits aeolus {
                  File['/var/tmp/imagefactory-mock'],
                  Service[qpidd],
                  Rails::Seed::Db[seed_aeolus_database]]
-    service { 'imagefactoryd':
+    service { 'imagefactory':
       ensure  => 'running',
       enable  => true,
       require => $requires}
@@ -43,9 +43,9 @@ class aeolus::image-factory::disabled {
     service {'qpidd':
                ensure  => 'stopped',
                enable  => false,
-               require => Service['imagefactoryd']}
+               require => Service['imagefactory']}
 
-    service { 'imagefactoryd':
+    service { 'imagefactory':
       ensure  => 'stopped',
       enable  => false}
 
@@ -53,7 +53,7 @@ class aeolus::image-factory::disabled {
     if $enable_packages {
       package { 'imagefactory':
                   provider => 'yum', ensure => 'absent',
-                  require  => Service['imagefactoryd']}
+                  require  => Service['imagefactory']}
 
     }
 
