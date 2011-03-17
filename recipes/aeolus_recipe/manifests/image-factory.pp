@@ -2,14 +2,12 @@
 
 class aeolus::image-factory inherits aeolus {
     if $enable_packages {
-      package { 'rubygem-deltacloud-image-builder-agent':
-                  provider => 'yum', ensure => 'installed',
-                  require  => [Yumrepo['aeolus_arch', 'aeolus_noarch']]}
-
       package { 'imagefactory':
                    provider => 'yum', ensure => 'installed',
                    require => [Yumrepo['aeolus_arch', 'aeolus_noarch']]
       }
+      package { 'qpid-cpp-server':
+                   provider => 'yum', ensure => 'installed' }
     }
 
   ### Configure pulp to fetch from Fedora
@@ -26,13 +24,11 @@ class aeolus::image-factory inherits aeolus {
                ensure  => 'running',
                enable  => true,
                require => [File['/etc/qpidd.conf'],
-                           return_if($enable_packages, Package['aeolus-conductor-daemons'])]}
+                           return_if($enable_packages, Package['qpid-cpp-server'])]}
     file { "/var/tmp/imagefactory-mock":
                ensure => "directory",
                mode   => 755 }
-    $requires = [return_if($enable_packages, Package['rubygem-deltacloud-image-builder-agent']),
-                 return_if($enable_packages, Package['aeolus-conductor-daemons']),
-                 return_if($enable_packages, Package['imagefactory']),
+    $requires = [return_if($enable_packages, Package['imagefactory']),
                  File['/var/tmp/imagefactory-mock'],
                  Service[qpidd],
                  Rails::Seed::Db[seed_aeolus_database]]
@@ -55,9 +51,9 @@ class aeolus::image-factory::disabled {
 
   ### Uninstall the deltacloud components
     if $enable_packages {
-      package { 'rubygem-deltacloud-image-builder-agent':
+      package { 'imagefactory':
                   provider => 'yum', ensure => 'absent',
-                  require  => Package['aeolus-conductor']}
+                  require  => Service['imagefactoryd']}
 
     }
 
