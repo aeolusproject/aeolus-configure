@@ -51,5 +51,5 @@ begin
     t.spec_files = FileList['spec/cleanup_spec.rb']
   end
 rescue LoadError
-  # net net-ssh and net-scp needed to run remote specs
+  # need net-ssh and net-scp needed to run remote specs
 end

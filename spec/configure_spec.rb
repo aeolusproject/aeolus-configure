@@ -10,10 +10,12 @@ require "dutils"
 
 describe "aeolus-configure" do
   before(:all) do
-    # !!! need to comment out "#Defaults    requiretty" via visudo for this to work remotely
-    #     also need to make sure the user this will be running as has passwordless sudo access
-    `sudo /usr/sbin/aeolus-configure`
-    $?.exitstatus.should == 0
+    if $test_scripts
+      # !!! need to comment out "#Defaults    requiretty" via visudo for this to work remotely
+      #     also need to make sure the user this will be running as has passwordless sudo access
+      `sudo /usr/sbin/aeolus-configure`
+      $?.exitstatus.should == 0
+    end
   end
 
   it "should install all aeolus packages" do

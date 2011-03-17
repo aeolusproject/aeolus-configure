@@ -2,13 +2,15 @@ require 'rubygems'
 require 'spec'
 require 'spec/autorun'
 
-AEOLUS_PACKAGES = ['iwhd',
+$test_scripts = ENV['test_scripts']
+$test_scripts = ($test_scripts != "false" && $test_scripts != "n")
+
+AEOLUS_PACKAGES = ['iwhd', 'imagefactory',
                    'rubygem-deltacloud-core', 'rubygem-deltacloud-client',
-                   'rubygem-deltacloud-image-builder-agent',
                    'aeolus-conductor', 'aeolus-conductor-doc', 'aeolus-conductor-daemons',
                    'aeolus-configure']
 
-AEOLUS_SERVICES = ['iwhd', 'deltacloud-core', 'imagefactoryd', 'conductor-image_builder_service',
+AEOLUS_SERVICES = ['iwhd', 'deltacloud-core', 'imagefactoryd',
                    'aeolus-conductor', 'conductor-condor_refreshd', 'conductor-dbomatic']
                    # 'conductor-delayed_job'] TODO where is the init script for this?
 
