@@ -7,5 +7,7 @@ define selinux::mode(){
   }
   exec{"set_selinux_${name}":
     command  => "/usr/sbin/setenforce ${mode}"
+    unless   => "/usr/bin/test 'Disabled' = `/usr/sbin/getenforce`"
   }
 }
+
