@@ -7,28 +7,6 @@ class aeolus::image-factory inherits aeolus {
                   require  => [Yumrepo['aeolus_arch', 'aeolus_noarch']]}
     }
 
-  ### Configure boxgrinder, this should go into the boxgrinder rpms eventually
-    file { "/boxgrinder": ensure => "directory"}
-    file { "/boxgrinder/appliances":
-              ensure => "directory",
-              require => File["/boxgrinder"]}
-    file { "/boxgrinder/packaged_builders":
-              ensure => "directory",
-              require => File["/boxgrinder"]}
-    file { "/root/.boxgrinder": ensure => "directory"}
-    file { "/root/.boxgrinder/plugins":
-              ensure => "directory",
-              require => File["/root/.boxgrinder"]}
-    file { "/root/.boxgrinder/plugins/local":
-                source => "puppet:///modules/aeolus_recipe/root-boxgrinder-plugins-local",
-                mode   => 644,
-                require => File["/root/.boxgrinder/plugins"]}
-    notify { 'boxgrinder_configured':
-                message => 'boxgrinder successfully configured',
-                require => File['/root/.boxgrinder/plugins/local',
-                                '/boxgrinder/packaged_builders',
-                                '/boxgrinder/appliances'] }
-
   ### Configure pulp to fetch from Fedora
     # TODO uncomment when factory/warehouse uses pulp
     #exec{"pulp_fedora_config":
@@ -55,8 +33,7 @@ class aeolus::image-factory inherits aeolus {
                  File['/etc/imagefactory.yml'],
                  File['/var/tmp/imagefactory-mock'],
                  Service[qpidd],
-                 Rails::Seed::Db[seed_aeolus_database],
-                 Notify['boxgrinder_configured']]
+                 Rails::Seed::Db[seed_aeolus_database]]
     service { 'imagefactoryd':
       ensure  => 'running',
       enable  => true,
@@ -80,37 +57,9 @@ class aeolus::image-factory::disabled {
                   provider => 'yum', ensure => 'absent',
                   require  => Package['aeolus-conductor']}
 
-      # FIXME these lingering dependencies, pulled in for
-      # rubygem-deltacloud-image-builder-agent, need to be removed as
-      # appliance-tools depend on them and using
-      # 'absent' in the context of the 'yum' provider dispatches
-      # to 'rpm -e' instead of 'yum erase'
-      package { ['rubygem-boxgrinder-build-ec2-platform-plugin',
-                 'rubygem-boxgrinder-build-centos-os-plugin',
-                 'rubygem-boxgrinder-build-fedora-os-plugin']:
-                 provider => "yum", ensure => 'absent',
-                 require  => Package['rubygem-deltacloud-image-builder-agent']}
-      package { 'rubygem-boxgrinder-build-rhel-os-plugin':
-                 provider => "yum", ensure => 'absent',
-                 require  => Package['rubygem-boxgrinder-build-centos-os-plugin']}
-      package { 'rubygem-boxgrinder-build-rpm-based-os-plugin':
-                 provider => "yum", ensure => 'absent',
-                 require  => Package['rubygem-boxgrinder-build-rhel-os-plugin',
-                                     'rubygem-boxgrinder-build-fedora-os-plugin']}
-
-      package { 'appliance-tools':
-                 provider => 'yum', ensure => 'absent',
-                 require  => Package['rubygem-boxgrinder-build-rpm-based-os-plugin']}
-      package { 'livecd-tools':
-                 provider => 'yum', ensure => 'absent',
-                 require  => Package['appliance-tools']}
-      package { 'python-imgcreate':
-                 provider => 'yum', ensure => 'absent',
-                 require  => Package['appliance-tools', 'livecd-tools']}
     }
 
   ### Destroy and cleanup aeolus artifacts
     exec{"remove_aeolus_templates":     command => "/bin/rm -rf /templates"}
-    exec{"remove_boxgrinder_dir":       command => "/bin/rm -rf /boxgrinder"}
 }
 
