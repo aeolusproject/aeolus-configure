@@ -3,7 +3,6 @@
 require 'rake/clean'
 require 'rake/rpmtask'
 require 'rake/yumtask'
-require 'rake/remotespectask'
 require 'rubygems'
 require 'spec/rake/spectask'
 
@@ -39,12 +38,18 @@ Spec::Rake::SpecTask.new(:cleanup_spec) do |t|
   t.spec_files = FileList['spec/cleanup_spec.rb']
 end
 
-desc "Run configure spec tests remotely"
-Rake::RemoteSpecTask.new(:remote_configure_spec) do |t|
-  t.spec_files = FileList['spec/configure_spec.rb']
-end
+begin
+  require 'rake/remotespectask'
 
-desc "Run cleanup spec tests remotely"
-Rake::RemoteSpecTask.new(:remote_cleanup_spec) do |t|
-  t.spec_files = FileList['spec/cleanup_spec.rb']
+  desc "Run configure spec tests remotely"
+  Rake::RemoteSpecTask.new(:remote_configure_spec) do |t|
+    t.spec_files = FileList['spec/configure_spec.rb']
+  end
+
+  desc "Run cleanup spec tests remotely"
+  Rake::RemoteSpecTask.new(:remote_cleanup_spec) do |t|
+    t.spec_files = FileList['spec/cleanup_spec.rb']
+  end
+rescue LoadError
+  # net net-ssh and net-scp needed to run remote specs
 end
