@@ -28,6 +28,8 @@ if $aeolus_enable_packages == "true" or $aeolus_enable_packages == "1" {
 
 # Base aeolus class
 class aeolus {
+  package{'curl': ensure => 'installed'}
+
   # Setup repos which to pull aeolus components
   # TODO:  Don't hardcode these repos to RHEL-6
   #  The issue is that $releasever resolves to something like 6Server
@@ -55,3 +57,13 @@ class aeolus {
             enabled  => 1, gpgcheck => 0}
 }
 
+# Create a new provider in aeolus
+define aeolus::provider($type, $port, $login_user="", $login_password=""){
+  aeolus::deltacloud{$name: provider_type => $type, port => $port}
+  aeolus::conductor::provider{$name:
+                                type           => $type,
+                                url            => "http://localhost:${port}/api",
+                                login_user     => $login_user,
+                                login_password => $login_password,
+                                require        => Aeolus::Deltacloud[$name] }
+}

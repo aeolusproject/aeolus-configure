@@ -58,7 +58,6 @@ class aeolus::iwhd::disabled {
 
 # Create a named bucket in iwhd
 define aeolus::create_bucket(){
-  package{'curl': ensure => 'installed'}
   exec{"create-bucket-${name}":
          command => "/usr/bin/curl -X PUT http://localhost:9090/templates",
          logoutput => true,

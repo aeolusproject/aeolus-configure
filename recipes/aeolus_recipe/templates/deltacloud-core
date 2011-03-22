@@ -8,21 +8,21 @@
 #    Deltacloud Core component.
 #
 
-[ -r /etc/sysconfig/deltacloud-core ] && . /etc/sysconfig/deltacloud-core
+[ -r /etc/sysconfig/deltacloud-<%= name %> ] && . /etc/sysconfig/deltacloud-<%= name %>
 
 ENV="${ENV:-production}"
-DRIVER="${DRIVER:-ec2}"
-PORT="${PORT:-3002}"
-LOCKFILE="${LOCKFILE:-/var/lock/subsys/deltacloud-core }"
-LOGFILE="${LOGFILE:-/var/log/deltacloud-core/$DRIVER.log}"
-export DELTACLOUD_MOCK_STORAGE=/usr/lib/ruby/gems/1.8/gems/deltacloud-core-0.2.0/lib/deltacloud/drivers/mock/data/
+DRIVER="${DRIVER:-<%= provider_type %>}"
+PORT="${PORT:-<%= port %>}"
+LOCKFILE="${LOCKFILE:-/var/lock/subsys/deltacloud-$DRIVER }"
+LOGFILE="${LOGFILE:-/var/log/deltacloud-<%= name %>/$DRIVER.log}"
+export DELTACLOUD_MOCK_STORAGE=/usr/lib/ruby/gems/1.8/gems/deltacloud-<%= name %>-0.2.0/lib/deltacloud/drivers/mock/data/
 
 PROG=/usr/bin/deltacloudd
 
 . /etc/init.d/functions
 
 start() {
-    echo -n "Starting deltacloud-core: "
+    echo -n "Starting deltacloud-<%= name %>: "
 
     $PROG -i $DRIVER -e $ENV -p $PORT >> $LOGFILE 2>&1 &
     RETVAL=$?
@@ -36,8 +36,10 @@ start() {
 }
 
 stop() {
-    echo -n "Shutting down deltacloud-core: "
+    echo -n "Shutting down deltacloud-<%= name %>: "
     RETVAL=$?
+    # FIXME! we need to do a killproc -p <pidfile> here to ensure other deltacloud
+    # daemons are not killed as well
     killall deltacloudd
     if [ $RETVAL -eq 0 ] && rm -f $LOCKFILE ; then
       echo_success
@@ -69,7 +71,7 @@ case "$1" in
       RETVAL=$?
       ;;
     *)
-      echo "Usage: deltacloud-core {start|stop|restart|status}"
+      echo "Usage: deltacloud-<%= name %> {start|stop|restart|status}"
       exit 1
   ;;
 esac

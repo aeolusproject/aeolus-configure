@@ -27,6 +27,9 @@ import "aeolus_recipe/aeolus"
 
 # disable the various aeolus components
 include aeolus::conductor::disabled
-include aeolus::deltacloud::disabled
 include aeolus::iwhd::disabled
 include aeolus::image-factory::disabled
+
+aeolus::deltacloud::disabled{"mock": }
+aeolus::deltacloud::disabled{"ec2-us-east-1": }
+aeolus::deltacloud::disabled{"ec2-us-west-1": }

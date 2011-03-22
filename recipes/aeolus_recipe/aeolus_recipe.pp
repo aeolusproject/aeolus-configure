@@ -26,8 +26,8 @@
 import "aeolus_recipe/aeolus"
 
 # include the various aeolus components
+include aeolus::deltacloud::core
 include aeolus::conductor
-include aeolus::deltacloud
 include aeolus::image-factory
 include aeolus::iwhd
 
@@ -38,3 +38,24 @@ aeolus::site_admin{"admin":
      password        => 'password',
      first_name      => 'aeolus',
      last_name       => 'user'}
+
+aeolus::provider{"mock":
+                   type           => 'mock',
+                   port           => 3002,
+                   login_user     => 'admin',
+                   login_password => 'password',
+                   require        => Aeolus::Site_admin["admin"] }
+
+aeolus::provider{"ec2-us-east-1":
+                   type           => 'ec2',
+                   port           => 3003,
+                   login_user     => 'admin',
+                   login_password => 'password',
+                   require        => Aeolus::Site_admin["admin"] }
+
+aeolus::provider{"ec2-us-west-1":
+                   type           => 'ec2',
+                   port           => 3004,
+                   login_user     => 'admin',
+                   login_password => 'password',
+                   require        => Aeolus::Site_admin["admin"] }

@@ -261,3 +261,40 @@ define aeolus::site_admin($email="", $password="", $first_name="", $last_name=""
          require     => Exec[create_site_admin_user]}
 }
 
+define aeolus::conductor::login($user,$password){
+  exec{"conductor-login-for-${name}":
+         command => "/usr/bin/curl -X POST http://localhost/conductor/user_session \
+                      -d user_session[login]=${user} \
+                      -d user_session[password]=${password} \
+                      -d commit=submit \
+                      -c /tmp/aeolus-${user}.cookie",
+         onlyif  => "/usr/bin/test ! -f /tmp/aeolus-${user}.cookie || \"\" == \"`curl  -X GET http://localhost/conductor -b /tmp/aeolus-${user}.cookie -i --silent | grep 'HTTP/1.1 200'`\"",
+         require => Service['aeolus-conductor']}
+}
+
+define aeolus::conductor::logout($user){
+  exec{"conductor-logout-for-${name}":
+         command => "/usr/bin/curl -X GET http://localhost/conductor/logout -b /tmp/aeolus-${user}.cookie",
+         onlyif => "/usr/bin/test -f /tmp/aeolus-${user}.cookie" } # TODO add condition ensuring cookie / session is valid
+  exec{"conductor-logout-cookie-for-${name}":
+         command   => "/bin/rm /tmp/aeolus-${user}.cookie",
+         onlyif    => "/usr/bin/test -f /tmp/aeolus-${user}.cookie",
+         require   => Exec["conductor-logout-for-${name}"]}
+}
+
+
+# Create a new provider via the conductor
+define aeolus::conductor::provider($type="",$url="",$login_user="",$login_password=""){
+  aeolus::conductor::login{"provider-${name}": user => $login_user, password => $login_password }
+  exec{"add-conductor-provider-${name}":
+         command   => "/usr/bin/curl -X POST http://localhost/conductor/admin/providers \
+                         -b /tmp/aeolus-${login_user}.cookie \
+                         -d provider[name]=${name} \
+                         -d provider[url]=${url} \
+                         -d provider[provider_type_codename]=${type}",
+         logoutput => true,
+         require   => [Aeolus::Conductor::Login["provider-$name"]] }
+  aeolus::conductor::logout{"provider-${name}":
+         user => $login_user,
+         require => Exec["add-conductor-provider-${name}"] }
+}
