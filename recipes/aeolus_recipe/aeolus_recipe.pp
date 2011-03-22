@@ -59,3 +59,12 @@ aeolus::provider{"ec2-us-west-1":
                    login_user     => 'admin',
                    login_password => 'password',
                    require        => Aeolus::Site_admin["admin"] }
+
+aeolus::conductor::hwp{"hwp1":
+                         memory         => "1",
+                         cpu            => "1",
+                         storage        => "1",
+                         architecture   => "x86_64",
+                         login_user     => 'admin',
+                         login_password => 'password',
+                         require        => Aeolus::Site_admin["admin"] }

@@ -298,3 +298,25 @@ define aeolus::conductor::provider($type="",$url="",$login_user="",$login_passwo
          user => $login_user,
          require => Exec["add-conductor-provider-${name}"] }
 }
+
+define aeolus::conductor::hwp($memory='', $cpu='', $storage='', $architecture='', $login_user="",$login_password=""){
+  aeolus::conductor::login{"hwp-${name}": user => $login_user, password => $login_password }
+  exec{"add-conductor-hwp-${name}":
+         command   => "/usr/bin/curl -X POST http://localhost/conductor/admin/hardware_profiles \
+                         -b /tmp/aeolus-${login_user}.cookie \
+                         -d hardware_profile[name]=${name} \
+                         -d hardware_profile[memory_attributes][value]=${memory} \
+                         -d hardware_profile[cpu_attributes][value]=${cpu} \
+                         -d hardware_profile[storage_attributes][value]=${storage} \
+                         -d hardware_profile[architecture_attributes][value]=${architecture} \
+                         -d hardware_profile[memory_attributes][name]=memory   -d hardware_profile[memory_attributes][unit]=MB \
+                         -d hardware_profile[cpu_attributes][name]=cpu         -d hardware_profile[cpu_attributes][unit]=count \
+                         -d hardware_profile[storage_attributes][name]=storage -d hardware_profile[storage_attributes][unit]=GB \
+                         -d hardware_profile[architecture_attributes][name]=architecture -d hardware_profile[architecture_attributes][unit]=label \
+                         -d commit=Save",
+         logoutput => true,
+         require   => [Aeolus::Conductor::Login["hwp-$name"]] }
+  aeolus::conductor::logout{"hwp-${name}":
+         user => $login_user,
+         require => Exec["add-conductor-hwp-${name}"] }
+}
