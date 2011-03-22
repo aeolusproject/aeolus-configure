@@ -10,7 +10,7 @@ AEOLUS_PACKAGES = ['iwhd', 'imagefactory',
                    'aeolus-conductor', 'aeolus-conductor-doc', 'aeolus-conductor-daemons',
                    'aeolus-configure']
 
-AEOLUS_SERVICES = ['iwhd', 'deltacloud-core', 'imagefactoryd',
+AEOLUS_SERVICES = ['iwhd', 'deltacloud-mock', 'deltacloud-ec2-us-east-1', 'deltacloud-ec2-us-west-1', 'imagefactoryd',
                    'aeolus-conductor', 'conductor-condor_refreshd', 'conductor-dbomatic']
                    # 'conductor-delayed_job'] TODO where is the init script for this?
 

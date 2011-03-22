@@ -76,4 +76,17 @@ describe "aeolus-configure" do
     output = `/bin/echo listpeers | /usr/sbin/ntpdc`
     output.should =~ /.*client.*/
   end
+
+  it "should create mock and ec2 providers" do
+    pt = ProviderType.find_by_codename('ec2')
+    Provider.find(:first, :conditions => ['name = ? AND provider_type_id = ?', 'ec2-us-east-1', pt.id]).should_not be_nil, "provider ec2-us-east-1 should not be nil"
+    Provider.find(:first, :conditions => ['name = ? AND provider_type_id = ?', 'ec2-us-west-1', pt.id]).should_not be_nil, "provider ec2-us-west-1 should not be nil"
+
+    pt = ProviderType.find_by_codename('mock')
+    Provider.find(:first, :conditions => ['name = ? AND provider_type_id = ?', 'mock', pt.id]).should_not be_nil, "provider mock should not be nil"
+  end
+
+  it "should create an initial hardware profile" do
+    HardwareProfile.find_by_name('hwp1').should_not be_nil
+  end
 end
