@@ -41,6 +41,7 @@ class aeolus::conductor inherits aeolus {
       require => File['/var/lib/condor/condor_config.local'] }
     service { ['aeolus-conductor',
                'conductor-condor_refreshd',
+               'conductor-warehouse_sync',
                'conductor-dbomatic',
                'conductor-delayed_job']:
       ensure    => 'running',
@@ -180,6 +181,7 @@ class aeolus::conductor::disabled {
                 provider => 'yum', ensure => 'absent',
                 require  => Service['aeolus-conductor',
                                     'conductor-condor_refreshd',
+                                    'conductor-warehouse_sync',
                                     'conductor-dbomatic',
                                     'conductor-delayed_job']}
 
@@ -206,10 +208,12 @@ class aeolus::conductor::disabled {
       enable  => false,
       require => Service['aeolus-conductor',
                          'conductor-condor_refreshd',
+                         'conductor-warehouse_sync',
                          'conductor-dbomatic',
                          'conductor-delayed_job'] }
     service { ['aeolus-conductor',
                'conductor-condor_refreshd',
+               'conductor-warehouse_sync',
                'conductor-dbomatic',
                'conductor-delayed_job',
                'aeolus-connector']:
@@ -223,6 +227,7 @@ class aeolus::conductor::disabled {
                 rails_env  => "production",
                 require    => Service["aeolus-conductor",
                                       "conductor-condor_refreshd",
+                                      'conductor-warehouse_sync',
                                       "conductor-dbomatic",
                                       "conductor-delayed_job"]}
     postgres::user{"aeolus":
