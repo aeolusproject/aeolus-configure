@@ -15,14 +15,6 @@ class aeolus::iwhd inherits aeolus {
     file { "/data":    ensure => 'directory' }
     file { "/data/db": ensure => 'directory' }
     file { "/etc/iwhd": ensure => 'directory'}
-    file { "/etc/iwhd/conf.js":
-           source => "puppet:///modules/aeolus_recipe/iwhd-conf.js",
-           mode   => 755, require => File['/etc/iwhd'] }
-
-     #TODO The service wrapper should probably be in the rpm itself
-     file { "/etc/rc.d/init.d/iwhd":
-            source => "puppet:///modules/aeolus_recipe/iwhd.init",
-            mode   => 755 }
 
     service { 'mongod':
       ensure  => 'running',
@@ -33,8 +25,7 @@ class aeolus::iwhd inherits aeolus {
       ensure  => 'running',
       enable  => true,
       hasstatus => true,
-      require => [File['/etc/rc.d/init.d/iwhd', '/etc/iwhd/conf.js'],
-                  return_if($enable_packages, Package['iwhd']),
+      require => [return_if($enable_packages, Package['iwhd']),
                   Service[mongod]]}
 
     # XXX ugly hack but iwhd might take some time to come up
@@ -73,4 +64,3 @@ define aeolus::create_bucket(){
          logoutput => true,
          require => [Exec['iwhd_startup_pause'], Package[curl]] }
 }
-

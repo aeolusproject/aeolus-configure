@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.0.0
-Release:  4%{?dist}%{?extra_release}
+Release:  5%{?dist}%{?extra_release}
 
 Group:    Applications/Internet
 License:  GPLv2+
@@ -52,10 +52,8 @@ rm -rf %{buildroot}
 
 %changelog
 
-* Wed Mar 02 2011 Mike Orazi <morazi@redhat.com 2.0.0-4
-- additions required for rename
-- httpd enabled via chkconfig
-- update create_buckets
+* Tue Mar 22 2011 Angus Thomas <athomas@redhat.com 2.0.0-5
+- Removed iwhd init script and config file
  
 * Wed Feb 17 2011 Mohammed Morsi <mmorsi@redhat.com> 2.0.0-3
 - renamed deltacloud-configure to aeolus-configure
@@ -92,4 +90,3 @@ rm -rf %{buildroot}
 
 * Thu Sep 02 2010 Mohammed Morsi <mmorsi@redhat.com> 0.0.1-1
 - Initial package
-
