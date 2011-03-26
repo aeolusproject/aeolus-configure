@@ -13,7 +13,7 @@ class aeolus::deltacloud::core {
 # install the deltacloud component w/ the specified driver
 define aeolus::deltacloud($provider_type="", $port="3002") {
   ### Install the driver-specific components
-    $enable_ec2_packages = $enable_packages and $name == "ec2"
+    $enable_ec2_packages = $enable_packages and $provider_type == "ec2"
     if $enable_ec2_packages {
       # install ec2 support,
       package { "rubygem-aws":
