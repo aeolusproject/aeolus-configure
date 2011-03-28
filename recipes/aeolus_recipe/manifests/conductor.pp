@@ -51,13 +51,6 @@ class aeolus::conductor inherits aeolus {
                   Rails::Migrate::Db[migrate_aeolus_database],
                   Service['condor', 'httpd']] }
 
-    # XXX ugly hack but iwhd might take some time to come up
-    exec{"conductor_startup":
-                command => "/bin/sleep 2",
-                unless  => '/usr/bin/curl http://localhost/conductor',
-                logoutput => true,
-                require => Service['aeolus-conductor']}
-
     service{ 'aeolus-connector':
       ensure    => 'running',
       enable    => true,
@@ -276,7 +269,7 @@ define aeolus::conductor::login($user,$password){
                       -d commit=submit \
                       -c /tmp/aeolus-${user}.cookie",
          onlyif  => "/usr/bin/test ! -f /tmp/aeolus-${user}.cookie || \"\" == \"`curl  -X GET http://localhost/conductor -b /tmp/aeolus-${user}.cookie -i --silent | grep 'HTTP/1.1 200'`\"",
-         require => Exec['conductor_startup']}
+         require => Service['aeolus-conductor']}
 }
 
 define aeolus::conductor::logout($user){
