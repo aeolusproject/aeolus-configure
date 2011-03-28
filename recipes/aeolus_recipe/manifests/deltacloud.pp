@@ -10,15 +10,23 @@ class aeolus::deltacloud::core {
     }
 }
 
-# install the deltacloud component w/ the specified driver
-define aeolus::deltacloud($provider_type="", $port="3002") {
+class aeolus::deltacloud::ec2 {
   ### Install the driver-specific components
-    $enable_ec2_packages = $enable_packages and $provider_type == "ec2"
-    if $enable_ec2_packages {
+    if $enable_packages {
       # install ec2 support,
       package { "rubygem-aws":
                    provider => 'yum', ensure => 'installed' }
     }
+}
+
+
+# install the deltacloud component w/ the specified driver
+define aeolus::deltacloud($provider_type="", $port="3002") {
+  include aeolus::deltacloud::core
+
+  if $provider_type == "ec2" {
+    include aeolus::deltacloud::ec2
+  }
 
   ### we need to sync time to communicate w/ cloud providers
     include ntp::client

@@ -26,7 +26,6 @@
 import "aeolus_recipe/aeolus"
 
 # include the various aeolus components
-include aeolus::deltacloud::core
 include aeolus::conductor
 include aeolus::image-factory
 include aeolus::iwhd
