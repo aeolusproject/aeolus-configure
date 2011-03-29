@@ -15,6 +15,7 @@ DRIVER="${DRIVER:-<%= provider_type %>}"
 PORT="${PORT:-<%= port %>}"
 LOCKFILE="${LOCKFILE:-/var/lock/subsys/deltacloud-$DRIVER }"
 LOGFILE="${LOGFILE:-/var/log/deltacloud-<%= name %>/$DRIVER.log}"
+PIDFILE="${THIN_PID:-/var/run/deltacloud-<%= name %>.pid}"
 export DELTACLOUD_MOCK_STORAGE=/usr/lib/ruby/gems/1.8/gems/deltacloud-<%= name %>-0.2.0/lib/deltacloud/drivers/mock/data/
 
 PROG=/usr/bin/deltacloudd
@@ -26,6 +27,7 @@ start() {
 
     $PROG -i $DRIVER -e $ENV -p $PORT >> $LOGFILE 2>&1 &
     RETVAL=$?
+    echo $! > $PIDFILE
     if [ $RETVAL -eq 0 ] && touch $LOCKFILE ; then
       echo_success
       echo
@@ -40,7 +42,7 @@ stop() {
     RETVAL=$?
     # FIXME! we need to do a killproc -p <pidfile> here to ensure other deltacloud
     # daemons are not killed as well
-    killall deltacloudd
+    killproc -p $PIDFILE deltacloudd
     if [ $RETVAL -eq 0 ] && rm -f $LOCKFILE ; then
       echo_success
       echo
