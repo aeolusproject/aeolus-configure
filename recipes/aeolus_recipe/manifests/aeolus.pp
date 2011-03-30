@@ -50,11 +50,7 @@ class aeolus {
             descr    => "${name}_noarch",
             baseurl  => "http://repos.fedorapeople.org/repos/aeolus/packages/${base_url_release}/noarch",
             enabled  => 1, gpgcheck => 0}
-  yumrepo{"${name}_pulp":
-            name     => "${name}_pulp",
-            descr    => "${name}_pulp",
-            baseurl  => "http://repos.fedorapeople.org/repos/pulp/pulp/${pulp_base_url_release}/\$basearch/",
-            enabled  => 1, gpgcheck => 0}
+
 }
 
 # Create a new provider in aeolus
@@ -67,3 +63,4 @@ define aeolus::provider($type, $port, $login_user="", $login_password=""){
                                 login_password => $login_password,
                                 require        => Aeolus::Deltacloud[$name] }
 }
+
