@@ -69,7 +69,7 @@ case "$1" in
       restart
       ;;
     status)
-      status $PROG
+      status -p $PIDFILE $PROG
       RETVAL=$?
       ;;
     *)
