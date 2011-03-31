@@ -2,6 +2,11 @@
 
 class aeolus::image-factory inherits aeolus {
     if $enable_packages {
+
+      package { 'libvirt':
+                provider => 'yum',
+                ensure=> 'installed'
+      }
       package { 'imagefactory':
                    provider => 'yum', ensure => 'installed',
                    require => [Yumrepo['aeolus_arch', 'aeolus_noarch']]
@@ -31,7 +36,8 @@ class aeolus::image-factory inherits aeolus {
     service {'libvirtd':
                ensure  => 'running',
                enable  => true,
-               hasstatus => true }
+               hasstatus => true,
+               require => return_if($enable_packages, Package['libvirt'])}
     $requires = [return_if($enable_packages, Package['imagefactory']),
                  File['/var/tmp/imagefactory-mock'],
                  Service[qpidd], Service[libvirtd],
