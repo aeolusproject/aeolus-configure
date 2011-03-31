@@ -55,7 +55,8 @@ class aeolus::conductor inherits aeolus {
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
-      require => return_if($enable_packages, Package['rubygem-image_factory_connector'])}
+      require => [return_if($enable_packages, Package['rubygem-image_factory_connector']),
+		 Service[qpidd]]}
 
   ### Initialize and start the aeolus database
     # Right now we configure and start postgres, at some point I want
