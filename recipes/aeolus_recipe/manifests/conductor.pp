@@ -20,11 +20,6 @@ class aeolus::conductor inherits aeolus {
   ### Setup selinux for deltacloud
     selinux::mode{"permissive":}
 
-  ### Setup firewall for deltacloud
-    firewall::rule{"http":  destination_port => '80' }
-    firewall::rule{"https": destination_port => '443'}
-    firewall::rule{"ssh":   destination_port => '22'}
-
   ### Start the aeolus services
     file {"/var/lib/condor/condor_config.local":
            source => "puppet:///modules/aeolus_recipe/condor_config.local",

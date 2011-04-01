@@ -1,7 +1,5 @@
 # Aeolus puppet definitions
 
-import "firewall"
-
 import "postgres"
 import "apache"
 import "rails"

@@ -1,5 +1,0 @@
-# INPUT.tail
-# -m comment --comment "Logging" -m limit --limit 3/minute -j LOG --log-prefix "[IPTABLES] INPUT : "
--m limit --limit 3/minute -j LOG --log-prefix "[IPTABLES] INPUT : "
-
--j REJECT
