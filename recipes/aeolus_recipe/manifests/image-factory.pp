@@ -45,6 +45,7 @@ class aeolus::image-factory inherits aeolus {
     service { 'imagefactory':
       ensure  => 'running',
       enable  => true,
+      hasstatus => true,
       require => $requires}
 }
 
@@ -57,6 +58,7 @@ class aeolus::image-factory::disabled {
 
     service { 'imagefactory':
       ensure  => 'stopped',
+      hasstatus => true,
       enable  => false}
 
   ### Uninstall the deltacloud components
