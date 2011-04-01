@@ -57,13 +57,6 @@ describe "aeolus-configure" do
     # TODO verify metadataobjects and roles exist?
   end
 
-  it "should open the necessary firewall ports" do
-    FIREWALL_OPEN_PORTS.each { |port|
-      output = `sudo iptables -nvL | grep "tcp dpt:#{port}"`
-      output.should_not eql(""), "port '#{port}' should be open but it is not"
-    }
-  end
-
   it "should properly setup apache httpd" do
     # TODO when we re-enable security, test https here
     doc = Nokogiri::HTML(open(CONDUCTOR_URI + "/login"))
@@ -90,3 +83,4 @@ describe "aeolus-configure" do
     HardwareProfile.find_by_name('hwp1').should_not be_nil
   end
 end
+

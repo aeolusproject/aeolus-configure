@@ -34,7 +34,6 @@ rm -rf %{buildroot}
 %{__cp} -R %{pbuild}/recipes/aeolus_recipe/aeolus_uninstall.pp %{buildroot}/%{dchome}
 %{__cp} -R %{pbuild}/recipes/aeolus_recipe/*/ %{buildroot}/%{dchome}/modules/aeolus_recipe
 %{__cp} -R %{pbuild}/recipes/apache/ %{buildroot}/%{dchome}/modules/apache
-%{__cp} -R %{pbuild}/recipes/firewall/ %{buildroot}/%{dchome}/modules/firewall
 %{__cp} -R %{pbuild}/recipes/ntp/ %{buildroot}/%{dchome}/modules/ntp
 %{__cp} -R %{pbuild}/recipes/openssl/ %{buildroot}/%{dchome}/modules/openssl
 %{__cp} -R %{pbuild}/recipes/postgres/ %{buildroot}/%{dchome}/modules/postgres
@@ -54,7 +53,7 @@ rm -rf %{buildroot}
 
 * Tue Mar 22 2011 Angus Thomas <athomas@redhat.com 2.0.0-5
 - Removed iwhd init script and config file
- 
+
 * Wed Feb 17 2011 Mohammed Morsi <mmorsi@redhat.com> 2.0.0-3
 - renamed deltacloud-configure to aeolus-configure
 
@@ -90,3 +89,4 @@ rm -rf %{buildroot}
 
 * Thu Sep 02 2010 Mohammed Morsi <mmorsi@redhat.com> 0.0.1-1
 - Initial package
+

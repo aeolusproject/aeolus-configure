@@ -1,5 +1,3 @@
-import "firewall"
-
 class postgres {
     package { "postgresql":
         ensure  => installed,
@@ -10,11 +8,6 @@ class postgres::client inherits postgres {
 }
 
 class postgres::server inherits postgres {
-    firewall::rule { "Postgres":
-        destination_port    => "5432",
-        comment             => "postgresql tcp/5432",
-    }
-
     package { [ "postgresql-server" ]:
         ensure  => installed,
     }
@@ -63,3 +56,4 @@ define postgres::user($ensure='created', $password="", $roles=""){
                          \"DROP USER ${name}\""}}
   }
 }
+

@@ -27,4 +27,3 @@ CONDUCTOR_URI='http://localhost/conductor'
 
 CONDUCTOR_PATH='/usr/share/aeolus-conductor'
 
-FIREWALL_OPEN_PORTS = [ '22', '80', '443', '5432' ]
