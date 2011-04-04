@@ -9,12 +9,17 @@ class apache {
 	  package { "mod_ssl": ensure => installed }
   }
 
+  # if selinux is enabled and we want to use mod_proxy, we need todo this
+  exec{'permit-http-networking':
+         command => '/usr/sbin/setsebool httpd_can_network_connect 1',
+         logoutput => true }
+
 	service { "httpd":
 		ensure     => running,
-		require    => Package["httpd"],
+		require    => [Package["httpd"], Exec['permit-http-networking']],
 		hasrestart => true,
     hasstatus  => true,
-    enable     => true,
+    enable     => true
 	}
 
 	exec { "reload-apache":

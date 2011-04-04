@@ -265,7 +265,7 @@ define aeolus::conductor::login($user,$password){
                       -d commit=submit \
                       -c /tmp/aeolus-${user}.cookie",
          onlyif  => "/usr/bin/test ! -f /tmp/aeolus-${user}.cookie || \"\" == \"`curl  -X GET http://localhost/conductor -b /tmp/aeolus-${user}.cookie -i --silent | grep 'HTTP/1.1 200'`\"",
-         require => Service['aeolus-conductor']}
+         require => Service['aeolus-conductor', 'httpd']}
 }
 
 define aeolus::conductor::logout($user){
