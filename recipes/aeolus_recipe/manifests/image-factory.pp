@@ -29,7 +29,7 @@ class aeolus::image-factory inherits aeolus {
                ensure  => 'running',
                enable  => true,
                require => [File['/etc/qpidd.conf'],
-                           return_if($enable_packages, Package['qpid-cpp-server'])]}
+                           Package['qpid-cpp-server']]}
     file { "/var/tmp/imagefactory-mock":
                ensure => "directory",
                mode   => 755 }
@@ -37,8 +37,8 @@ class aeolus::image-factory inherits aeolus {
                ensure  => 'running',
                enable  => true,
                hasstatus => true,
-               require => return_if($enable_packages, Package['libvirt'])}
-    $requires = [return_if($enable_packages, Package['imagefactory']),
+               require => Package['libvirt']}
+    $requires = [Package['imagefactory'],
                  File['/var/tmp/imagefactory-mock'],
                  Service[qpidd], Service[libvirtd],
                  Rails::Seed::Db[seed_aeolus_database]]

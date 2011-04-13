@@ -23,7 +23,7 @@ class aeolus::conductor inherits aeolus {
   ### Start the aeolus services
     file {"/var/lib/condor/condor_config.local":
            source => "puppet:///modules/aeolus_recipe/condor_config.local",
-           require => return_if($enable_packages, Package['aeolus-conductor-daemons']) }
+           require => Package['aeolus-conductor-daemons'] }
      # condor requires an explicit non-localhost hostname
      # TODO we can also kill the configure sequence here instead
      exec{"/bin/echo 'hostname/domain should be explicitly set and should not be localhost.localdomain'":
@@ -42,7 +42,7 @@ class aeolus::conductor inherits aeolus {
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
-      require => [return_if($enable_packages, Package['aeolus-conductor-daemons']),
+      require => [Package['aeolus-conductor-daemons'],
                   Rails::Migrate::Db[migrate_aeolus_database],
                   Service['condor', 'httpd']] }
 
@@ -50,7 +50,7 @@ class aeolus::conductor inherits aeolus {
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
-      require => [return_if($enable_packages, Package['rubygem-image_factory_connector']),
+      require => [Package['rubygem-image_factory_connector'],
 		 Service[qpidd]]}
 
   ### Initialize and start the aeolus database
@@ -98,7 +98,7 @@ class aeolus::conductor inherits aeolus {
     rails::create::db{"create_aeolus_database":
                 cwd        => "/usr/share/aeolus-conductor",
                 rails_env  => "production",
-                require    => [Postgres::User[aeolus], return_if($enable_packages, Package['aeolus-conductor'])] }
+                require    => [Postgres::User[aeolus], Package['aeolus-conductor']] }
     rails::migrate::db{"migrate_aeolus_database":
                 cwd             => "/usr/share/aeolus-conductor",
                 rails_env       => "production",
@@ -114,7 +114,7 @@ class aeolus::conductor inherits aeolus {
            environment => "RAILS_ENV=production",
            command     => "/usr/bin/rake dc:prepare_repos",
            logoutput   => true,
-           require     => return_if($enable_packages, Package['aeolus-conductor']) }
+           require     => Package['aeolus-conductor'] }
 
 
   ### Setup/start solr search service
@@ -138,7 +138,7 @@ class aeolus::conductor inherits aeolus {
              enable      => 'true',
              require     => [File['/etc/init.d/solr', '/etc/init.d/solr'],
                              Package["java-1.6.0-openjdk"],
-                             return_if($enable_packages, Package['aeolus-conductor']),
+                             Package['aeolus-conductor'],
                              Rails::Create::Db['create_aeolus_database']]}
 
     exec{"build_solr_index":
@@ -316,3 +316,4 @@ define aeolus::conductor::hwp($memory='', $cpu='', $storage='', $architecture=''
          user => $login_user,
          require => Exec["add-conductor-hwp-${name}"] }
 }
+

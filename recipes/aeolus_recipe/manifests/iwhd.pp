@@ -19,13 +19,13 @@ class aeolus::iwhd inherits aeolus {
     service { 'mongod':
       ensure  => 'running',
       enable  => true,
-      require => [return_if($enable_packages, Package['mongodb-server']), File["/data/db"]]}
+      require => [Package['mongodb-server'], File["/data/db"]]}
 
     service { 'iwhd':
       ensure  => 'running',
       enable  => true,
       hasstatus => true,
-      require => [return_if($enable_packages, Package['iwhd']),
+      require => [Package['iwhd'],
                   Service[mongod]]}
 
     # XXX ugly hack but iwhd might take some time to come up
@@ -63,3 +63,4 @@ define aeolus::create_bucket(){
          logoutput => true,
          require => [Exec['iwhd_startup_pause'], Package[curl]] }
 }
+
