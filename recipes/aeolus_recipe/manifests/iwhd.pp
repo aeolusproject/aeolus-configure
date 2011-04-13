@@ -47,13 +47,6 @@ class aeolus::iwhd::disabled {
       ensure  =>  'stopped',
       enable  =>  false,
       hasstatus =>  true}
-
-  ### Uninstall the aeolus components
-    if $enable_packages {
-      package { 'iwhd':
-                  provider => 'yum', ensure => 'absent',
-                  require  => [Package['aeolus-conductor'], Service['iwhd']]}
-    }
 }
 
 # Create a named bucket in iwhd

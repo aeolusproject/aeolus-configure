@@ -61,14 +61,6 @@ class aeolus::image-factory::disabled {
       hasstatus => true,
       enable  => false}
 
-  ### Uninstall the deltacloud components
-    if $enable_packages {
-      package { 'imagefactory':
-                  provider => 'yum', ensure => 'absent',
-                  require  => Service['imagefactory']}
-
-    }
-
   ### Destroy and cleanup aeolus artifacts
     exec{"remove_aeolus_templates":     command => "/bin/rm -rf /templates"}
 }

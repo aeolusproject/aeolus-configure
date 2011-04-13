@@ -45,16 +45,6 @@ define aeolus::deltacloud($provider_type="", $port="3002") {
 }
 
 define aeolus::deltacloud::disabled() {
-  ### Uninstall the aeolus components
-    if $enable_packages {
-      package { 'rubygem-deltacloud-core':
-                  provider => 'yum', ensure => 'absent',
-                  require  => Service["deltacloud-${name}"]}
-      package { "rubygem-aws":
-                  provider => 'yum', ensure => 'absent',
-                  require  => Service["deltacloud-${name}"]}
-    }
-
   ### Stop the aeolus services
     service { "deltacloud-${name}":
       ensure  => 'stopped',

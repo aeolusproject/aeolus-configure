@@ -166,33 +166,6 @@ class aeolus::conductor inherits aeolus {
 }
 
 class aeolus::conductor::disabled {
-  ### Uninstall the aeolus components
-    if $enable_packages {
-      package {'rubygem-image_factory_connector':
-                provider => 'yum', ensure => 'absent',
-                require  => Service['aeolus-connector']}
-
-      package {['aeolus-conductor-daemons',
-                'aeolus-conductor-doc']:
-                provider => 'yum', ensure => 'absent',
-                require  => Service['aeolus-conductor',
-                                    'conductor-condor_refreshd',
-                                    'conductor-warehouse_sync',
-                                    'conductor-dbomatic',
-                                    'conductor-delayed_job']}
-
-      package {'aeolus-conductor':
-              provider => 'yum', ensure => 'absent',
-              require  => [Package['aeolus-conductor-daemons',
-                                   'aeolus-conductor-doc'],
-                           Rails::Drop::Db["drop_aeolus_database"],
-                           Service['solr']] }
-
-    package { 'rubygem-deltacloud-client':
-                provider => 'yum', ensure => 'absent',
-                require  => [Package['aeolus-conductor']]}
-    }
-
     file {"/var/lib/aeolus-conductor":
             ensure => absent,
             force  => true
