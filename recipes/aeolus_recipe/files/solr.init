@@ -12,7 +12,7 @@
 
 LOCKFILE="${LOCKFILE:-/var/lock/subsys/solr}"
 RAILS_ENV="${RAILS_ENV:-production}"
-
+PIDFILE=/usr/share/aeolus-conductor/tmp/pids/sunspot-solr-$RAILS_ENV.pid
 PROG=/usr/bin/rake
 
 . /etc/init.d/functions
@@ -20,7 +20,7 @@ PROG=/usr/bin/rake
 start() {
     echo -n "Starting solr: "
 
-    cd /usr/share/aeolus-conductor; RAILS_ENV=$RAILS_ENV $PROG sunspot:solr:start
+    cd /usr/share/aeolus-conductor; RAILS_ENV=$RAILS_ENV daemon --pidfile=$PIDFILE $PROG sunspot:solr:start
     RETVAL=$?
     if [ $RETVAL -eq 0 ] && touch $LOCKFILE ; then
       echo_success
@@ -62,7 +62,7 @@ case "$1" in
       restart
       ;;
     status)
-      status $PROG
+      status -p $PIDFILE $PROG
       RETVAL=$?
       ;;
     *)
