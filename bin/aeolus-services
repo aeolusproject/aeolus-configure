@@ -1,4 +1,6 @@
 #!/bin/sh
 
 puppet /usr/share/aeolus-configure/aeolus_stop_services.pp \
-       --modulepath=/usr/share/aeolus-configure/modules/
+       --modulepath=/usr/share/aeolus-configure/modules/ \
+       --logdest=/var/log/aeolus-configure/aeolus-services.log \
+       --logdest=console

@@ -3,4 +3,6 @@
 export FACTER_AEOLUS_ENABLE_SECURITY=false
 export FACTER_AEOLUS_ENABLE_PACKAGES=false
 puppet /usr/share/aeolus-configure/aeolus_uninstall.pp \
-       --modulepath=/usr/share/aeolus-configure/modules/
+       --modulepath=/usr/share/aeolus-configure/modules/ \
+       --logdest=/var/log/aeolus-configure/aeolus-cleanup.log \
+       --logdest=console
