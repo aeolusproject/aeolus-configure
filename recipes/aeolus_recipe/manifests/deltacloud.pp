@@ -5,14 +5,14 @@ class aeolus::deltacloud::core {
     include aeolus
 
     package { 'rubygem-deltacloud-core':
-              provider => 'yum', ensure => 'installed', require => Yumrepo['aeolus_arch', 'aeolus_noarch']}
+              ensure => 'installed', require => Yumrepo['aeolus_arch', 'aeolus_noarch']}
 }
 
 class aeolus::deltacloud::ec2 {
   ### Install the driver-specific components
    # install ec2 support,
    package { "rubygem-aws":
-                provider => 'yum', ensure => 'installed' }
+                ensure => 'installed' }
 }
 
 

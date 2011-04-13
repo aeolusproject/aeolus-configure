@@ -6,11 +6,11 @@ class aeolus::conductor inherits aeolus {
     package {['aeolus-conductor',
               'aeolus-conductor-daemons',
               'aeolus-conductor-doc']:
-              provider => 'yum', ensure => 'installed'}
+              ensure => 'installed'}
 
     # to be renamed to aeolus-connector
     package {'rubygem-image_factory_connector':
-              provider => 'yum', ensure => 'installed'}
+              ensure => 'installed'}
 
     file {"/var/lib/aeolus-conductor":
             ensure => directory }
@@ -127,7 +127,6 @@ class aeolus::conductor inherits aeolus {
    }
    # TODO we manually have to install java for solr, we should remove this once this is a dep in the solr rpm
    package{"java-1.6.0-openjdk":
-             provider => "yum",
              ensure   => "installed" }
     service{"solr":
              hasstatus   => "false",

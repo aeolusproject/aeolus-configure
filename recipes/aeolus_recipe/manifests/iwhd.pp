@@ -3,11 +3,11 @@
 class aeolus::iwhd inherits aeolus {
   ### Install the deltacloud components
   package { 'iwhd':
-             provider => 'yum', ensure => 'installed',
+             ensure => 'installed',
              require => Yumrepo['aeolus_arch', 'aeolus_noarch'] }
 
   package { 'mongodb-server':
-             provider => 'yum', ensure => 'installed' }
+             ensure => 'installed' }
 
   ### Start the aeolus services
     file { "/data":    ensure => 'directory' }

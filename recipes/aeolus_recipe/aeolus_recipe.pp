@@ -24,6 +24,7 @@
 
 # Modules used by the recipe
 import "aeolus_recipe/aeolus"
+import "aeolus_recipe/defaults"
 
 # include the various aeolus components
 include aeolus::conductor
@@ -67,3 +68,4 @@ aeolus::conductor::hwp{"hwp1":
                          login_user     => 'admin',
                          login_password => 'password',
                          require        => Aeolus::Site_admin["admin"] }
+
