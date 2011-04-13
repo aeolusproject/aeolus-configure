@@ -25,24 +25,30 @@ PROG=/usr/bin/deltacloudd
 start() {
     echo -n "Starting deltacloud-<%= name %>: "
 
-    $PROG -i $DRIVER -e $ENV -p $PORT >> $LOGFILE 2>&1 &
-    RETVAL=$?
-    echo $! > $PIDFILE
-    if [ $RETVAL -eq 0 ] && touch $LOCKFILE ; then
-      echo_success
-      echo
+    if test -f $LOCKFILE ; then
+	echo_success
+	echo
     else
-      echo_failure
-      echo
+	$PROG -i $DRIVER -e $ENV -p $PORT >> $LOGFILE 2>&1 &
+	RETVAL=$?
+	echo $! > $PIDFILE
+	if [ $RETVAL -eq 0 ] && touch $LOCKFILE ; then
+	    echo_success
+	    echo
+	else
+	    echo_failure
+	    echo
+	fi
     fi
 }
 
 stop() {
     echo -n "Shutting down deltacloud-<%= name %>: "
-    RETVAL=$?
+
     # FIXME! we need to do a killproc -p <pidfile> here to ensure other deltacloud
     # daemons are not killed as well
     killproc -p $PIDFILE deltacloudd
+    RETVAL=$?
     if [ $RETVAL -eq 0 ] && rm -f $LOCKFILE ; then
       echo_success
       echo
