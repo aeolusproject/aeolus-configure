@@ -18,11 +18,6 @@ if $aeolus_enable_security == "true" or $aeolus_enable_security == "1" {
   $enable_security = false
 }
 
-if $aeolus_enable_packages == "true" or $aeolus_enable_packages == "1" {
-  $enable_packages = true
-} else {
-  $enable_packages = false
-}
 
 # Base aeolus class
 class aeolus {

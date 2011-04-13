@@ -3,16 +3,14 @@
 class aeolus::conductor inherits aeolus {
   ### Install the aeolus components
     # specific versions of these two packages are needed and we need to pull the third in
-     if $enable_packages {
-       package {['aeolus-conductor',
-                 'aeolus-conductor-daemons',
-                 'aeolus-conductor-doc']:
-                 provider => 'yum', ensure => 'installed'}
+    package {['aeolus-conductor',
+              'aeolus-conductor-daemons',
+              'aeolus-conductor-doc']:
+              provider => 'yum', ensure => 'installed'}
 
-       # to be renamed to aeolus-connector
-       package {'rubygem-image_factory_connector':
-                 provider => 'yum', ensure => 'installed'}
-     }
+    # to be renamed to aeolus-connector
+    package {'rubygem-image_factory_connector':
+              provider => 'yum', ensure => 'installed'}
 
     file {"/var/lib/aeolus-conductor":
             ensure => directory }

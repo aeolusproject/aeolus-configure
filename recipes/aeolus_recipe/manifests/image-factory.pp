@@ -1,19 +1,17 @@
 # Aeolus image factory puppet definitions
 
 class aeolus::image-factory inherits aeolus {
-    if $enable_packages {
 
-      package { 'libvirt':
-                provider => 'yum',
-                ensure=> 'installed'
-      }
-      package { 'imagefactory':
-                   provider => 'yum', ensure => 'installed',
-                   require => [Yumrepo['aeolus_arch', 'aeolus_noarch']]
-      }
-      package { 'qpid-cpp-server':
-                   provider => 'yum', ensure => 'installed' }
-    }
+  package { 'libvirt':
+            provider => 'yum',
+            ensure=> 'installed'
+  }
+  package { 'imagefactory':
+               provider => 'yum', ensure => 'installed',
+               require => [Yumrepo['aeolus_arch', 'aeolus_noarch']]
+  }
+  package { 'qpid-cpp-server':
+               provider => 'yum', ensure => 'installed' }
 
   ### Configure pulp to fetch from Fedora
     # TODO uncomment when factory/warehouse uses pulp
