@@ -31,6 +31,7 @@ class aeolus::conductor inherits aeolus {
     service { ['condor']:
       ensure  => 'running',
       enable  => true,
+      hasstatus => true,
       require => File['/var/lib/condor/condor_config.local'] }
     service { ['aeolus-conductor',
                'conductor-condor_refreshd',
