@@ -149,7 +149,7 @@ class aeolus::conductor inherits aeolus {
 
   ### Setup apache for deltacloud
     include apache
-    if $enable_security {
+    if $enable_https {
       apache::site{"aeolus-conductor": source => 'puppet:///modules/aeolus_recipe/aggregator-httpd-ssl.conf'}
     } else{
       apache::site{"aeolus-conductor": source => 'puppet:///modules/aeolus_recipe/aggregator-httpd.conf'}

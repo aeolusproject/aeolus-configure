@@ -11,6 +11,13 @@ import "deltacloud"
 import "iwhd"
 import "image-factory"
 
+if $aeolus_enable_https == "true" or $aeolus_enable_https == "1" {
+  import "openssl"
+  $enable_https = true
+} else {
+  $enable_https = false
+}
+
 if $aeolus_enable_security == "true" or $aeolus_enable_security == "1" {
   import "openssl"
   $enable_security = true

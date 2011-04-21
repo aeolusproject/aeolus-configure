@@ -5,7 +5,7 @@ class apache {
 	# require apache and mod_ssl
 	package { "httpd": ensure => installed }
 
-  if $enable_security {
+  if $enable_https {
 	  package { "mod_ssl": ensure => installed }
   }
 
@@ -40,3 +40,4 @@ define apache::site ( $ensure = 'present', $source = '') {
       require => Service['httpd']
 	}
 }
+

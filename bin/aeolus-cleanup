@@ -1,7 +1,9 @@
 #!/bin/sh
 
+export FACTER_AEOLUS_ENABLE_HTTPS=true
 export FACTER_AEOLUS_ENABLE_SECURITY=false
 puppet /usr/share/aeolus-configure/aeolus_uninstall.pp \
        --modulepath=/usr/share/aeolus-configure/modules/ \
        --logdest=/var/log/aeolus-configure/aeolus-cleanup.log \
        --logdest=console
+
