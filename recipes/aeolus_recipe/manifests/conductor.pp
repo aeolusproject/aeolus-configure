@@ -234,14 +234,15 @@ define aeolus::conductor::login($user,$password){
                       -d user_session[login]=${user} \
                       -d user_session[password]=${password} \
                       -d commit=submit \
-                      -c /tmp/aeolus-${user}.cookie",
+                      -c /tmp/aeolus-${user}.cookie \
+                      --location --post301 --post302 -k -f",
          onlyif  => "/usr/bin/test ! -f /tmp/aeolus-${user}.cookie || \"\" == \"`curl  -X GET http://localhost/conductor -b /tmp/aeolus-${user}.cookie -i --silent | grep 'HTTP/1.1 200'`\"",
          require => Service['aeolus-conductor', 'httpd']}
 }
 
 define aeolus::conductor::logout($user){
   exec{"conductor-logout-for-${name}":
-         command => "/usr/bin/curl -X GET http://localhost/conductor/logout -b /tmp/aeolus-${user}.cookie",
+         command => "/usr/bin/curl -X GET http://localhost/conductor/logout -b /tmp/aeolus-${user}.cookie --location -k -f",
          onlyif => "/usr/bin/test -f /tmp/aeolus-${user}.cookie" } # TODO add condition ensuring cookie / session is valid
   exec{"conductor-logout-cookie-for-${name}":
          command   => "/bin/rm /tmp/aeolus-${user}.cookie",
@@ -258,7 +259,8 @@ define aeolus::conductor::provider($type="",$url="",$login_user="",$login_passwo
                          -b /tmp/aeolus-${login_user}.cookie \
                          -d provider[name]=${name} \
                          -d provider[url]=${url} \
-                         -d provider[provider_type_codename]=${type}",
+                         -d provider[provider_type_codename]=${type} \
+                         --location --post301 --post302 -k -f",
          logoutput => true,
          require   => [Aeolus::Conductor::Login["provider-$name"]] }
   aeolus::conductor::logout{"provider-${name}":
@@ -280,7 +282,8 @@ define aeolus::conductor::hwp($memory='', $cpu='', $storage='', $architecture=''
                          -d hardware_profile[cpu_attributes][name]=cpu         -d hardware_profile[cpu_attributes][unit]=count \
                          -d hardware_profile[storage_attributes][name]=storage -d hardware_profile[storage_attributes][unit]=GB \
                          -d hardware_profile[architecture_attributes][name]=architecture -d hardware_profile[architecture_attributes][unit]=label \
-                         -d commit=Save",
+                         -d commit=Save \
+                         --location --post301 --post302 -k -f",
          logoutput => true,
          require   => [Aeolus::Conductor::Login["hwp-$name"]] }
   aeolus::conductor::logout{"hwp-${name}":
