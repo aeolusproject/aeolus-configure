@@ -48,6 +48,7 @@ aeolus::provider{"mock":
 
 aeolus::provider{"ec2-us-east-1":
                    type           => 'ec2',
+                   endpoint       => 'us-east-1',
                    port           => 3003,
                    login_user     => 'admin',
                    login_password => 'password',
@@ -55,6 +56,7 @@ aeolus::provider{"ec2-us-east-1":
 
 aeolus::provider{"ec2-us-west-1":
                    type           => 'ec2',
+                   endpoint       => 'us-west-1',
                    port           => 3004,
                    login_user     => 'admin',
                    login_password => 'password',
