@@ -34,7 +34,7 @@ start() {
     exit 0
   fi
 
-  $PROG -i $DRIVER -e $ENV -p $PORT >> $LOGFILE 2>&1 &
+  $PROG -i $DRIVER -e $ENV -p $PORT <%= "--provider #{endpoint}" unless endpoint == "" %> >> $LOGFILE 2>&1 &
   RETVAL=$?
   echo $! > $PIDFILE
   if [ $RETVAL -eq 0 ] ; then

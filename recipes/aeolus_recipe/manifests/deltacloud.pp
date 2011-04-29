@@ -17,7 +17,7 @@ class aeolus::deltacloud::ec2 {
 
 
 # install the deltacloud component w/ the specified driver
-define aeolus::deltacloud($provider_type="", $port="3002") {
+define aeolus::deltacloud($provider_type="", $endpoint='', $port="3002") {
   include aeolus::deltacloud::core
 
   if $provider_type == "ec2" {
