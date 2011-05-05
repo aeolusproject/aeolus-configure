@@ -33,33 +33,27 @@ include aeolus::iwhd
 
 aeolus::create_bucket{"aeolus":}
 
-aeolus::site_admin{"admin":
+aeolus::site_admin{"$admin_user":
      email           => 'dcuser@aeolusproject.org',
-     password        => 'password',
+     password        => "$admin_password",
      first_name      => 'aeolus',
      last_name       => 'user'}
 
 aeolus::provider{"mock":
                    type           => 'mock',
                    port           => 3002,
-                   login_user     => 'admin',
-                   login_password => 'password',
                    require        => Aeolus::Site_admin["admin"] }
 
 aeolus::provider{"ec2-us-east-1":
                    type           => 'ec2',
                    endpoint       => 'us-east-1',
                    port           => 3003,
-                   login_user     => 'admin',
-                   login_password => 'password',
                    require        => Aeolus::Site_admin["admin"] }
 
 aeolus::provider{"ec2-us-west-1":
                    type           => 'ec2',
                    endpoint       => 'us-west-1',
                    port           => 3004,
-                   login_user     => 'admin',
-                   login_password => 'password',
                    require        => Aeolus::Site_admin["admin"] }
 
 aeolus::conductor::hwp{"hwp1":
@@ -67,7 +61,5 @@ aeolus::conductor::hwp{"hwp1":
                          cpu            => "1",
                          storage        => "1",
                          architecture   => "x86_64",
-                         login_user     => 'admin',
-                         login_password => 'password',
                          require        => Aeolus::Site_admin["admin"] }
 

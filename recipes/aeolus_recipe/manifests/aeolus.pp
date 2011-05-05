@@ -54,13 +54,11 @@ class aeolus {
 }
 
 # Create a new provider in aeolus
-define aeolus::provider($type, $port, $endpoint="", $login_user="", $login_password=""){
+define aeolus::provider($type, $port, $endpoint=""){
   aeolus::deltacloud{$name: provider_type => $type, endpoint => $endpoint, port => $port}
   aeolus::conductor::provider{$name:
                                 type           => $type,
                                 url            => "http://localhost:${port}/api",
-                                login_user     => $login_user,
-                                login_password => $login_password,
                                 require        => Aeolus::Deltacloud[$name] }
 }
 
