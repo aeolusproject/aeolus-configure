@@ -18,6 +18,7 @@ Requires:   puppet
 # create buckets, eventually replace w/ an
 # iwhd client
 Requires:  curl
+Requires:  rubygem-curb
 
 %description
 Aeolus Configure Puppet Recipe
