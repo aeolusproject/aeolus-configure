@@ -231,8 +231,7 @@ define aeolus::site_admin($email="", $password="", $first_name="", $last_name=""
 # Create a new provider via the conductor
 define aeolus::conductor::provider($type="",$url=""){
   web{ "provider-$name":
-    uri         => "https://localhost/conductor/admin/providers",
-    http_method => 'post',
+    post         => "https://localhost/conductor/admin/providers",
     parameters  => { 'provider[name]'  => $name, 'provider[url]'   => $url,
                      'provider[provider_type_codename]' => $type },
     returns     => '200',
@@ -247,8 +246,7 @@ define aeolus::conductor::provider($type="",$url=""){
 
 define aeolus::conductor::hwp($memory='', $cpu='', $storage='', $architecture=''){
   web{ "hwp-$name":
-    uri         => "https://localhost/conductor/admin/hardware_profiles",
-    http_method => 'post',
+    post         => "https://localhost/conductor/admin/hardware_profiles",
     parameters  => {'hardware_profile[name]'  => $name,
                     'hardware_profile[memory_attributes][value]'       => $memory,
                     'hardware_profile[cpu_attributes][value]'          => $cpu,

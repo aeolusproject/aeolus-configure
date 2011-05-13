@@ -50,65 +50,79 @@ def verify_result(result, verify = {})
   end
 end
 
+# Helper to process/parse web parameters
+def process_params(request_method, params, uri)
+  begin
+    # Set request method and generate a unique session key
+    session = "/tmp/#{UUID.new.generate}"
+
+    # Invoke a login request if necessary
+    if params[:login]
+      login_params = params[:login].reject { |k,v| ['http_method', 'uri'].include?(k) }
+      web_request(params[:login]['http_method'], params[:login]['uri'],
+                  login_params, :cookie => session, :follow => params[:follow]).close
+    end
+
+    # Check to see if we should actually run the request
+    skip_request = !params[:unless].nil?
+    if params[:unless]
+      result = web_request(params[:unless]['http_method'], params[:unless]['uri'],
+                           params[:unless]['parameters'],
+                           :cookie => session, :follow => params[:follow])
+      begin
+        verify_result(result,
+                      :returns => params[:unless]['returns'],
+                      :body    => params[:unless]['verify'])
+      rescue Puppet::Error => e
+        skip_request = false
+      end
+      result.close
+    end
+    return if skip_request
+
+    # Actually run the request and verify the result
+    uri = params[:name] if uri.nil?
+    result = web_request(request_method, uri, params[:parameters],
+                         :cookie => session, :follow => params[:follow])
+    verify_result(result,
+                  :returns => params[:returns],
+                  :body    => params[:verify])
+    result.close
+
+    # Invoke a logout request if necessary
+    if params[:logout]
+      logout_params = params[:login].reject { |k,v| ['http_method', 'uri'].include?(k) }
+      web_request(params[:logout]['http_method'], params[:logout]['uri'],
+                  logout_params, :cookie => session, :follow => params[:follow]).close
+    end
+
+  rescue Exception => e
+    raise Puppet::Error, "An exception was raised when invoking web request: #{e}"
+
+  ensure
+    FileUtils.rm_f(session) if params[:logout]
+  end
+end
+
 # Puppet provider definition
 Puppet::Type.type(:web).provide :curl do
   desc "Use curl to access web resources"
 
-  def http_method
-    @request_method
+  def get
+    @uri
   end
 
-  def http_method=(request_method)
-    begin
-      # Set request method and generate a unique session key
-      @request_method = request_method
-      session = "/tmp/#{UUID.new.generate}"
+  def post
+    @uri
+  end
 
-      # Invoke a login request if necessary
-      if @resource[:login]
-        login_params = @resource[:login].reject { |k,v| ['http_method', 'uri'].include?(k) }
-        web_request(@resource[:login]['http_method'], @resource[:login]['uri'],
-                    login_params, :cookie => session, :follow => @resource[:follow]).close
-      end
+  def get=(uri)
+    @uri = uri
+    process_params('get', @resource, uri)
+  end
 
-      # Check to see if we should actually run the request
-      skip_request = !@resource[:unless].nil?
-      if @resource[:unless]
-        result = web_request(@resource[:unless]['http_method'], @resource[:unless]['uri'],
-                             @resource[:unless]['parameters'],
-                             :cookie => session, :follow => @resource[:follow])
-        begin
-          verify_result(result,
-                        :returns => @resource[:unless]['returns'],
-                        :body    => @resource[:unless]['verify'])
-        rescue Puppet::Error => e
-          skip_request = false
-        end
-        result.close
-      end
-      return if skip_request
-
-      # Actually run the request and verify the result
-      uri = !@resource[:uri].nil? ? @resource[:uri] : @resource[:name]
-      result = web_request(request_method, uri, @resource[:parameters],
-                           :cookie => session, :follow => @resource[:follow])
-      verify_result(result,
-                    :returns => @resource[:returns],
-                    :body    => @resource[:verify])
-      result.close
-
-      # Invoke a logout request if necessary
-      if @resource[:logout]
-        logout_params = @resource[:login].reject { |k,v| ['http_method', 'uri'].include?(k) }
-        web_request(@resource[:logout]['http_method'], @resource[:logout]['uri'],
-                    logout_params, :cookie => session, :follow => @resource[:follow]).close
-      end
-
-    rescue Exception => e
-      raise Puppet::Error, "An exception was raised when invoking web request: #{e}"
-
-    ensure
-      FileUtils.rm_f(session) if @resource[:logout]
-    end
+  def post=(uri)
+    @uri = uri
+    process_params('post', @resource, uri)
   end
 end

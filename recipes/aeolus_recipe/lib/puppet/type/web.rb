@@ -3,18 +3,18 @@ Puppet::Type.newtype(:web) do
 
     newparam :name
 
-    newparam(:uri) do
-      desc "URI to the web resource"
+    newproperty(:get) do
+      desc "Issue get request to the specified uri"
+      # TODO valid value to be a uri
     end
 
-    newproperty(:http_method) do
-      desc "HTTP method through which to issue the web request"
-      validate do |value|
-        unless ['post', 'get', 'put', 'delete'].include?(value) 
-          raise ArgumentError, "#{value} is not a valid HTTP request method"
-        end
-      end
+    newproperty(:post) do
+      desc "Issue get request to the specified uri"
+      # TODO valid value to be a uri
     end
+
+    #newproperty(:delete)
+    #newproperty(:put)
 
     newparam(:parameters) do
       desc "Hash of parameters to include in the web request"
