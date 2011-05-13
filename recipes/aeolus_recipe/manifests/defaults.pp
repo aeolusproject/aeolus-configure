@@ -12,7 +12,7 @@ $admin_user='admin'
 $admin_password='password'
 
 # Setup the default login/logout targets for web requests
-Web{
+Web_request{
   login       => { 'http_method' => 'post',
                    'uri'         =>  'https://localhost/conductor/user_session',
                    'user_session[login]'    => "$admin_user",

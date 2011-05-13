@@ -105,7 +105,7 @@ def process_params(request_method, params, uri)
 end
 
 # Puppet provider definition
-Puppet::Type.type(:web).provide :curl do
+Puppet::Type.type(:web_request).provide :curl do
   desc "Use curl to access web resources"
 
   def get

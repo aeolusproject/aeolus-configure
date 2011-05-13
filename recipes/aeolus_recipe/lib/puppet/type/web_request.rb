@@ -1,4 +1,4 @@
-Puppet::Type.newtype(:web) do
+Puppet::Type.newtype(:web_request) do
     @doc = "Issue a request via the world wide web"
 
     newparam :name
