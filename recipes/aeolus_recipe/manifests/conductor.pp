@@ -230,14 +230,14 @@ define aeolus::site_admin($email="", $password="", $first_name="", $last_name=""
 # Create a new provider via the conductor
 define aeolus::conductor::provider($type="",$url=""){
   web_request{ "provider-$name":
-    post         => "https://localhost/conductor/admin/providers",
+    post         => "https://localhost/conductor/providers",
     parameters  => { 'provider[name]'  => $name, 'provider[url]'   => $url,
                      'provider[provider_type_codename]' => $type },
     returns     => '200',
     verify      => '.*Provider added.*',
     follow      => true,
     unless      => { 'http_method'     => 'get',
-                     'uri'             => 'https://localhost/conductor/admin/providers',
+                     'uri'             => 'https://localhost/conductor/providers',
                      'verify'          => ".*$name.*" },
     require    => Service['aeolus-conductor']
   }
@@ -245,7 +245,7 @@ define aeolus::conductor::provider($type="",$url=""){
 
 define aeolus::conductor::hwp($memory='', $cpu='', $storage='', $architecture=''){
   web_request{ "hwp-$name":
-    post         => "https://localhost/conductor/admin/hardware_profiles",
+    post         => "https://localhost/conductor/hardware_profiles",
     parameters  => {'hardware_profile[name]'  => $name,
                     'hardware_profile[memory_attributes][value]'       => $memory,
                     'hardware_profile[cpu_attributes][value]'          => $cpu,
@@ -264,7 +264,7 @@ define aeolus::conductor::hwp($memory='', $cpu='', $storage='', $architecture=''
     #verify      => '.*Hardware profile added.*',
     follow      => true,
     unless      => { 'http_method'     => 'get',
-                     'uri'             => 'https://localhost/conductor/admin/hardware_profiles',
+                     'uri'             => 'https://localhost/conductor/hardware_profiles',
                      'verify'          => ".*$name.*" },
     require    => Service['aeolus-conductor']
   }
