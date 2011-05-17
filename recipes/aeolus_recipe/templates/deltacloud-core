@@ -16,7 +16,7 @@ PORT="${PORT:-<%= port %>}"
 LOCKFILE="${LOCKFILE:-/var/lock/subsys/deltacloud-<%= name %> }"
 LOGFILE="${LOGFILE:-/var/log/deltacloud-<%= name %>/$DRIVER.log}"
 PIDFILE="${THIN_PID:-/var/run/deltacloud-<%= name %>.pid}"
-export DELTACLOUD_MOCK_STORAGE=/usr/lib/ruby/gems/1.8/gems/deltacloud-<%= name %>-0.2.0/lib/deltacloud/drivers/mock/data/
+export DELTACLOUD_MOCK_STORAGE=/usr/lib/ruby/gems/1.8/gems/deltacloud-<%= name %>-0.3.0/lib/deltacloud/drivers/mock/data/
 
 PROG=/usr/bin/deltacloudd
 
