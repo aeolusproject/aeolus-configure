@@ -56,6 +56,11 @@ aeolus::provider{"ec2-us-west-1":
                    port           => 3004,
                    require        => Aeolus::Site_admin["admin"] }
 
+aeolus::provider{"rhevm":
+                  type => "rhevm",
+                  port  => 3005,
+                  require => Aeolus::Site_admin["admin"] }
+
 aeolus::conductor::hwp{"hwp1":
                          memory         => "1",
                          cpu            => "1",
