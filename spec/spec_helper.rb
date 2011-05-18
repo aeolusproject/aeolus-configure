@@ -7,7 +7,7 @@ $test_scripts = ($test_scripts != "false" && $test_scripts != "n")
 
 AEOLUS_PACKAGES = ['iwhd', 'imagefactory',
                    'rubygem-deltacloud-core', 'rubygem-deltacloud-client',
-                   'aeolus-conductor', 'aeolus-conductor-doc', 'aeolus-conductor-daemons',
+                   'aeolus-conductor', 'aeolus-conductor-daemons',
                    'aeolus-configure']
 
 AEOLUS_SERVICES = ['iwhd', 'deltacloud-mock', 'deltacloud-ec2-us-east-1', 'deltacloud-ec2-us-west-1', 'imagefactory',

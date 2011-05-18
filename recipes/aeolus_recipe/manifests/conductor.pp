@@ -4,8 +4,7 @@ class aeolus::conductor inherits aeolus {
   ### Install the aeolus components
     # specific versions of these two packages are needed and we need to pull the third in
     package {['aeolus-conductor',
-              'aeolus-conductor-daemons',
-              'aeolus-conductor-doc']:
+              'aeolus-conductor-daemons']:
               ensure => 'installed'}
 
     # to be renamed to aeolus-connector
