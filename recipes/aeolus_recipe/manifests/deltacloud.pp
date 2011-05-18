@@ -4,7 +4,7 @@ class aeolus::deltacloud::core {
   ### Install the aeolus components
     include aeolus
 
-    package { 'rubygem-deltacloud-core':
+    package { 'deltacloud-core':
               ensure => 'installed', require => Yumrepo['aeolus_arch', 'aeolus_noarch']}
 }
 
@@ -35,7 +35,7 @@ define aeolus::deltacloud($provider_type="", $endpoint='', $port="3002") {
     service { "deltacloud-${name}":
        ensure  => 'running',
        enable  => true,
-       require => [Package['rubygem-deltacloud-core'],
+       require => [Package['deltacloud-core'],
                    Package['rubygem-aws'],
                    File["/etc/init.d/deltacloud-${name}", "/var/log/deltacloud-${name}"]] }
 }
