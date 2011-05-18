@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.0.0
-Release:  5%{?dist}%{?extra_release}
+Release:  11%{?dist}%{?extra_release}
 
 Group:    Applications/Internet
 License:  GPLv2+
@@ -51,8 +51,10 @@ rm -rf %{buildroot}
 %{dchome}
 
 %changelog
+* Wed May 18 2011 Chris Lalancette <clalance@redhat.com> - 2.0.0-11
+- Bump the release version
 
-* Tue Mar 22 2011 Angus Thomas <athomas@redhat.com 2.0.0-5
+* Tue Mar 22 2011 Angus Thomas <athomas@redhat.com> 2.0.0-5
 - Removed iwhd init script and config file
 
 * Wed Feb 17 2011 Mohammed Morsi <mmorsi@redhat.com> 2.0.0-3
