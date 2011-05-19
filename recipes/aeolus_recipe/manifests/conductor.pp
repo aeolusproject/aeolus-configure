@@ -160,6 +160,47 @@ class aeolus::conductor inherits aeolus {
              enable  =>  'true' }
 }
 
+class aeolus::conductor::seed_data {
+    aeolus::create_bucket{"aeolus":}
+
+    aeolus::site_admin{"$admin_user":
+       email           => 'dcuser@aeolusproject.org',
+       password        => "$admin_password",
+       first_name      => 'aeolus',
+       last_name       => 'user'}
+
+    aeolus::provider{"mock":
+        type           => 'mock',
+        port           => 3002,
+        require        => Aeolus::Site_admin["admin"] }
+
+    aeolus::provider{"ec2-us-east-1":
+        type           => 'ec2',
+        endpoint       => 'us-east-1',
+        port           => 3003,
+        require        => Aeolus::Site_admin["admin"] }
+
+    aeolus::provider{"ec2-us-west-1":
+        type           => 'ec2',
+        endpoint       => 'us-west-1',
+        port           => 3004,
+        require        => Aeolus::Site_admin["admin"] }
+
+    aeolus::conductor::hwp{"hwp1":
+        memory         => "1",
+        cpu            => "1",
+        storage        => "1",
+        architecture   => "x86_64",
+        require        => Aeolus::Site_admin["admin"] }
+
+}
+
+class aeolus::conductor::remove_seed_data {
+    aeolus::deltacloud::disabled{"mock": }
+    aeolus::deltacloud::disabled{"ec2-us-east-1": }
+    aeolus::deltacloud::disabled{"ec2-us-west-1": }
+}
+
 class aeolus::conductor::disabled {
     file {"/var/lib/aeolus-conductor":
             ensure => absent,

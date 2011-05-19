@@ -19,7 +19,7 @@ RPM_SPEC = "contrib/aeolus-configure.spec"
 rpm_task =
 Rake::RpmTask.new(RPM_SPEC) do |rpm|
   rpm.need_tar = true
-  rpm.package_files.include("bin/*", "recipes/**/*")
+  rpm.package_files.include("bin/*", "recipes/**/*", "conf/*")
   rpm.topdir = "#{RPMBUILD_DIR}"
 end
 

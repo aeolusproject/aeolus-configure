@@ -2,8 +2,9 @@
 
 export FACTER_AEOLUS_ENABLE_HTTPS=true
 export FACTER_AEOLUS_ENABLE_SECURITY=false
-puppet /usr/share/aeolus-configure/aeolus_uninstall.pp \
++puppet /usr/share/aeolus-configure/modules/aeolus_recipe/manifests/defaults.pp \
        --modulepath=/usr/share/aeolus-configure/modules/ \
-       --logdest=/var/log/aeolus-configure/aeolus-cleanup.log \
+       --external_nodes '/usr/sbin/aeolus-node cleanup' --node_terminus exec \
+       --logdest=/var/log/aeolus-configure/aeolus-configure.log \
        --logdest=console
 

@@ -3,8 +3,8 @@
 
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
-Version:  2.0.0
-Release:  11%{?dist}%{?extra_release}
+Version:  2.0.1
+Release:  0%{?dist}%{?extra_release}
 
 Group:    Applications/Internet
 License:  GPLv2+
@@ -31,8 +31,8 @@ Aeolus Configure Puppet Recipe
 %install
 rm -rf %{buildroot}
 %{__mkdir} -p %{buildroot}/%{dchome}/modules/aeolus_recipe %{buildroot}/%{_sbindir}
-%{__cp} -R %{pbuild}/recipes/aeolus_recipe/aeolus_recipe.pp %{buildroot}/%{dchome}
-%{__cp} -R %{pbuild}/recipes/aeolus_recipe/aeolus_uninstall.pp %{buildroot}/%{dchome}
+%{__mkdir} -p %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
+%{__cp} -R %{pbuild}/conf/* %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
 %{__cp} -R %{pbuild}/recipes/aeolus_recipe/*/ %{buildroot}/%{dchome}/modules/aeolus_recipe
 %{__cp} -R %{pbuild}/recipes/apache/ %{buildroot}/%{dchome}/modules/apache
 %{__cp} -R %{pbuild}/recipes/ntp/ %{buildroot}/%{dchome}/modules/ntp
@@ -40,6 +40,7 @@ rm -rf %{buildroot}
 %{__cp} -R %{pbuild}/recipes/postgres/ %{buildroot}/%{dchome}/modules/postgres
 %{__cp} -R %{pbuild}/bin/aeolus-configure %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-cleanup %{buildroot}/%{_sbindir}/
+%{__cp} -R %{pbuild}/bin/aeolus-node %{buildroot}/%{_sbindir}/\
 
 %clean
 rm -rf %{buildroot}
@@ -48,9 +49,14 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %attr(0755, root, root) %{_sbindir}/aeolus-configure
 %attr(0755, root, root) %{_sbindir}/aeolus-cleanup
+%attr(0755, root, root) %{_sbindir}/aeolus-node
+%config(noreplace) %{_sysconfdir}/aeolus-configure/nodes/*
 %{dchome}
 
 %changelog
+* Wed May 18 2011 Mike Orazi <morazi@redhat.com> 2.0.1-0
+- Move using external nodes so changes to behavior can happen in etc
+
 * Wed May 18 2011 Chris Lalancette <clalance@redhat.com> - 2.0.0-11
 - Bump the release version
 

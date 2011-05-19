@@ -1,6 +1,3 @@
-$apache_dir          = "/etc/httpd"
-$apache_conf_dir     = "${apache_dir}/conf.d"
-
 class apache {
 	# require apache and mod_ssl
 	package { "httpd": ensure => installed }
@@ -31,6 +28,9 @@ class apache {
 }
 
 define apache::site ( $ensure = 'present', $source = '') {
+  $apache_dir          = "/etc/httpd"
+  $apache_conf_dir     = "${apache_dir}/conf.d"
+
 	$site_file = "${apache_conf_dir}/${name}.conf"
 	file {
 		$site_file:
