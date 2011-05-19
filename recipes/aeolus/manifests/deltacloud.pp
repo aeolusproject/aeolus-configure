@@ -30,7 +30,7 @@ define aeolus::deltacloud($provider_type="", $endpoint='', $port="3002") {
   ### Start the aeolus services
     file { "/var/log/deltacloud-${name}": ensure => 'directory' }
     file {"/etc/init.d/deltacloud-${name}":
-           content => template("aeolus_recipe/deltacloud-core"),
+           content => template("aeolus/deltacloud-core"),
            mode   => 755 }
     service { "deltacloud-${name}":
        ensure  => 'running',

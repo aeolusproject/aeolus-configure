@@ -20,7 +20,7 @@ class aeolus::image-factory inherits aeolus {
 
   ### Start the aeolus services
     file { "/etc/qpidd.conf":
-               source => "puppet:///modules/aeolus_recipe/qpidd.conf",
+               source => "puppet:///modules/aeolus/qpidd.conf",
                mode   => 644 }
     service {'qpidd':
                ensure  => 'running',

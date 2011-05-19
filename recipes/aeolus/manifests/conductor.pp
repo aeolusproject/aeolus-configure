@@ -19,7 +19,7 @@ class aeolus::conductor inherits aeolus {
 
   ### Start the aeolus services
     file {"/var/lib/condor/condor_config.local":
-           source => "puppet:///modules/aeolus_recipe/condor_config.local",
+           source => "puppet:///modules/aeolus/condor_config.local",
            require => Package['aeolus-conductor-daemons'] }
      # condor requires an explicit non-localhost hostname
      # TODO we can also kill the configure sequence here instead
@@ -68,20 +68,20 @@ class aeolus::conductor inherits aeolus {
                group   => 'postgres',
                notify  => Service['postgresql'] }
       file { "/var/lib/pgsql/data/pg_hba.conf":
-               source  => "puppet:///modules/aeolus_recipe/pg_hba-ssl.conf",
+               source  => "puppet:///modules/aeolus/pg_hba-ssl.conf",
                require => Exec["pginitdb"],
                owner   => 'postgres',
                group   => 'postgres',
                notify  => Service['postgresql']}
       file { "/var/lib/pgsql/data/postgresql.conf":
-               source  => "puppet:///modules/aeolus_recipe/postgresql.conf",
+               source  => "puppet:///modules/aeolus/postgresql.conf",
                require => Exec["pginitdb"],
                owner   => 'postgres',
                group   => 'postgres',
                notify  => Service['postgresql']}
     } else {
       file { "/var/lib/pgsql/data/pg_hba.conf":
-               source => "puppet:///modules/aeolus_recipe/pg_hba.conf",
+               source => "puppet:///modules/aeolus/pg_hba.conf",
                require => Exec["pginitdb"],
                notify  => Service['postgresql']}
     }
@@ -115,12 +115,12 @@ class aeolus::conductor inherits aeolus {
 
   ### Setup/start solr search service
    file{"/etc/init.d/solr":
-        source => 'puppet:///modules/aeolus_recipe/solr.init',
+        source => 'puppet:///modules/aeolus/solr.init',
         mode => 755
    }
 
    file{"/etc/sysconfig/solr":
-        source => 'puppet:///modules/aeolus_recipe/solr.conf',
+        source => 'puppet:///modules/aeolus/solr.conf',
         mode => 755
    }
    # TODO we manually have to install java for solr, we should remove this once this is a dep in the solr rpm
@@ -147,9 +147,9 @@ class aeolus::conductor inherits aeolus {
   ### Setup apache for deltacloud
     include apache
     if $enable_https {
-      apache::site{"aeolus-conductor": source => 'puppet:///modules/aeolus_recipe/aggregator-httpd-ssl.conf'}
+      apache::site{"aeolus-conductor": source => 'puppet:///modules/aeolus/aggregator-httpd-ssl.conf'}
     } else{
-      apache::site{"aeolus-conductor": source => 'puppet:///modules/aeolus_recipe/aggregator-httpd.conf'}
+      apache::site{"aeolus-conductor": source => 'puppet:///modules/aeolus/aggregator-httpd.conf'}
     }
 
   ### Setup sshd for deltacloud

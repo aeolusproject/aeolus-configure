@@ -30,10 +30,10 @@ Aeolus Configure Puppet Recipe
 
 %install
 rm -rf %{buildroot}
-%{__mkdir} -p %{buildroot}/%{dchome}/modules/aeolus_recipe %{buildroot}/%{_sbindir}
+%{__mkdir} -p %{buildroot}/%{dchome}/modules/aeolus %{buildroot}/%{_sbindir}
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
 %{__cp} -R %{pbuild}/conf/* %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
-%{__cp} -R %{pbuild}/recipes/aeolus_recipe/*/ %{buildroot}/%{dchome}/modules/aeolus_recipe
+%{__cp} -R %{pbuild}/recipes/aeolus/*/ %{buildroot}/%{dchome}/modules/aeolus
 %{__cp} -R %{pbuild}/recipes/apache/ %{buildroot}/%{dchome}/modules/apache
 %{__cp} -R %{pbuild}/recipes/ntp/ %{buildroot}/%{dchome}/modules/ntp
 %{__cp} -R %{pbuild}/recipes/openssl/ %{buildroot}/%{dchome}/modules/openssl
