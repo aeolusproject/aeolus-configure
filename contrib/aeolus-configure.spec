@@ -13,7 +13,7 @@ Source0:  %{name}-%{version}.tgz
 BuildRoot:  %{_tmppath}/%{name}-%{version}
 BuildArch:  noarch
 Requires:   puppet
-Requires: rubygem(uuid)
+Requires:   rubygem(uuidtools)
 # To send a request to iwhd rest interface to
 # create buckets, eventually replace w/ an
 # iwhd client

@@ -1,5 +1,5 @@
 require 'curb'
-require 'uuid'
+require 'uuidtools'
 require 'fileutils'
 
 # Helper to invoke the web request w/ curl
@@ -54,7 +54,7 @@ end
 def process_params(request_method, params, uri)
   begin
     # Set request method and generate a unique session key
-    session = "/tmp/#{UUID.new.generate}"
+    session = "/tmp/#{UUIDTools::UUID.timestamp_create.to_s}"
 
     # Invoke a login request if necessary
     if params[:login]
