@@ -34,4 +34,5 @@ include aeolus::image-factory::disabled
 aeolus::deltacloud::disabled{"mock": }
 aeolus::deltacloud::disabled{"ec2-us-east-1": }
 aeolus::deltacloud::disabled{"ec2-us-west-1": }
+aeolus::deltacloud::disabled{"rhevm": }
 
