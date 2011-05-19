@@ -1,0 +1,16 @@
+#Default cleanup specification
+
+#Set everything up on this box.
+#You can override the default behavior
+#by creating <fqdn>_cleanup with the
+#class membership and parameters as
+#desire and it will take precedence over this.
+---
+parameters:
+  enable_https: true
+  enable_security: false
+classes:
+- aeolus::conductor::disabled
+- aeolus::iwhd::disabled
+- aeolus::image-factory::disabled
+- aeolus::conductor::remove_seed_data

@@ -1,0 +1,13 @@
+This directory contains a pair of default_ yml files to describe
+a fully configured aeolus-conductor w/ all of required subcomponents
+on a single box.
+
+Additionally, the iwhd pair of files demonstrates how one could install
+only select components on a particular box (for this to be located correctly
+it should be renamed to <fqdn>_cleanup & <fqdn>_configure respectively.
+Doing so will override the default 'configure everything' description though.
+
+IMPORTANT NOTE:  https is on by default, but no other security is in place
+to ensure that components on different machines can interact in a secure
+fashion.  This is on the roadmap, but not currently in place.  Segregate
+services at your own risk.

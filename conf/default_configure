@@ -1,0 +1,23 @@
+#Default setup configuration.
+
+#Set everything up on this box.
+#You can override the default behavior
+#by creating <fqdn>_configure with the
+#class membership and parameters as
+#desire and it will take precedence over this.
+
+#NOTE:  Although this suggests the components
+#can be deployed on individual boxes.  This will likely
+#become a common practice, but be advised that currently
+#apart from https on the web server for conductor, you should
+#consider intermachine communications insecure.  Securing
+#intermachine service calls is on the roadmap.
+---
+parameters:
+  enable_https: true
+  enable_security: false
+classes:
+- aeolus::conductor
+- aeolus::image-factory
+- aeolus::iwhd
+- aeolus::conductor::seed_data

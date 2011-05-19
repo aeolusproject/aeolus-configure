@@ -1,0 +1,19 @@
+#iwhd-only setup configuration.
+
+#renaming this file to <fqdn>_configure will
+#make it override the default configure everything
+#behavior with the behavior below to only set up
+#iwhd
+
+#NOTE:  Although this suggests the components
+#can be deployed on individual boxes.  This will likely
+#become a common practice, but be advised that currently
+#apart from https on the web server for conductor, you should
+#consider intermachine communications insecure.  Securing
+#intermachine service calls is on the roadmap.
+---
+parameters:
+  enable_https: true
+  enable_security: false
+classes:
+- aeolus::iwhd
