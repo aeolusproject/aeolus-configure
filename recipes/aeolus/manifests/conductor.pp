@@ -110,6 +110,7 @@ class aeolus::conductor inherits aeolus {
            cwd         => '/usr/share/aeolus-conductor',
            environment => "RAILS_ENV=production",
            command     => "/usr/bin/rake dc:prepare_repos",
+           logoutput   => on_failure,
            require     => Package['aeolus-conductor'] }
 
 
