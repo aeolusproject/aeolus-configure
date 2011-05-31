@@ -1,4 +1,28 @@
 #!/bin/sh
+usage()
+{
+cat << EOF
+
+USAGE:
+aeolus-configure [-d|--debug] [-h|--help] [-v|--verbose]
+
+OPTIONS:
+   -h | --help       Show this message.
+   -d | --debug      Debug logging mode.
+   -v | --verbose    Verbose logging mode.
+EOF
+}
+
+eval set -- `getopt -o hdv --long help,debug,verbose -- "$@"`
+while true ; do
+        case "$1" in
+                -h|--help) usage ; exit 1 ;  shift ;;
+                -d|--debug) LOGLEVEL="--debug" ; shift ;;
+                -v|--verbose) LOGLEVEL="--verbose" ; shift  ;;
+                --) shift ; break ;;
+                *)  usage ; exit 1 ;;
+        esac
+done
 
 export FACTER_AEOLUS_ENABLE_HTTPS=true
 export FACTER_AEOLUS_ENABLE_SECURITY=false
@@ -6,5 +30,6 @@ puppet /usr/share/aeolus-configure/modules/aeolus/manifests/defaults.pp \
        --modulepath=/usr/share/aeolus-configure/modules/ \
        --external_nodes '/usr/sbin/aeolus-node configure' --node_terminus exec \
        --logdest=/var/log/aeolus-configure/aeolus-configure.log \
-       --logdest=console
+       --logdest=console \
+       $LOGLEVEL
 
