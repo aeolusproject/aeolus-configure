@@ -13,7 +13,14 @@ OPTIONS:
 EOF
 }
 
-eval set -- `getopt -o hdv --long help,debug,verbose -- "$@"`
+args=`getopt -o :hdv --long help,debug,verbose -- "$@"`
+if test $? != 0
+     then
+         usage
+         exit 1
+fi
+
+eval set -- $args
 while true ; do
         case "$1" in
                 -h|--help) usage ; exit 1 ;  shift ;;
