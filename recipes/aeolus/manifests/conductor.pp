@@ -18,7 +18,7 @@ class aeolus::conductor inherits aeolus {
     selinux::mode{"permissive":}
 
   ### Start the aeolus services
-    file {"/var/lib/condor/condor_config.local":
+    file {"/etc/condor/config.d/10deltacloud.config":
            source => "puppet:///modules/aeolus/condor_config.local",
            require => Package['aeolus-conductor-daemons'] }
      # condor requires an explicit non-localhost hostname
@@ -31,7 +31,7 @@ class aeolus::conductor inherits aeolus {
       ensure  => 'running',
       enable  => true,
       hasstatus => true,
-      require => File['/var/lib/condor/condor_config.local'] }
+      require => File['/etc/condor/config.d/10deltacloud.config'] }
     service { ['aeolus-conductor',
                'conductor-dbomatic',
                'conductor-delayed_job']:
