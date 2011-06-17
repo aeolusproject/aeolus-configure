@@ -104,14 +104,6 @@ class aeolus::conductor inherits aeolus {
                 rails_env       => "production",
                 require         => Rails::Migrate::Db[migrate_aeolus_database]}
 
-  ### Prepare the image package repositories
-    exec{"dc_prepare_repos":
-           cwd         => '/usr/share/aeolus-conductor',
-           environment => "RAILS_ENV=production",
-           command     => "/usr/bin/rake dc:prepare_repos",
-           logoutput   => on_failure,
-           require     => Package['aeolus-conductor'] }
-
 
   ### Setup/start solr search service
    file{"/etc/init.d/solr":
