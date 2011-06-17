@@ -10,6 +10,7 @@ import "conductor"
 import "deltacloud"
 import "iwhd"
 import "image-factory"
+import "rhevm"
 
 if $aeolus_enable_https == "true" or $aeolus_enable_https == "1" {
   import "openssl"
