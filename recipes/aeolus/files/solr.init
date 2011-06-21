@@ -62,7 +62,7 @@ case "$1" in
       restart
       ;;
     status)
-      status -p $PIDFILE $PROG
+      status -p $PIDFILE solr
       RETVAL=$?
       ;;
     *)
