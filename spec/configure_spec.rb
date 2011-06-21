@@ -43,7 +43,7 @@ describe "aeolus-configure" do
 
   it "should create a site admin for aeolus conductor" do
     User.find(:first, :conditions => ["login = 'admin' AND " +
-                                      "email = 'dcuser@aeolusproject.org' AND " +
+                                      "email = 'aeolususer@aeolusproject.org' AND " +
                                       "first_name = 'aeolus' AND " +
                                       "last_name = 'user'"]).should_not be_nil
   end

@@ -116,7 +116,7 @@ class aeolus::conductor::seed_data {
     aeolus::create_bucket{"aeolus":}
 
     aeolus::site_admin{"$admin_user":
-       email           => 'dcuser@aeolusproject.org',
+       email           => 'aeolususer@aeolusproject.org',
        password        => "$admin_password",
        first_name      => 'aeolus',
        last_name       => 'user'}
