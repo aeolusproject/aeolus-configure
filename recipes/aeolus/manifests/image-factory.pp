@@ -6,8 +6,7 @@ class aeolus::image-factory inherits aeolus {
             ensure=> 'installed'
   }
   package { 'imagefactory':
-               ensure => 'installed',
-               require => [Yumrepo['aeolus_arch', 'aeolus_noarch']]
+               ensure => 'installed'
   }
   package { 'qpid-cpp-server':
                ensure => 'installed' }

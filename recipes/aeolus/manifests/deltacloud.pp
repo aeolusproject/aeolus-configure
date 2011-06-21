@@ -5,7 +5,7 @@ class aeolus::deltacloud::core {
     include aeolus
 
     package { 'deltacloud-core':
-              ensure => 'installed', require => Yumrepo['aeolus_arch', 'aeolus_noarch']}
+              ensure => 'installed'}
 }
 
 class aeolus::deltacloud::ec2 {
