@@ -73,7 +73,7 @@ module Rake
       file rpm_file, [:include_extra_release] => [:package, "#{@topdir}/SOURCES", "#{@topdir}/SPECS"] do |t,args|
         @include_extra_release = args.include_extra_release != "false"
         git_head = `git log -1 --pretty=format:%h`
-        extra_release = "." + Time.now.strftime("%Y%m%d%k%M%S").gsub(/\s/, '') + "git" + "#{git_head}"
+        extra_release = "." + Time.now.strftime("%Y%m%d%H%M%S").gsub(/\s/, '') + "git" + "#{git_head}"
         cp "#{package_dir}/#{@name}-#{@version}.tgz", "#{@topdir}/SOURCES/"
         cp @rpm_spec, "#{@topdir}/SPECS"
         sh "#{@rpmbuild_cmd} " +
