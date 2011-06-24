@@ -20,3 +20,5 @@ classes:
 - aeolus::conductor::remove_seed_data
 # Uncomment this to clean up RHEV details
 #- aeolus::rhevm::disabled
+# Uncomment to remove vmware
+#- aeolus::vmware::disabled

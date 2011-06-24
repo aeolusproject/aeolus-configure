@@ -1,0 +1,10 @@
+{
+  "vsphere":
+  {
+    "api-url":   "https://<%= vmware_api_endpoint %>/sdk",
+    "username":  "<%= vmware_username %>",
+    "password":     "<%= vmware_password %>",
+    "datastore":    "<%= vmware_datastore %>",
+    "network_name": "<%= vmware_network_name %>"
+  }
+}

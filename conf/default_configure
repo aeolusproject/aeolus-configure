@@ -25,6 +25,14 @@ parameters:
 #  rhevm_deltacloud_username: username@fqdn
 #  rhevm_deltacloud_password: password
 #  rhevm_deltacloud_powershell_url: https://rhevm.server.com:8543/rhevm-api-powershell
+#
+# Uncomment this section and provide appropriate values to configure vmware
+#  vmware_api_endpoint: vsphere.server.com
+#  vmware_username: username
+#  vmware_password: password
+#  vmware_datastore: datastore
+#  vmware_network_name: network_name
+#  vmware_deltacloud_port:  3006
 classes:
 - aeolus::conductor
 - aeolus::image-factory
@@ -32,3 +40,6 @@ classes:
 - aeolus::conductor::seed_data
 # Uncomment this section to include rhev setup
 #- aeolus::rhevm
+#
+# Uncomment this section to include vmware setup
+#- aeolus::vmware

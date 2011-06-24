@@ -11,6 +11,7 @@ import "deltacloud"
 import "iwhd"
 import "image-factory"
 import "rhevm"
+import "vmware"
 
 if $aeolus_enable_https == "true" or $aeolus_enable_https == "1" {
   import "openssl"
