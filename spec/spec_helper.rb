@@ -12,7 +12,6 @@ AEOLUS_PACKAGES = ['iwhd', 'imagefactory',
 
 AEOLUS_SERVICES = ['iwhd', 'deltacloud-mock', 'deltacloud-ec2-us-east-1', 'deltacloud-ec2-us-west-1', 'imagefactory',
                    'aeolus-conductor', 'conductor-dbomatic']
-                   # 'conductor-delayed_job'] TODO where is the init script for this?
 
 AEOLUS_DEPENDENCY_PACKAGES = ['rubygem-aws', 'curl', 'java-1.6.0-openjdk', 'openssh-server',
                               'appliance-tools', 'livecd-tools', 'python-imgcreate']

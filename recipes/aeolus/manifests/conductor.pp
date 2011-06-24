@@ -31,8 +31,7 @@ class aeolus::conductor inherits aeolus {
       hasstatus => true,
       require => File['/etc/condor/config.d/10deltacloud.config'] }
     service { ['aeolus-conductor',
-               'conductor-dbomatic',
-               'conductor-delayed_job']:
+               'conductor-dbomatic' ]:
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
@@ -164,11 +163,9 @@ class aeolus::conductor::disabled {
       ensure  => 'stopped',
       enable  => false,
       require => Service['aeolus-conductor',
-                         'conductor-dbomatic',
-                         'conductor-delayed_job'] }
+                         'conductor-dbomatic'] }
     service { ['aeolus-conductor',
-               'conductor-dbomatic',
-               'conductor-delayed_job']:
+               'conductor-dbomatic']:
       ensure => 'stopped',
       enable => false,
       hasstatus => true }
@@ -178,8 +175,7 @@ class aeolus::conductor::disabled {
                 cwd        => "/usr/share/aeolus-conductor",
                 rails_env  => "production",
                 require    => Service["aeolus-conductor",
-                                      "conductor-dbomatic",
-                                      "conductor-delayed_job"]}
+                                      "conductor-dbomatic"]}
     postgres::user{"aeolus":
                     ensure => 'dropped',
                     require => Rails::Drop::Db["drop_aeolus_database"]}
