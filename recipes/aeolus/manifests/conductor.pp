@@ -12,7 +12,9 @@ class aeolus::conductor inherits aeolus {
               ensure => 'installed'}
 
     file {"/var/lib/aeolus-conductor":
-            ensure => directory }
+      ensure => directory,
+      owner => 'aeolus',
+      group => 'aeolus'}
 
   ### Setup selinux for deltacloud
     selinux::mode{"permissive":}
