@@ -45,6 +45,12 @@ class aeolus::iwhd::disabled {
       ensure  =>  'stopped',
       enable  =>  false,
       hasstatus =>  true}
+
+   file { "/var/lib/iwhd":
+      ensure  => 'absent',
+      force   => true,
+      require => Service['iwhd']}
+
 }
 
 # Create a named bucket in iwhd
