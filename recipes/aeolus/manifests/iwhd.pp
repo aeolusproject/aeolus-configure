@@ -31,7 +31,7 @@ class aeolus::iwhd inherits aeolus {
     # XXX ugly hack but iwhd might take some time to come up
     exec{"iwhd_startup_pause":
                 command => "/bin/sleep 2",
-                unless  => '/usr/bin/curl http://localhost:9090',
+                unless  => "/usr/bin/curl --proxy '' http://localhost:9090",
                 logoutput => true,
                 require => Service['iwhd']}
 }
@@ -58,7 +58,7 @@ class aeolus::iwhd::disabled {
 # Create a named bucket in iwhd
 define aeolus::create_bucket(){
   exec{"create-bucket-${name}":
-         command => "/usr/bin/curl -X PUT http://localhost:9090/templates",
+         command => "/usr/bin/curl --proxy '' -X PUT http://localhost:9090/templates",
          logoutput => true,
          require => [Exec['iwhd_startup_pause'], Package[curl]] }
 }
