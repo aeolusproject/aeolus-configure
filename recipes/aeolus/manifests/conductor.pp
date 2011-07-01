@@ -121,7 +121,7 @@ class aeolus::conductor inherits aeolus {
    package{"java-1.6.0-openjdk":
              ensure   => "installed" }
     service{"solr":
-             hasstatus   => "false",
+             hasstatus   => true,
              pattern     => "jetty.port=8983",
              ensure      => 'running',
              enable      => 'true',
@@ -229,9 +229,8 @@ class aeolus::conductor::disabled {
 
   ### stop solr search service
     service{"solr":
-                hasstatus => false,
-                stop      => "cd /usr/share/aeolus-conductor;RAILS_ENV=production /usr/bin/rake sunspot:solr:stop",
-                pattern   => "solr",
+                hasstatus => true,
+                enable => false,
                 ensure    => 'stopped',
                 require   => Service['aeolus-conductor']}
 }
