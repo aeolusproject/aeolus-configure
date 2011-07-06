@@ -7,10 +7,6 @@ class aeolus::conductor inherits aeolus {
               'aeolus-conductor-daemons']:
               ensure => 'installed'}
 
-    # to be renamed to aeolus-connector
-    package {'rubygem-image_factory_connector':
-              ensure => 'installed'}
-
     file {"/var/lib/aeolus-conductor":
       ensure => directory,
       owner => 'aeolus',
@@ -43,13 +39,6 @@ class aeolus::conductor inherits aeolus {
       require => [Package['aeolus-conductor-daemons'],
                   Rails::Migrate::Db[migrate_aeolus_database],
                   Service['condor', 'httpd']] }
-
-    service{ 'aeolus-connector':
-      ensure    => 'running',
-      enable    => true,
-      hasstatus => true,
-      require => [Package['rubygem-image_factory_connector'],
-		 Service[qpidd]]}
 
   ### Initialize and start the aeolus database
     # Right now we configure and start postgres, at some point I want
@@ -116,7 +105,7 @@ class aeolus::conductor inherits aeolus {
     }
 
   ### Setup sshd for deltacloud
-	  package { "openssh-server": ensure => installed }
+  package { "openssh-server": ensure => installed }
     service{"sshd":
              require  => Package["openssh-server"],
              ensure   =>  'running',
@@ -179,8 +168,7 @@ class aeolus::conductor::disabled {
                          'conductor-delayed_job'] }
     service { ['aeolus-conductor',
                'conductor-dbomatic',
-               'conductor-delayed_job',
-               'aeolus-connector']:
+               'conductor-delayed_job']:
       ensure => 'stopped',
       enable => false,
       hasstatus => true }
@@ -257,4 +245,3 @@ define aeolus::conductor::hwp($memory='', $cpu='', $storage='', $architecture=''
     require    => Service['aeolus-conductor']
   }
 }
-
