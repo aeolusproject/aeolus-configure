@@ -19,6 +19,14 @@ class aeolus::rhevm inherits aeolus  {
     options => "rw",
     require => File["$rhevm_nfs_mount_point"]}
 
+  # give iwhd a restart to pick up new configuration files
+  # in the event iwhd had already initialized at /var/lib/iwhd
+  exec { "/sbin/service iwhd restart":
+    require => [Service['iwhd'],
+                Mount["$rhevm_nfs_mount_point"],
+                File["/etc/rhevm.json"],
+                File["/etc/iwhd/conf.js"]]}
+
   aeolus::conductor::hwp{"rhevm-hwp":
     memory       => "512",
     cpu          => "1",
