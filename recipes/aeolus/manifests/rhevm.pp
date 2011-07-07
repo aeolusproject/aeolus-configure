@@ -35,7 +35,7 @@ class aeolus::rhevm inherits aeolus  {
     port => $rhevm_deltacloud_port}
 
   aeolus::conductor::provider{"rhevm":
-    type           => "rhev-m",
+    type           => "rhevm",
     url            => "http://localhost:${rhevm_deltacloud_port}/api",
     require        => [Aeolus::Deltacloud["rhevm"],Aeolus::Conductor::Hwp["rhevm-hwp"]]}
 
