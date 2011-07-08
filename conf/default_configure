@@ -16,8 +16,19 @@
 parameters:
   enable_https: true
   enable_security: false
+# Uncomment this section and provide reasonable values to
+# enable RHEV values to be populated.
+#  rhevm_nfs_server: nfs.server.com
+#  rhevm_nfs_export: /export/export_domain
+#  rhevm_nfs_mount_point: /mnt/rhevm-nfs
+#  rhevm_deltacloud_port: 3005
+#  rhevm_deltacloud_username: username@fqdn
+#  rhevm_deltacloud_password: password
+#  rhevm_deltacloud_powershell_url: https://rhevm.server.com:8543/rhevm-api-powershell
 classes:
 - aeolus::conductor
 - aeolus::image-factory
 - aeolus::iwhd
 - aeolus::conductor::seed_data
+# Uncomment this section to include rhev setup
+#- aeolus::rhevm

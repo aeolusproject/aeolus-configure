@@ -9,8 +9,14 @@
 parameters:
   enable_https: true
   enable_security: false
+# Uncomment these to clean up RHEV
+#  rhevm_nfs_server: nfs.server.com
+#  rhevm_nfs_export: /export/export_domain
+#  rhevm_nfs_mount_point: /mnt/rhevm-nfs
 classes:
 - aeolus::conductor::disabled
 - aeolus::iwhd::disabled
 - aeolus::image-factory::disabled
 - aeolus::conductor::remove_seed_data
+# Uncomment this to clean up RHEV details
+#- aeolus::rhevm::disabled
