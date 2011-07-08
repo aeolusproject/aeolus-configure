@@ -49,6 +49,7 @@ class aeolus::iwhd::disabled {
 
    file { "/var/lib/iwhd":
       ensure  => 'absent',
+      backup => 'false',
       force   => true,
       require => Service['iwhd']}
 
