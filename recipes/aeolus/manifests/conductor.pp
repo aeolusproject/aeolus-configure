@@ -100,42 +100,11 @@ class aeolus::conductor inherits aeolus {
     rails::migrate::db{"migrate_aeolus_database":
                 cwd             => "/usr/share/aeolus-conductor",
                 rails_env       => "production",
-                require         => [Rails::Create::Db[create_aeolus_database], Service['solr']]}
+                require         => [Rails::Create::Db[create_aeolus_database]]}
     rails::seed::db{"seed_aeolus_database":
                 cwd             => "/usr/share/aeolus-conductor",
                 rails_env       => "production",
                 require         => Rails::Migrate::Db[migrate_aeolus_database]}
-
-
-  ### Setup/start solr search service
-   file{"/etc/init.d/solr":
-        source => 'puppet:///modules/aeolus/solr.init',
-        mode => 755
-   }
-
-   file{"/etc/sysconfig/solr":
-        source => 'puppet:///modules/aeolus/solr.conf',
-        mode => 755
-   }
-   # TODO we manually have to install java for solr, we should remove this once this is a dep in the solr rpm
-   package{"java-1.6.0-openjdk":
-             ensure   => "installed" }
-    service{"solr":
-             hasstatus   => true,
-             pattern     => "jetty.port=8983",
-             ensure      => 'running',
-             enable      => 'true',
-             require     => [File['/etc/init.d/solr', '/etc/init.d/solr'],
-                             Package["java-1.6.0-openjdk"],
-                             Package['aeolus-conductor'],
-                             Rails::Create::Db['create_aeolus_database']]}
-
-    exec{"build_solr_index":
-                cwd         => "/usr/share/aeolus-conductor",
-                command     => "/usr/bin/rake sunspot:reindex",
-                logoutput   => true,
-                environment => "RAILS_ENV=production",
-                require     => Rails::Migrate::Db['migrate_aeolus_database']}
 
 
   ### Setup apache for deltacloud
@@ -226,13 +195,6 @@ class aeolus::conductor::disabled {
     postgres::user{"aeolus":
                     ensure => 'dropped',
                     require => Rails::Drop::Db["drop_aeolus_database"]}
-
-  ### stop solr search service
-    service{"solr":
-                hasstatus => true,
-                enable => false,
-                ensure    => 'stopped',
-                require   => Service['aeolus-conductor']}
 }
 
 # Create a new site admin conductor web user
