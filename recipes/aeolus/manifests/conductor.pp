@@ -190,7 +190,7 @@ define aeolus::site_admin($email="", $password="", $first_name="", $last_name=""
   exec{"create_site_admin_user":
          cwd         => '/usr/share/aeolus-conductor',
          environment => "RAILS_ENV=production",
-         command     => "/usr/bin/rake dc:create_user[${name}] email=${email} password=${password} first_name=${first_name} last_name=${last_name}",
+         command     => "/usr/bin/rake dc:create_user[${name},${password},${email},${first_name},${last_name}]",
          logoutput   => true,
          unless      => "/usr/bin/test `psql conductor aeolus -P tuples_only -c \"select count(*) from users where login = '${name}';\"` = \"1\"",
          require     => Rails::Seed::Db["seed_aeolus_database"]}
