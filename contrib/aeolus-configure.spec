@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.0.1
-Release:  0%{?dist}%{?extra_release}
+Release:  1%{?dist}%{?extra_release}
 
 Group:    Applications/Internet
 License:  GPLv2+
@@ -54,6 +54,12 @@ rm -rf %{buildroot}
 %{dchome}
 
 %changelog
+* Tue Jul 19 2011 Mike Orazi <morazi@redhat.com> 2.0.1-1
+- vSphere configuration
+- RHEV configuration
+- warehouse sync, solr, and factory connector services removed
+- bug fixes
+
 * Wed May 18 2011 Mike Orazi <morazi@redhat.com> 2.0.1-0
 - Move using external nodes so changes to behavior can happen in etc
 
