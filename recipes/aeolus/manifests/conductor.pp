@@ -139,9 +139,9 @@ class aeolus::conductor::seed_data {
         require        => Aeolus::Site_admin["admin"] }
 
     aeolus::conductor::hwp{"hwp1":
-        memory         => "1",
+        memory         => "512",
         cpu            => "1",
-        storage        => "1",
+        storage        => "",
         architecture   => "x86_64",
         require        => Aeolus::Site_admin["admin"] }
 

@@ -27,16 +27,6 @@ class aeolus::rhevm inherits aeolus  {
                 File["/etc/rhevm.json"],
                 File["/etc/iwhd/conf.js"]]}
 
-  aeolus::conductor::hwp{"rhevm-hwp":
-    memory       => "512",
-    cpu          => "1",
-    storage      => "1",
-    architecture => "x86_64",
-    require      => Aeolus::Site_admin["admin"] }
-
-  # break up aeolus::provider into its individual steps for two reasons:
-  # 1. deltacloudd expects "rhevm", imagefactory expects "rhev-m" passed through by conductor
-  # 2. rhevm-hwp must exist before creating provider
   aeolus::deltacloud{"rhevm":
     provider_type => 'rhevm',
     endpoint => "$rhevm_deltacloud_powershell_url",
@@ -45,7 +35,7 @@ class aeolus::rhevm inherits aeolus  {
   aeolus::conductor::provider{"rhevm":
     type           => "rhevm",
     url            => "http://localhost:${rhevm_deltacloud_port}/api",
-    require        => [Aeolus::Deltacloud["rhevm"],Aeolus::Conductor::Hwp["rhevm-hwp"]]}
+    require        => Aeolus::Deltacloud["rhevm"]}
 
   # TODO:
   # 1. since we have credentials, create provider account
