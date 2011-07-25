@@ -1,16 +1,20 @@
-%define dchome /usr/share/aeolus-configure
-%define pbuild %{_builddir}/%{name}-%{version}
+%global aeolushome /usr/share/aeolus-configure
+%global pbuild %{_builddir}/%{name}-%{version}
 
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.0.1
-Release:  1%{?dist}%{?extra_release}
+Release:  2%{?dist}%{?extra_release}
 
 Group:    Applications/Internet
 License:  GPLv2+
 URL:      http://aeolusproject.org
+
+# git clone  git://git.fedorahosted.org/aeolus/configure.git
+# cd configure
+# rake pkg
+# cp pkg/aeolus-configure-2.0.1.tgz ~/rpmbuild/SOURCES
 Source0:  %{name}-%{version}.tgz
-BuildRoot:  %{_tmppath}/%{name}-%{version}
 BuildArch:  noarch
 Requires:   puppet >= 2.6.6
 Requires:   rubygem(uuidtools)
@@ -29,31 +33,29 @@ Aeolus Configure Puppet Recipe
 %build
 
 %install
-rm -rf %{buildroot}
-%{__mkdir} -p %{buildroot}/%{dchome}/modules/aeolus %{buildroot}/%{_sbindir}
+%{__mkdir} -p %{buildroot}/%{aeolushome}/modules/aeolus %{buildroot}/%{_sbindir}
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
 %{__cp} -R %{pbuild}/conf/* %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
-%{__cp} -R %{pbuild}/recipes/aeolus/*/ %{buildroot}/%{dchome}/modules/aeolus
-%{__cp} -R %{pbuild}/recipes/apache/ %{buildroot}/%{dchome}/modules/apache
-%{__cp} -R %{pbuild}/recipes/ntp/ %{buildroot}/%{dchome}/modules/ntp
-%{__cp} -R %{pbuild}/recipes/openssl/ %{buildroot}/%{dchome}/modules/openssl
-%{__cp} -R %{pbuild}/recipes/postgres/ %{buildroot}/%{dchome}/modules/postgres
+%{__cp} -R %{pbuild}/recipes/aeolus/*/ %{buildroot}/%{aeolushome}/modules/aeolus
+%{__cp} -R %{pbuild}/recipes/apache/ %{buildroot}/%{aeolushome}/modules/apache
+%{__cp} -R %{pbuild}/recipes/ntp/ %{buildroot}/%{aeolushome}/modules/ntp
+%{__cp} -R %{pbuild}/recipes/openssl/ %{buildroot}/%{aeolushome}/modules/openssl
+%{__cp} -R %{pbuild}/recipes/postgres/ %{buildroot}/%{aeolushome}/modules/postgres
 %{__cp} -R %{pbuild}/bin/aeolus-configure %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-cleanup %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-node %{buildroot}/%{_sbindir}/\
 
-%clean
-rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root,-)
 %attr(0755, root, root) %{_sbindir}/aeolus-configure
 %attr(0755, root, root) %{_sbindir}/aeolus-cleanup
 %attr(0755, root, root) %{_sbindir}/aeolus-node
 %config(noreplace) %{_sysconfdir}/aeolus-configure/nodes/*
-%{dchome}
+%{aeolushome}
 
 %changelog
+* Wed Jul 20 2011 Mo Morsi <mmorsi@redhat.com> 2.0.1-2
+- updates to conform to Fedora package guidelines
+
 * Tue Jul 19 2011 Mike Orazi <morazi@redhat.com> 2.0.1-1
 - vSphere configuration
 - RHEV configuration
