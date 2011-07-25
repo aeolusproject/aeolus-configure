@@ -215,7 +215,7 @@ define aeolus::conductor::provider($type="",$url=""){
     unless      => { 'http_method'     => 'get',
                      'uri'             => 'https://localhost/conductor/providers',
                      'verify'          => ".*$name.*" },
-    require    => Service['aeolus-conductor']
+    require    => [Service['aeolus-conductor'], Exec['grant_site_admin_privs']]
   }
 }
 
@@ -242,6 +242,6 @@ define aeolus::conductor::hwp($memory='', $cpu='', $storage='', $architecture=''
     unless      => { 'http_method'     => 'get',
                      'uri'             => 'https://localhost/conductor/hardware_profiles',
                      'verify'          => ".*$name.*" },
-    require    => Service['aeolus-conductor']
+    require    => [Service['aeolus-conductor'], Exec['grant_site_admin_privs']]
   }
 }
