@@ -1,107 +1,86 @@
-require 'curb'
-require 'uuidtools'
 require 'fileutils'
 
-# Helper to invoke the web request w/ curl
-def web_request(method, uri, request_params, params = {})
-  raise Puppet::Error, "Must specify http method and uri" if method.nil? || uri.nil?
+# Provides an interface to curl using the curb gem for puppet
+require 'curb'
 
-  curl = Curl::Easy.new
+# uses nokogiri to verify responses w/ xpath
+require 'nokogiri'
 
-  if params.has_key?(:cookie)
-    curl.enable_cookies = true
-    curl.cookiefile = params[:cookie]
-    curl.cookiejar  = params[:cookie]
-  end
+class Curl::Easy
 
-  curl.follow_location = (params.has_key?(:follow) && params[:follow])
-
-  case(method)
-  when 'get'
-    url = uri
-    url += ";" + request_params.collect { |k,v| "#{k}=#{v}" }.join("&") unless request_params.nil?
-    curl.url = url
-    curl.http_get
-    return curl
-
-  when 'post'
+  # Format request parameters for the specified request method
+  def self.format_params(method, params, file_params)
+    if([:get, :delete].include?(method))
+      return params.collect { |k,v| "#{k}=#{v}" }.join("&") unless params.nil?
+      return ""
+    end
+    # post, put:
     cparams = []
-    request_params.each_pair { |k,v| cparams << Curl::PostField.content(k,v) } unless request_params.nil?
-    curl.url = uri
-    curl.http_post(cparams)
-    return curl
-
-  #when 'put'
-  #when 'delete'
-  end
-end
-
-# Helper to verify the response
-def verify_result(result, verify = {})
-  returns = (verify.has_key?(:returns) && !verify[:returns].nil?) ? verify[:returns] : "200"
-  returns = [returns] unless returns.is_a? Array
-  unless returns.include?(result.response_code.to_s)
-    raise Puppet::Error, "Invalid HTTP Return Code: #{result.response_code}, 
-                          was expecting one of #{returns.join(", ")}"
+    params.each_pair      { |k,v| cparams << Curl::PostField.content(k,v) } unless params.nil?
+    file_params.each_pair { |k,v| cparams << Curl::PostField.file(k,v)    } unless file_params.nil?
+    return cparams
   end
 
-  if verify.has_key?(:body) && !verify[:body].nil? && !(result.body_str =~ Regexp.new(verify[:body]))
-    raise Puppet::Error, "Expecting #{verify[:body]} in the result"
+  # Format a url for the specified request method, base uri, and parameters
+  def self.format_url(method, uri, params)
+    if([:get, :delete].include?(method))
+      url = uri
+      url +=  ";" + format_params(method, params)
+      return url
+    end
+    # post, put:
+    return uri
   end
-end
 
-# Helper to process/parse web parameters
-def process_params(request_method, params, uri)
-  begin
-    # Set request method and generate a unique session key
-    session = "/tmp/#{UUIDTools::UUID.timestamp_create.to_s}"
+  # Invoke a new curl request and return result
+  def self.web_request(method, uri, params = {})
+    raise Puppet::Error, "Must specify http method (#{method}) and uri (#{uri})" if method.nil? || uri.nil?
 
-    # Invoke a login request if necessary
-    if params[:login]
-      login_params = params[:login].reject { |k,v| ['http_method', 'uri'].include?(k) }
-      web_request(params[:login]['http_method'], params[:login]['uri'],
-                  login_params, :cookie => session, :follow => params[:follow]).close
+    curl = self.new
+
+    if params.has_key?(:cookie) && !params[:cookie].nil?
+      curl.enable_cookies = true
+      curl.cookiefile = params[:cookie]
+      curl.cookiejar  = params[:cookie]
     end
 
-    # Check to see if we should actually run the request
-    skip_request = !params[:unless].nil?
-    if params[:unless]
-      result = web_request(params[:unless]['http_method'], params[:unless]['uri'],
-                           params[:unless]['parameters'],
-                           :cookie => session, :follow => params[:follow])
-      begin
-        verify_result(result,
-                      :returns => params[:unless]['returns'],
-                      :body    => params[:unless]['verify'])
-      rescue Puppet::Error => e
-        skip_request = false
-      end
-      result.close
+    curl.follow_location = (params.has_key?(:follow) && params[:follow])
+    request_params = params[:parameters]
+    file_params    = params[:file_parameters]
+
+    case(method)
+    when 'get'
+      curl.url = format_url(method, uri, request_params)
+      curl.http_get
+      return curl
+
+    when 'post'
+      curl.url = format_url(method, uri, request_params)
+      curl.multipart_form_post = true if !file_params.nil? && file_params.size > 0
+      curl.http_post(*format_params(method, request_params, file_params))
+      return curl
+
+    when 'put'
+      curl.url = format_url(method, uri, request_params)
+      curl.multipart_form_post = true if !file_params.nil? && file_params.size > 0
+      curl.http_put(*format_params(method, request_params, file_params))
+      return curl
+
+    when 'delete'
+      curl.url = format_url(method, uri, request_params)
+      curl.http_delete
+      return curl
     end
-    return if skip_request
-
-    # Actually run the request and verify the result
-    uri = params[:name] if uri.nil?
-    result = web_request(request_method, uri, params[:parameters],
-                         :cookie => session, :follow => params[:follow])
-    verify_result(result,
-                  :returns => params[:returns],
-                  :body    => params[:verify])
-    result.close
-
-    # Invoke a logout request if necessary
-    if params[:logout]
-      logout_params = params[:login].reject { |k,v| ['http_method', 'uri'].include?(k) }
-      web_request(params[:logout]['http_method'], params[:logout]['uri'],
-                  logout_params, :cookie => session, :follow => params[:follow]).close
-    end
-
-  rescue Exception => e
-    raise Puppet::Error, "An exception was raised when invoking web request: #{e}"
-
-  ensure
-    FileUtils.rm_f(session) if params[:logout]
   end
+
+  def valid_status_code?(valid_values=[])
+    valid_values.include?(response_code.to_s)
+  end
+
+  def valid_xpath?(xpath="/")
+    !Nokogiri::HTML(body_str.to_s).xpath(xpath.to_s).empty?
+  end
+
 end
 
 # Puppet provider definition
@@ -116,6 +95,14 @@ Puppet::Type.type(:web_request).provide :curl do
     @uri
   end
 
+  def delete
+    @uri
+  end
+
+  def put
+    @uri
+  end
+
   def get=(uri)
     @uri = uri
     process_params('get', @resource, uri)
@@ -124,5 +111,104 @@ Puppet::Type.type(:web_request).provide :curl do
   def post=(uri)
     @uri = uri
     process_params('post', @resource, uri)
+  end
+
+  def delete=(uri)
+    @uri = uri
+    process_params('delete', @resource, uri)
+  end
+
+  def put=(uri)
+    @uri = uri
+    process_params('put', @resource, uri)
+  end
+
+  private
+
+  # Helper to process/parse web parameters
+  def process_params(request_method, params, uri)
+    begin
+      cookies = nil
+      if params[:store_cookies_at]
+        FileUtils.touch(params[:store_cookies_at]) if !File.exist?(params[:store_cookies_at])
+        cookies = params[:store_cookies_at]
+      elsif params[:use_cookies_at]
+        cookies = params[:use_cookies_at]
+      end
+
+      # verify that we should actually run the request
+      return if skip_request?(params, cookies)
+
+      # Actually run the request and verify the result
+      result = Curl::Easy::web_request(request_method, uri,
+                                       :parameters => params[:parameters],
+                                       :file_parameters => params[:file_parameters],
+                                       :cookie => cookies,
+                                       :follow => params[:follow])
+      verify_result(result,
+                    :returns          => params[:returns],
+                    :does_not_return  => params[:does_not_return],
+                    :contains         => params[:contains],
+                    :does_not_contain => params[:does_not_contain] )
+      result.close
+
+    rescue Exception => e
+      raise Puppet::Error, "An exception was raised when invoking web request: #{e}"
+
+    ensure
+      FileUtils.rm_f(cookies) if params[:remove_cookies]
+    end
+  end
+
+  # Helper to determine if we should skip the request
+  def skip_request?(params, cookie = nil)
+    [:if, :unless].each { |c|
+      condition = params[c]
+      unless condition.nil?
+        method = (condition.keys & ['get', 'post', 'delete', 'put']).first
+        result = Curl::Easy::web_request(method, condition[method],
+                                         :parameters => condition['parameters'],
+                                         :file_parameters => condition['file_parameters'],
+                                         :cookie => cookie, :follow => condition[:follow])
+        result_succeeded = true
+        begin
+          verify_result(result, condition)
+        rescue Puppet::Error
+          result_succeeded = false
+        end
+        return true if (c == :if && !result_succeeded) || (c == :unless && result_succeeded)
+      end
+    }
+    return false
+  end
+
+  # Helper to verify the response
+  def verify_result(result, verify = {})
+    verify[:returns]          = verify['returns']          if verify[:returns].nil?          && !verify['returns'].nil?
+    verify[:does_not_return]  = verify['does_not_return']  if verify[:does_not_return].nil?  && !verify['does_not_return'].nil?
+    verify[:contains]         = verify['contains']         if verify[:contains].nil?         && !verify['contains'].nil?
+    verify[:does_not_contain] = verify['does_not_contain'] if verify[:does_not_contain].nil? && !verify['does_not_contain'].nil?
+
+    if !verify[:returns].nil? &&
+       !result.valid_status_code?(verify[:returns])
+         raise Puppet::Error, "Invalid HTTP Return Code: #{result.response_code},
+                               was expecting one of #{verify[:returns].join(", ")}"
+    end
+
+    if !verify[:does_not_return].nil? &&
+       result.valid_status_code?(verify[:does_not_return])
+         raise Puppet::Error, "Invalid HTTP Return Code: #{result.response_code},
+                               was not expecting one of #{verify[:does_not_return].join(", ")}"
+    end
+
+    if !verify[:contains].nil? &&
+       !result.valid_xpath?(verify[:contains])
+         raise Puppet::Error, "Expecting #{verify[:contains]} in the result"
+    end
+
+    if !verify[:does_not_contain].nil? &&
+       result.valid_xpath?(verify[:does_not_contain])
+         raise Puppet::Error, "Not expecting #{verify[:does_not_contain]} in the result"
+    end
   end
 end
