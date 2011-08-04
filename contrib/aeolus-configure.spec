@@ -3,8 +3,8 @@
 
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
-Version:  2.0.1
-Release:  2%{?dist}%{?extra_release}
+Version:  2.0.2
+Release:  1%{?dist}%{?extra_release}
 
 Group:    Applications/Internet
 License:  GPLv2+
@@ -22,7 +22,8 @@ Requires:   rubygem(uuidtools)
 # create buckets, eventually replace w/ an
 # iwhd client
 Requires:  curl
-Requires:  rubygem-curb
+Requires:  rubygem(curb)
+Requires:  rubygem(highline)
 
 %description
 Aeolus Configure Puppet Recipe
@@ -36,7 +37,7 @@ Aeolus Configure Puppet Recipe
 %{__mkdir} -p %{buildroot}/%{aeolushome}/modules/aeolus %{buildroot}/%{_sbindir}
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
 %{__cp} -R %{pbuild}/conf/* %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
-%{__cp} -R %{pbuild}/recipes/aeolus/*/ %{buildroot}/%{aeolushome}/modules/aeolus
+%{__cp} -R %{pbuild}/recipes/aeolus/* %{buildroot}/%{aeolushome}/modules/aeolus
 %{__cp} -R %{pbuild}/recipes/apache/ %{buildroot}/%{aeolushome}/modules/apache
 %{__cp} -R %{pbuild}/recipes/ntp/ %{buildroot}/%{aeolushome}/modules/ntp
 %{__cp} -R %{pbuild}/recipes/openssl/ %{buildroot}/%{aeolushome}/modules/openssl
@@ -53,6 +54,9 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Wed Aug 03 2011 Mo Morsi <mmorsi@redhat.com> 2.0.2-1
+- update to include profiles, interactive installer
+
 * Wed Jul 20 2011 Mo Morsi <mmorsi@redhat.com> 2.0.1-2
 - updates to conform to Fedora package guidelines
 
