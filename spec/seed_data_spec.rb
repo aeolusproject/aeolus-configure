@@ -87,7 +87,7 @@ describe "aeolus-configure seed data api" do
 
   it "should allow new hwp creation" do
     create_puppet_manifest(REQUEST_PREREQS +
-                           "aeolus::conductor::hwp{'hwp123': memory => '512', cpu => '1', storage => '', architecture => 'x86_64', require => Aeolus::Conductor::Login['admin'] }\n" +
+                           "aeolus::conductor::hwp{'hwp123': memory => '512', cpu => '1', storage => '1', architecture => 'x86_64', require => Aeolus::Conductor::Login['admin'] }\n" +
                            "aeolus::conductor::logout{'admin':   require => Aeolus::Conductor::Hwp['hwp123'] }\n")
     run_puppet_manifest
     $?.exitstatus.should == 0
@@ -104,7 +104,7 @@ describe "aeolus-configure seed data api" do
      create_puppet_manifest(REQUEST_PREREQS +
                             "aeolus::provider{'mock3030': type => 'mock', port => 3030, require => Aeolus::Conductor::Login['admin'] }\n" +
                             "aeolus::conductor::provider::account{'mockuser3030': provider => 'mock3030', type => 'mock', username => 'mockuser', password => 'mockpassword', require => Aeolus::Provider['mock3030'] }\n" +
-                            "aeolus::conductor::hwp{'hwp234': memory => '512', cpu => '1', storage => '', architecture => 'x86_64', require => Aeolus::Conductor::Login['admin'] }" +
+                            "aeolus::conductor::hwp{'hwp234': memory => '1', cpu => '1', storage => '1', architecture => 'x86_64', require => Aeolus::Conductor::Login['admin'] }" +
                             "aeolus::image{image543: target => 'mock', template => 'examples/custom_repo.tdl', provider =>  'mock3030',\n" +
                             "   require  =>  [Aeolus::Conductor::Provider::Account['mockuser3030'], Aeolus::Conductor::Hwp['hwp234']] }\n" +
                             "aeolus::conductor::logout{'admin':   require => Aeolus::Image['image543'] }\n")

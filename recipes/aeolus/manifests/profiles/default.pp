@@ -37,7 +37,7 @@ class aeolus::profiles::default {
   aeolus::conductor::hwp{"hwp1":
       memory         => "512",
       cpu            => "1",
-      storage        => "",
+      storage        => "1",
       architecture   => "x86_64",
       require        => Aeolus::Conductor::Login["admin"] }
 
