@@ -38,6 +38,11 @@ Spec::Rake::SpecTask.new(:cleanup_spec) do |t|
   t.spec_files = FileList['spec/cleanup_spec.rb']
 end
 
+desc "Run seed spec tests locally"
+Spec::Rake::SpecTask.new(:seed_spec) do |t|
+  t.spec_files = FileList['spec/seed_data_spec.rb']
+end
+
 begin
   require 'rake/remotespectask'
 
