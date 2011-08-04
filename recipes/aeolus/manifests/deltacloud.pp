@@ -38,7 +38,7 @@ define aeolus::deltacloud($provider_type="", $endpoint='', $port="3002") {
        ensure  => 'running',
        enable  => true,
        require => [Package['deltacloud-core'],
-                   Package['rubygem-aws'],
+                   $provider_type ? { "ec2" => Package['rubygem-aws'], default => Package['deltacloud-core'] },
                    File["/etc/init.d/deltacloud-${name}", "/var/log/deltacloud-${name}"]] }
 }
 
