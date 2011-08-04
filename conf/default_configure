@@ -38,7 +38,7 @@ classes:
 - aeolus::conductor
 - aeolus::image-factory
 - aeolus::iwhd
-- aeolus::conductor::seed_data
+- aeolus::profiles::default
 # Uncomment this section to include rhev setup
 #- aeolus::rhevm
 #

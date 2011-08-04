@@ -4,21 +4,24 @@ usage()
 cat << EOF
 
 USAGE:
-aeolus-configure [-d|--debug] [-h|--help] [-v|--verbose]
+aeolus-configure [-d|--debug] [-h|--help] [-v|--verbose] [-i|--interactive]
 
 OPTIONS:
    -h | --help       Show this message.
    -d | --debug      Debug logging mode.
    -v | --verbose    Verbose logging mode.
+   -i | --interactive Interactive installer.
 EOF
 }
 
-args=`getopt -o :hdv --long help,debug,verbose -- "$@"`
+args=`getopt -o :hdvi --long help,debug,verbose,interactive -- "$@"`
 if test $? != 0
      then
          usage
          exit 1
 fi
+
+INTERACTIVE=1
 
 eval set -- $args
 while true ; do
@@ -26,16 +29,30 @@ while true ; do
                 -h|--help) usage ; exit 1 ;  shift ;;
                 -d|--debug) LOGLEVEL="--debug" ; shift ;;
                 -v|--verbose) LOGLEVEL="--verbose" ; shift  ;;
+                -i|--interactive) INTERACTIVE=0 ; shift  ;;
                 --) shift ; break ;;
                 *)  usage ; exit 1 ;;
         esac
 done
 
+PUPPET_NODE='configure'
+
+if [[ $INTERACTIVE -eq 0 ]] ; then
+PUPPET_NODE='custom'
+/usr/bin/ruby /usr/share/aeolus-configure/cli.rb
+if [ $? == 1 ] ; then
+echo
+exit
+fi
+fi
+
+echo "Launching aeolus configuration recipe..."
+
 export FACTER_AEOLUS_ENABLE_HTTPS=true
 export FACTER_AEOLUS_ENABLE_SECURITY=false
-puppet /usr/share/aeolus-configure/modules/aeolus/manifests/defaults.pp \
+puppet /usr/share/aeolus-configure/aeolus.pp \
        --modulepath=/usr/share/aeolus-configure/modules/ \
-       --external_nodes '/usr/sbin/aeolus-node configure' --node_terminus exec \
+       --external_nodes "/usr/sbin/aeolus-node $PUPPET_NODE" --node_terminus exec \
        --logdest=/var/log/aeolus-configure/aeolus-configure.log \
        --logdest=console \
        $LOGLEVEL

@@ -31,11 +31,13 @@ while true ; do
         esac
 done
 
+PUPPET_NODE='cleanup'
+
 export FACTER_AEOLUS_ENABLE_HTTPS=true
 export FACTER_AEOLUS_ENABLE_SECURITY=false
-puppet /usr/share/aeolus-configure/modules/aeolus/manifests/defaults.pp \
+puppet /usr/share/aeolus-configure/aeolus.pp \
        --modulepath=/usr/share/aeolus-configure/modules/ \
-       --external_nodes '/usr/sbin/aeolus-node cleanup' --node_terminus exec \
+       --external_nodes "/usr/sbin/aeolus-node $PUPPET_NODE" --node_terminus exec \
        --logdest=/var/log/aeolus-configure/aeolus-cleanup.log \
        --logdest=console \
        $LOGLEVEL

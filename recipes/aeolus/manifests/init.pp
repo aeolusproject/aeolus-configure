@@ -13,6 +13,9 @@ import "image-factory"
 import "rhevm"
 import "vmware"
 
+import "defaults"
+import "profiles/*"
+
 if $aeolus_enable_https == "true" or $aeolus_enable_https == "1" {
   import "openssl"
   $enable_https = true

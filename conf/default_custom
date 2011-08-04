@@ -1,0 +1,7 @@
+---
+parameters:
+  enable_https: true
+  enable_security: false
+classes:
+CUSTOM_CLASSES
+- aeolus::profiles::custom

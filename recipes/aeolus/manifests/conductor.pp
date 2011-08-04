@@ -116,40 +116,6 @@ class aeolus::conductor inherits aeolus {
              enable  =>  'true' }
 }
 
-class aeolus::conductor::seed_data {
-    aeolus::create_bucket{"aeolus":}
-
-    aeolus::site_admin{"$admin_user":
-       email           => 'aeolususer@aeolusproject.org',
-       password        => "$admin_password",
-       first_name      => 'aeolus',
-       last_name       => 'user'}
-
-    aeolus::provider{"mock":
-        type           => 'mock',
-        port           => 3002,
-        require        => Aeolus::Site_admin["admin"] }
-
-    aeolus::provider{"ec2-us-east-1":
-        type           => 'ec2',
-        endpoint       => 'us-east-1',
-        port           => 3003,
-        require        => Aeolus::Site_admin["admin"] }
-
-    aeolus::provider{"ec2-us-west-1":
-        type           => 'ec2',
-        endpoint       => 'us-west-1',
-        port           => 3004,
-        require        => Aeolus::Site_admin["admin"] }
-
-    aeolus::conductor::hwp{"hwp1":
-        memory         => "512",
-        cpu            => "1",
-        storage        => "",
-        architecture   => "x86_64",
-        require        => Aeolus::Site_admin["admin"] }
-
-}
 
 class aeolus::conductor::remove_seed_data {
     aeolus::deltacloud::disabled{"mock": }
@@ -187,7 +153,7 @@ class aeolus::conductor::disabled {
 }
 
 # Create a new site admin conductor web user
-define aeolus::site_admin($email="", $password="", $first_name="", $last_name=""){
+define aeolus::conductor::site_admin($email="", $password="", $first_name="", $last_name=""){
   exec{"create_site_admin_user":
          cwd         => '/usr/share/aeolus-conductor',
          environment => "RAILS_ENV=production",
