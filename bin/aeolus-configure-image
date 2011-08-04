@@ -1,0 +1,49 @@
+#!/usr/bin/ruby
+# helper script to generate aeolus images
+
+AEOLUS_IMAGE_VERSION='0.1.0'
+
+image_name = ARGV[0]
+target   = ARGV[1]
+template = ARGV[2]
+provider = ARGV[3]
+
+Dir.chdir "/usr/lib/ruby/gems/1.8/gems/aeolus-image-#{AEOLUS_IMAGE_VERSION}"
+
+cmd = "/usr/bin/ruby -rrubygems \
+       /usr/lib/ruby/gems/1.8/gems/aeolus-image-#{AEOLUS_IMAGE_VERSION}/bin/aeolus-image build \
+       --target #{target} --template #{template}"
+puts "Building image for #{target} using #{template}"
+#puts "  Running build command #{cmd}"
+out = `#{cmd}`
+puts "Image build returned w/ exit code #{$?}"
+puts "Image build output: #{out}"
+
+if out =~ /^\s*Image:\s*([0-9a-zA-Z\-]*).*/
+  image = $1
+  cmd = "/usr/bin/ruby -rrubygems \
+         /usr/lib/ruby/gems/1.8/gems/aeolus-image-#{AEOLUS_IMAGE_VERSION}/bin/aeolus-image push \
+           --provider #{provider} --id #{image}"
+
+  puts "Image #{image} built, pushing to #{provider}"
+  #puts "Running push command #{cmd}"
+  out = `#{cmd}`
+
+  puts "Image push returned w/ exit code #{$?}"
+  puts "Image push output: #{out}"
+
+  deployables_dir = '/var/www/html/deployables'
+  FileUtils.mkdir deployables_dir unless File.exist? deployables_dir
+  File.open("/var/www/html/deployables/#{image_name}.xml", "w") { |f|
+    f.write "<deployable name='#{image_name}'>\n" +
+            "  <assemblies name = '#{image_name}'>\n" +
+            "    <assembly name='#{image_name}' hwp='hwp1' >\n" +
+            "      <image id='#{image}'></image>\n" +
+            "    </assembly>\n" +
+            "  </assemblies>\n" +
+            "</deployable>\n"
+  }
+
+  puts "Deployment definition written"
+  puts "Image building complete"
+end
