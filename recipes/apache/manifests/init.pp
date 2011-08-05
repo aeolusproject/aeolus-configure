@@ -1,9 +1,13 @@
 class apache {
 	# require apache and mod_ssl
-	package { "httpd": ensure => installed }
+	package { "httpd":
+                    ensure => installed,
+                    source => $package_provider }
 
   if $enable_https {
-	  package { "mod_ssl": ensure => installed }
+	  package { "mod_ssl":
+                      ensure => installed,
+                      source => $package_provider }
   }
 
   # if selinux is enabled and we want to use mod_proxy, we need todo this
@@ -21,9 +25,10 @@ class apache {
     enable     => true
 	}
 
+        # add a sleep here because httpd may have not finished starting up
 	exec { "reload-apache":
-    command     => "/sbin/service httpd reload",
-		refreshonly => true
+          command     => "/bin/sleep 1; /sbin/service httpd reload",
+	  refreshonly => true,
   }
 }
 

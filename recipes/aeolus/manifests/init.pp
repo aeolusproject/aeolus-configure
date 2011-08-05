@@ -30,7 +30,10 @@ if $aeolus_enable_security == "true" or $aeolus_enable_security == "1" {
 
 # Base aeolus class
 class aeolus {
-  package{'curl': ensure => 'installed'}
+  package{'curl':
+    ensure => 'installed',
+    source => $package_provider
+  }
 }
 
 # Create a new provider in aeolus

@@ -16,6 +16,7 @@
 parameters:
   enable_https: true
   enable_security: false
+  package_provider: rpm
 # Uncomment this section and provide reasonable values to
 # enable RHEV values to be populated.
 #  rhevm_nfs_server: nfs.server.com

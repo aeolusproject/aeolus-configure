@@ -1,6 +1,7 @@
 class postgres {
     package { "postgresql":
-        ensure  => installed,
+        ensure => installed,
+        source => $package_provider
     }
 }
 
@@ -9,7 +10,8 @@ class postgres::client inherits postgres {
 
 class postgres::server inherits postgres {
     package { [ "postgresql-server" ]:
-        ensure  => installed,
+        ensure => installed,
+        source => $package_provider
     }
 
     group { "postgres":

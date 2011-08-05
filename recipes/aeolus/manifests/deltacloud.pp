@@ -5,14 +5,16 @@ class aeolus::deltacloud::core {
     include aeolus
 
     package { 'deltacloud-core':
-              ensure => 'installed'}
+              ensure => 'installed',
+              provider => $package_provider }
 }
 
 class aeolus::deltacloud::ec2 {
   ### Install the driver-specific components
    # install ec2 support,
    package { "rubygem-aws":
-                ensure => 'installed' }
+                ensure => 'installed',
+                provider => $package_provider }
 }
 
 

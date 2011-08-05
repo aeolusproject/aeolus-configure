@@ -1,6 +1,7 @@
 class openssl {
   package { "openssl":
-    ensure => installed
+    ensure => installed,
+    source => $package_provider
   }
 }
 

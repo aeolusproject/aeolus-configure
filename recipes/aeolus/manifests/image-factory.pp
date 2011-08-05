@@ -3,13 +3,16 @@
 class aeolus::image-factory inherits aeolus {
 
   package { 'libvirt':
-            ensure=> 'installed'
+            ensure=> 'installed',
+            provider => $package_provider
   }
   package { 'imagefactory':
-               ensure => 'installed'
+               ensure => 'installed',
+               provider => $package_provider
   }
   package { 'qpid-cpp-server':
-               ensure => 'installed' }
+               ensure => 'installed',
+               provider => $package_provider }
 
   ### Configure pulp to fetch from Fedora
     # TODO uncomment when factory/warehouse uses pulp

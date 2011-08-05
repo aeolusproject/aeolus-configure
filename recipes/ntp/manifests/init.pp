@@ -1,6 +1,7 @@
 class ntp {
     package { "ntp":
         ensure          => installed,
+        source => $package_provider
     }
     File {
         owner   => root,

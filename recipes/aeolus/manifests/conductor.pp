@@ -4,13 +4,17 @@ class aeolus::conductor inherits aeolus {
   ### Install the aeolus components
     # specific versions of these two packages are needed and we need to pull the third in
     package {['aeolus-conductor',
-              'aeolus-conductor-daemons']:
-              ensure => 'installed'}
+              'aeolus-conductor-daemons',
+              'condor',
+              'aeolus-all']:
+              ensure => 'installed',
+              provider => $package_provider }
 
     file {"/var/lib/aeolus-conductor":
       ensure => directory,
       owner => 'aeolus',
-      group => 'aeolus'}
+      group => 'aeolus',
+      require => Package['aeolus-conductor']}
 
   ### Setup selinux for deltacloud
     selinux::mode{"permissive":}
@@ -18,7 +22,7 @@ class aeolus::conductor inherits aeolus {
   ### Start the aeolus services
     file {"/etc/condor/config.d/10deltacloud.config":
            source => "puppet:///modules/aeolus/condor_config.local",
-           require => Package['aeolus-conductor-daemons'] }
+           require => Package['aeolus-conductor-daemons', 'condor'] }
      # condor requires an explicit non-localhost hostname
      # TODO we can also kill the configure sequence here instead
      exec{"/bin/echo 'hostname/domain should be explicitly set and should not be localhost.localdomain'":
@@ -30,6 +34,15 @@ class aeolus::conductor inherits aeolus {
       enable  => true,
       hasstatus => true,
       require => File['/etc/condor/config.d/10deltacloud.config'] }
+
+  ### Setup apache for deltacloud
+    include apache
+    if $enable_https {
+      apache::site{"aeolus-conductor": source => 'puppet:///modules/aeolus/aggregator-httpd-ssl.conf'}
+    } else{
+      apache::site{"aeolus-conductor": source => 'puppet:///modules/aeolus/aggregator-httpd.conf'}
+    }
+    
     service { ['aeolus-conductor',
                'conductor-dbomatic' ]:
       ensure    => 'running',
@@ -37,7 +50,8 @@ class aeolus::conductor inherits aeolus {
       hasstatus => true,
       require => [Package['aeolus-conductor-daemons'],
                   Rails::Migrate::Db[migrate_aeolus_database],
-                  Service['condor', 'httpd']] }
+                  Service['condor', 'httpd'],
+                  Apache::Site[aeolus-conductor], Exec[reload-apache]] }
 
   ### Initialize and start the aeolus database
     # Right now we configure and start postgres, at some point I want
@@ -93,15 +107,6 @@ class aeolus::conductor inherits aeolus {
                 cwd             => "/usr/share/aeolus-conductor",
                 rails_env       => "production",
                 require         => Rails::Migrate::Db[migrate_aeolus_database]}
-
-
-  ### Setup apache for deltacloud
-    include apache
-    if $enable_https {
-      apache::site{"aeolus-conductor": source => 'puppet:///modules/aeolus/aggregator-httpd-ssl.conf'}
-    } else{
-      apache::site{"aeolus-conductor": source => 'puppet:///modules/aeolus/aggregator-httpd.conf'}
-    }
 
   ### Setup sshd for deltacloud
   package { "openssh-server": ensure => installed }
