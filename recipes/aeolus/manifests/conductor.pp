@@ -204,6 +204,32 @@ define aeolus::site_admin($email="", $password="", $first_name="", $last_name=""
          require     => Exec[create_site_admin_user]}
 }
 
+# login to the aeolus conductor
+define aeolus::conductor::login($password){
+  web_request{ "$name-conductor-login":
+    post         => 'https://localhost/conductor/user_session',
+    parameters  => { 'user_session[login]'    => "$name", 'user_session[password]' => "$password",
+                     'commit'                 => 'submit' },
+    returns     => '200',
+    follow      => true,
+    store_cookies_at => "/tmp/aeolus-$name",
+    require    => Service['aeolus-conductor']
+  }
+}
+
+# log out of the aeolus conductor
+define aeolus::conductor::logout(){
+  web_request{ "$name-conductor-logout":
+    post         => 'https://localhost/conductor/logout',
+    parameters  => { 'user_session[login]'    => "admin", 'user_session[password]' => "password",
+                     'commit'                 => 'submit' },
+    returns     => '200',
+    follow      => true,
+    use_cookies_at => "/tmp/aeolus-$name",
+    remove_cookies => true
+  }
+}
+
 # Create a new provider via the conductor
 define aeolus::conductor::provider($type="",$url=""){
   web_request{ "provider-$name":
@@ -211,12 +237,55 @@ define aeolus::conductor::provider($type="",$url=""){
     parameters  => { 'provider[name]'  => $name, 'provider[url]'   => $url,
                      'provider[provider_type_codename]' => $type },
     returns     => '200',
-    verify      => '.*Provider added.*',
-    follow      => true,
-    unless      => { 'http_method'     => 'get',
-                     'uri'             => 'https://localhost/conductor/providers',
-                     'verify'          => ".*$name.*" },
+    contains    => "//html/body//li[text() = 'Provider added.']",
+    use_cookies_at => '/tmp/aeolus-admin',
+    unless      => { 'get'             => 'https://localhost/conductor/providers',
+                     'contains'        => "//html/body//a[text() = '$name']" },
     require    => [Service['aeolus-conductor'], Exec['grant_site_admin_privs']]
+  }
+}
+
+# Create a new provider account via the conductor
+define aeolus::conductor::provider::account($provider="", $type="", $username="",$password="", $account_id="",$x509private="", $x509public=""){
+  if $type == "mock" {
+    web_request{ "provider-account-$name":
+      post         => "https://localhost/conductor/provider_accounts",
+      parameters  => { 'provider_account[label]'  => $name,
+                       'provider_account[provider]' => $provider,
+                       'provider_account[credentials_hash[username]]'   => $username,
+                       'provider_account[credentials_hash[password]]'   => $password,
+                       'quota[max_running_instances]'   => 'unlimited',
+                       'commit' => 'Save' },
+
+      returns     => '200',
+      #contains    => "//table/thead/tr/th[text() = 'Properties for $name']",
+      follow      => true,
+      use_cookies_at => '/tmp/aeolus-admin',
+      unless      => { 'get'             => 'https://localhost/conductor/provider_accounts',
+                       'contains'        => "//html/body//a[text() = '$name']" },
+      require    => Service['aeolus-conductor']}
+
+  } elsif $type == "ec2" {
+    web_request{ "provider-account-$name":
+      post         => "https://localhost/conductor/provider_accounts",
+      parameters  => { 'provider_account[label]'  => $name,
+                       'provider_account[provider]' => $provider,
+                       'provider_account[credentials_hash[username]]'   => $username,
+                       'provider_account[credentials_hash[password]]'   => $password,
+                       'provider_account[credentials_hash[account_id]]' => $account_id,
+                       'quota[max_running_instances]'   => 'unlimited',
+                       'commit' => 'Save' },
+      file_parameters  => { 'provider_account[credentials_hash[x509private]]'=> $x509private,
+                            'provider_account[credentials_hash[x509public]]' => $x509public  },
+
+      returns     => '200',
+      #contains    => "//table/thead/tr/th[text() = 'Properties for $name']",
+      follow      => true,
+      use_cookies_at => '/tmp/aeolus-admin',
+      unless      => { 'get'             => 'https://localhost/conductor/provider_accounts',
+                       'contains'        => "//html/body//a[text() = '$name']" },
+      require    => Service['aeolus-conductor']
+    }
   }
 }
 
@@ -240,9 +309,7 @@ define aeolus::conductor::hwp($memory='', $cpu='', $storage='', $architecture=''
     returns     => '200',
     #verify      => '.*Hardware profile added.*',
     follow      => true,
-    unless      => { 'http_method'     => 'get',
-                     'uri'             => 'https://localhost/conductor/hardware_profiles',
-                     'verify'          => ".*$name.*" },
+    use_cookies_at => '/tmp/aeolus-admin',
     require    => [Service['aeolus-conductor'], Exec['grant_site_admin_privs']]
   }
 }
