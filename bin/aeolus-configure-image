@@ -1,6 +1,8 @@
 #!/usr/bin/ruby
 # helper script to generate aeolus images
 
+require 'fileutils'
+
 AEOLUS_IMAGE_VERSION='0.1.0'
 
 image_name = ARGV[0]
