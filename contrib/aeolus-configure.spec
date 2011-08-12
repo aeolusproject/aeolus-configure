@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.0.2
-Release:  1%{?dist}%{?extra_release}
+Release:  1%{?extra_release}%{?dist}
 
 Group:    Applications/Internet
 License:  GPLv2+
@@ -53,6 +53,7 @@ Aeolus Configure Puppet Recipe
 %attr(0755, root, root) %{_sbindir}/aeolus-node
 %config(noreplace) %{_sysconfdir}/aeolus-configure/nodes/*
 %{aeolushome}
+%{_sbindir}/aeolus-configure-image
 
 %changelog
 * Wed Aug 03 2011 Mo Morsi <mmorsi@redhat.com> 2.0.2-1
