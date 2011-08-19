@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.0.2
-Release:  1%{?extra_release}%{?dist}
+Release:  2%{?extra_release}%{?dist}
 
 Group:    Applications/Internet
 License:  GPLv2+
@@ -35,6 +35,7 @@ Aeolus Configure Puppet Recipe
 
 %install
 %{__mkdir} -p %{buildroot}/%{aeolushome}/modules/aeolus %{buildroot}/%{_sbindir}
+%{__mkdir} -p %{buildroot}/%{_bindir}
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
 %{__cp} -R %{pbuild}/conf/* %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
 %{__mv} %{buildroot}%{_sysconfdir}/aeolus-configure/nodes/custom_template.tdl %{buildroot}%{_sysconfdir}/aeolus-configure/
@@ -43,6 +44,7 @@ Aeolus Configure Puppet Recipe
 %{__cp} -R %{pbuild}/recipes/ntp/ %{buildroot}/%{aeolushome}/modules/ntp
 %{__cp} -R %{pbuild}/recipes/openssl/ %{buildroot}/%{aeolushome}/modules/openssl
 %{__cp} -R %{pbuild}/recipes/postgres/ %{buildroot}/%{aeolushome}/modules/postgres
+%{__cp} -R %{pbuild}/bin/aeolus-check-services %{buildroot}/%{_bindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-configure-image %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-configure %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-cleanup %{buildroot}/%{_sbindir}/
@@ -53,10 +55,14 @@ Aeolus Configure Puppet Recipe
 %attr(0755, root, root) %{_sbindir}/aeolus-cleanup
 %attr(0755, root, root) %{_sbindir}/aeolus-node
 %config(noreplace) %{_sysconfdir}/aeolus-configure/*
+%attr(0755, root, root) %{_bindir}/aeolus-check-services
 %{aeolushome}
 %{_sbindir}/aeolus-configure-image
 
 %changelog
+* Tue Aug 16 2011 Maros Zatko <mzatko@redhat.com> 2.0.2-2
+- Added script for listing running services
+
 * Wed Aug 03 2011 Mo Morsi <mmorsi@redhat.com> 2.0.2-1
 - update to include profiles, interactive installer
 
