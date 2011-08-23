@@ -71,10 +71,10 @@ class aeolus::image-factory::disabled {
     exec{"remove_aeolus_templates":     command => "/bin/rm -rf /templates"}
 }
 
-define aeolus::image($template, $provider='', $target=''){
+define aeolus::image($template, $provider='', $target='', $hwp=''){
   exec{"build-$name-image": logoutput => true, timeout => 0,
-        command => "/usr/sbin/aeolus-configure-image $name $target $template $provider",
-        require => Service['aeolus-conductor']}
+        command => "/usr/sbin/aeolus-configure-image $name $target $template $provider $hwp",
+        require => Service['aeolus-conductor', 'iwhd', 'imagefactory']}
 
   web_request{ "deployment-$name":
     post        => "https://localhost/conductor/deployments",
@@ -92,16 +92,4 @@ define aeolus::image($template, $provider='', $target=''){
     #                 'contains'        => "//html/body//a[text() = '$name']" },
     require    => Exec["build-$name-image"]
   }
-
-  #web_request{ "launch-deployment-$name":
-  #  post        => "https://localhost/conductor/deployments/new",
-  #  parameters  => { 'deployable_name'  => $name },
-  #  returns     => '200',
-  #  #contains    => "//html/body//li[text() = 'Provider added.']",
-  #  follow      => true,
-  #  use_cookies_at => '/tmp/aeolus-admin',
-  #  #unless      => { 'get'             => 'https://localhost/conductor/providers',
-  #  #                 'contains'        => "//html/body//a[text() = '$name']" },
-  #  require    => Web_request["deployment-$name"]
-  #}
 }

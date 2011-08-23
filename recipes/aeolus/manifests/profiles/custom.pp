@@ -20,7 +20,14 @@ aeolus::conductor::hwp{"hwp1":
     architecture   => "x86_64",
     require        => Aeolus::Conductor::Login["admin"] }
 
+aeolus::conductor::hwp{"hwp2":
+    memory         => "1",
+    cpu            => "",
+    storage        => "1",
+    architecture   => "x86_64",
+    require        => Aeolus::Conductor::Login["admin"] }
+
 aeolus::conductor::logout{"admin":
   require    => [#AEOLUS_SEED_DATA_REQUIRES
-                 Aeolus::Conductor::Hwp["hwp1"]] }
+                 Aeolus::Conductor::Hwp["hwp1", "hwp2"]] }
 }

@@ -203,6 +203,7 @@ define aeolus::conductor::provider($type="",$url=""){
     parameters  => { 'provider[name]'  => $name, 'provider[url]'   => $url,
                      'provider[provider_type_codename]' => $type },
     returns     => '200',
+    follow      => true,
     contains    => "//html/body//li[text() = 'Provider added.']",
     use_cookies_at => '/tmp/aeolus-admin',
     unless      => { 'get'             => 'https://localhost/conductor/providers',
@@ -213,7 +214,7 @@ define aeolus::conductor::provider($type="",$url=""){
 
 # Create a new provider account via the conductor
 define aeolus::conductor::provider::account($provider="", $type="", $username="",$password="", $account_id="",$x509private="", $x509public=""){
-  if $type == "mock" {
+  if $type != "ec2" {
     web_request{ "provider-account-$name":
       post         => "https://localhost/conductor/provider_accounts",
       parameters  => { 'provider_account[label]'  => $name,
@@ -231,7 +232,7 @@ define aeolus::conductor::provider::account($provider="", $type="", $username=""
                        'contains'        => "//html/body//a[text() = '$name']" },
       require    => Service['aeolus-conductor']}
 
-  } elsif $type == "ec2" {
+  } else {
     web_request{ "provider-account-$name":
       post         => "https://localhost/conductor/provider_accounts",
       parameters  => { 'provider_account[label]'  => $name,

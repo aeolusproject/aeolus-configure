@@ -41,6 +41,13 @@ class aeolus::profiles::default {
       architecture   => "x86_64",
       require        => Aeolus::Conductor::Login["admin"] }
 
+  aeolus::conductor::hwp{"hwp2":
+    memory         => "1",
+    cpu            => "",
+    storage        => "1",
+    architecture   => "x86_64",
+    require        => Aeolus::Conductor::Login["admin"] }
+
   aeolus::conductor::logout{"admin":
     require    => [Aeolus::Provider['mock'],
                    Aeolus::Conductor::Provider::Account['mockuser'],
