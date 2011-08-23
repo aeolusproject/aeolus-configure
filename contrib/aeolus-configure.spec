@@ -37,6 +37,7 @@ Aeolus Configure Puppet Recipe
 %{__mkdir} -p %{buildroot}/%{aeolushome}/modules/aeolus %{buildroot}/%{_sbindir}
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
 %{__cp} -R %{pbuild}/conf/* %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
+%{__mv} %{buildroot}%{_sysconfdir}/aeolus-configure/nodes/custom_template.tdl %{buildroot}%{_sysconfdir}/aeolus-configure/
 %{__cp} -R %{pbuild}/recipes/aeolus/* %{buildroot}/%{aeolushome}/modules/aeolus
 %{__cp} -R %{pbuild}/recipes/apache/ %{buildroot}/%{aeolushome}/modules/apache
 %{__cp} -R %{pbuild}/recipes/ntp/ %{buildroot}/%{aeolushome}/modules/ntp
@@ -51,7 +52,7 @@ Aeolus Configure Puppet Recipe
 %attr(0755, root, root) %{_sbindir}/aeolus-configure
 %attr(0755, root, root) %{_sbindir}/aeolus-cleanup
 %attr(0755, root, root) %{_sbindir}/aeolus-node
-%config(noreplace) %{_sysconfdir}/aeolus-configure/nodes/*
+%config(noreplace) %{_sysconfdir}/aeolus-configure/*
 %{aeolushome}
 %{_sbindir}/aeolus-configure-image
 
