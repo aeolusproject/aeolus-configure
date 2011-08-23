@@ -39,7 +39,7 @@ PUPPET_NODE='configure'
 
 if [[ $INTERACTIVE -eq 0 ]] ; then
 PUPPET_NODE='custom'
-/usr/bin/ruby /usr/share/aeolus-configure/cli.rb
+/usr/bin/ruby /usr/share/aeolus-configure/modules/aeolus/cli.rb
 if [ $? == 1 ] ; then
 echo
 exit
