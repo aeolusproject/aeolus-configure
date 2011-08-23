@@ -10,14 +10,20 @@ Signal.trap("INT") do
   exit 1
 end
 
+def clear_screen
+  print "\e[H\e[2J"
+  true
+end
+
 NODE_YAML='/etc/aeolus-configure/nodes/default_custom'
+IMAGE_TEMPLATE='/etc/aeolus-configure/custom_template.tdl'
 PROFILE_RECIPE='/usr/share/aeolus-configure/modules/aeolus/manifests/profiles/custom.pp'
 
-
-say "Select Aeolus Components to Install"
 installed_component = nil
 install_components  = []
 while ![:None, :All].include?(installed_component)
+  clear_screen
+  say "Select Aeolus Components to Install"
   installed_component =
     choose do |menu|
       menu.prompt = "Install Aeolus Component: "
@@ -45,15 +51,16 @@ if install_components.include? "- aeolus::conductor"
   provider_port = 3001
   profile=''
   profile_requires = []
-  while agree("Add provider (y/n)? ")
+  profile_packages = ''
+  while clear_screen && agree("Add provider (y/n)? ")
     name = ask("Cloud provider label: ")
     type = choose do |menu|
       menu.prompt = "Cloud provider type: "
       menu.choice :mock
       menu.choice :ec2
-      #menu.choice :rackspace
-      #menu.choice :rhevm
-      #menu.choice :vsphere
+      menu.choice :rackspace
+      menu.choice :rhevm
+      menu.choice :vsphere
     end
     providers << [name,type]
 
@@ -70,6 +77,23 @@ if install_components.include? "- aeolus::conductor"
                  "  require  =>  Aeolus::Provider['#{name}'] }\n\n"
       profile_requires <<  "Aeolus::Provider['#{name}']" <<
                            "Aeolus::Conductor::Provider::Account['#{name}']"
+
+    elsif type == :rackspace
+      username  = ask("Rackspace Username: ")
+      api_key   = ask("Rackspace API Key: "){ |q| q.echo = false }
+      profile += "aeolus::provider{#{name}:\n" +
+                 "  type     =>  'rackspace',\n"    +
+                 "  port     =>  '#{provider_port += 1}',\n" +
+                 "  require  =>  Aeolus::Conductor::Login['admin'] }\n\n" +
+                 "aeolus::conductor::provider::account{#{name}:\n" +
+                 "  provider =>  '#{name}',\n"  +
+                 "  type     =>  'rackspace',\n"  +
+                 "  username =>  '#{username}',\n" +
+                 "  password =>  '#{api_key}',\n" +
+                 "  require  =>  Aeolus::Provider['#{name}'] }\n\n"
+      profile_requires <<  "Aeolus::Provider['#{name}']" <<
+                           "Aeolus::Conductor::Provider::Account['#{name}']"
+
 
     elsif type == :ec2
       endpoint            = ask("EC2 Endpoint: ")
@@ -95,20 +119,20 @@ if install_components.include? "- aeolus::conductor"
       profile_requires << "Aeolus::Provider['#{name}']" <<
                           "Aeolus::Conductor::Provider::Account['#{name}']"
 
-  #  else if type == :rackspace ...
     end
   end
 
   # TODO change to create image / deploy to providers (which to select)
-  while agree("Deploy instance to providers (y/n)? ")
+  while clear_screen && agree("Deploy an instance to providers (y/n)? ")
     name = ask("Instance name: ")
     providers.each { |provider|
       pname,ptype = *provider
       profile += "aeolus::image{#{pname}-#{name}:\n" +
                  "  target   =>  '#{ptype}',\n" +
-                 "  template =>  'examples/custom_repo.tdl',\n" +
+                 "  template =>  'custom_template.tdl',\n" +
                  "  provider =>  '#{pname}',\n" +
-                 "  require  =>  [Aeolus::Conductor::Provider::Account['#{pname}'], Aeolus::Conductor::Hwp['hwp1']] }\n\n"
+                 "  hwp      =>  '#{ptype == :rackspace ? 'hwp2' : 'hwp1' }',\n" +
+                 "  require  =>  [Aeolus::Conductor::Provider::Account['#{pname}'], Aeolus::Conductor::Hwp['hwp1', 'hwp2']] }\n\n"
       profile_requires <<  "Aeolus::Image['#{pname}-#{name}']"
     }
 
@@ -116,9 +140,10 @@ if install_components.include? "- aeolus::conductor"
   #    yum_repo          = ask("URI ")
   #  end
   #
-  #  while agree("Add package? ") do
-  #    package_name      = ask("Package Name ")
-  #  end
+    while agree("Add package to instance (y/n)? ") do
+      package_name      = ask("Package Name: ")
+      profile_packages  += "<package name='#{package_name}' />"
+    end
   #
   #  while agree("Add file? ") do
   #    src_location      = ask("File Source ")
@@ -142,4 +167,10 @@ File.open(PROFILE_RECIPE, 'w+'){|f|
 text = File.read NODE_YAML
 File.open(NODE_YAML, 'w+'){|f|
   f << text.gsub(/CUSTOM_CLASSES/, install_components.join("\n"))
+}
+
+# create the image template
+text = File.read IMAGE_TEMPLATE
+File.open(IMAGE_TEMPLATE, 'w+'){|f|
+  f << text.gsub(/<!--AEOLUS_PACKAGE_DATA-->/, profile_packages)
 }

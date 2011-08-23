@@ -9,8 +9,9 @@ image_name = ARGV[0]
 target   = ARGV[1]
 template = ARGV[2]
 provider = ARGV[3]
+hwp      = ARGV[4]
 
-Dir.chdir "/usr/lib/ruby/gems/1.8/gems/aeolus-image-#{AEOLUS_IMAGE_VERSION}"
+Dir.chdir "/etc/aeolus-configure"
 
 cmd = "/usr/bin/ruby -rrubygems \
        /usr/lib/ruby/gems/1.8/gems/aeolus-image-#{AEOLUS_IMAGE_VERSION}/bin/aeolus-image build \
@@ -34,12 +35,15 @@ if out =~ /^\s*Image:\s*([0-9a-zA-Z\-]*).*/
   puts "Image push returned w/ exit code #{$?}"
   puts "Image push output: #{out}"
 
+  # delay to allow the ec2 image to be uploaded
+  sleep 600 if target == "ec2" || target == "rackspace"
+
   deployables_dir = '/var/www/html/deployables'
   FileUtils.mkdir deployables_dir unless File.exist? deployables_dir
   File.open("/var/www/html/deployables/#{image_name}.xml", "w") { |f|
     f.write "<deployable name='#{image_name}'>\n" +
             "  <assemblies name = '#{image_name}'>\n" +
-            "    <assembly name='#{image_name}' hwp='hwp1' >\n" +
+            "    <assembly name='#{image_name}' hwp='#{hwp}' >\n" +
             "      <image id='#{image}'></image>\n" +
             "    </assembly>\n" +
             "  </assemblies>\n" +
