@@ -52,6 +52,7 @@ if install_components.include? "- aeolus::conductor"
   profile=''
   profile_requires = []
   profile_packages = ''
+  profile_repos    = ''
   while clear_screen && agree("Add provider (y/n)? ")
     name = ask("Cloud provider label: ")
     type = choose do |menu|
@@ -136,10 +137,14 @@ if install_components.include? "- aeolus::conductor"
       profile_requires <<  "Aeolus::Image['#{pname}-#{name}']"
     }
 
-  #  while agree("Add yum repo? ")
-  #    yum_repo          = ask("URI ")
-  #  end
-  #
+    while agree("Add package repo to instance (y/n)? ")
+      repo_name          = ask("Name: ")
+      repo_uri           = ask("URI: ")
+      profile_repos  += "<repository name='#{repo_name}'>"
+      profile_repos  += "<url>#{repo_uri}</url>"
+      profile_repos  += "<signed>false</signed></repository>"
+    end
+
     while agree("Add package to instance (y/n)? ") do
       package_name      = ask("Package Name: ")
       profile_packages  += "<package name='#{package_name}' />"
@@ -172,5 +177,6 @@ File.open(NODE_YAML, 'w+'){|f|
 # create the image template
 text = File.read IMAGE_TEMPLATE
 File.open(IMAGE_TEMPLATE, 'w+'){|f|
-  f << text.gsub(/<!--AEOLUS_PACKAGE_DATA-->/, profile_packages)
+  f << text.gsub(/<!--AEOLUS_PACKAGE_DATA-->/, profile_packages).
+            gsub(/<!--AEOLUS_REPO_DATA-->/, profile_repos)
 }

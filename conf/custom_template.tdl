@@ -14,6 +14,7 @@
       <url>http://repos.fedorapeople.org/repos/aeolus/demo/webapp/</url>
       <signed>false</signed>
     </repository>
+    <!--AEOLUS_REPO_DATA-->
   </repositories>
   <packages>
      <!--AEOLUS_PACKAGE_DATA-->
