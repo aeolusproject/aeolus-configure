@@ -36,7 +36,7 @@ if out =~ /^\s*Image:\s*([0-9a-zA-Z\-]*).*/
   puts "Image push output: #{out}"
 
   # delay to allow the ec2 image to be uploaded
-  sleep 600 if target == "ec2" || target == "rackspace"
+  sleep 900 if target == "ec2" || target == "rackspace"
 
   deployables_dir = '/var/www/html/deployables'
   FileUtils.mkdir deployables_dir unless File.exist? deployables_dir
