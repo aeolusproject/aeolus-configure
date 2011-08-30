@@ -1,0 +1,48 @@
+#!/usr/bin/ruby
+
+# ordered as in rc.d
+services = %w(mongod messagebus iwhd postgresql httpd qpidd deltacloud-ec2-us-east-1 deltacloud-ec2-us-west-1 deltacloud-mock libvirtd condor aeolus-conductor conductor-dbomatic imagefactory)
+
+def perform(action, svcs)
+	action = action.to_s
+	svcs.map do |script|
+		puts "\n#{action.capitalize}ing #{script} ..."
+		cmd = "/etc/init.d/#{script} #{action}"
+		out = `#{cmd}`
+		if $?.to_i == 0
+			puts " \e[1;32mSuccess:\e[0m #{out.strip}"
+		else
+			puts " \e[1;31mFAILURE:\e[0m #{out.strip}"
+		end
+		$?.to_i
+	end
+end
+
+perform :stop, services.reverse
+perform :start, services
+
+## Other checks
+commands = [
+ {:name => 'condor_q',		:command => 'condor_q'},
+ {:name => 'condor_status',	:command => 'condor_status'}
+]
+commands.each do |cmd|
+	puts "\nChecking #{cmd[:name]} ..."
+	cmd = "#{cmd[:command]}"
+	out = `#{cmd}`
+        if $?.to_i == 0
+                puts " \e[1;32mSuccess:\e[0m #{out.strip}"
+        else
+                puts " \e[1;31mFAILURE:\e[0m #{out.strip}"
+        end
+end
+
+if perform(:status, ['mongod']) == [1]
+	lockfile = '/var/lib/mongodb/mongod.lock'
+	if File.exists?(lockfile)
+		puts " \e[1;33mremoving\e[0m leftover #{lockfile}"
+		File.delete(lockfile)
+		perform :restart, %w(mongod iwhd)
+	end
+end
+
