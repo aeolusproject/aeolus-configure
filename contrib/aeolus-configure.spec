@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.0.2
-Release:  2%{?extra_release}%{?dist}
+Release:  3%{?extra_release}%{?dist}
 
 Group:    Applications/Internet
 License:  GPLv2+
@@ -45,6 +45,7 @@ Aeolus Configure Puppet Recipe
 %{__cp} -R %{pbuild}/recipes/openssl/ %{buildroot}/%{aeolushome}/modules/openssl
 %{__cp} -R %{pbuild}/recipes/postgres/ %{buildroot}/%{aeolushome}/modules/postgres
 %{__cp} -R %{pbuild}/bin/aeolus-check-services %{buildroot}/%{_bindir}/
+%{__cp} -R %{pbuild}/bin/aeolus-restart-services %{buildroot}/%{_bindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-configure-image %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-configure %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-cleanup %{buildroot}/%{_sbindir}/
@@ -56,10 +57,14 @@ Aeolus Configure Puppet Recipe
 %attr(0755, root, root) %{_sbindir}/aeolus-node
 %config(noreplace) %{_sysconfdir}/aeolus-configure/*
 %attr(0755, root, root) %{_bindir}/aeolus-check-services
+%attr(0755, root, root) %{_bindir}/aeolus-restart-services
 %{aeolushome}
 %{_sbindir}/aeolus-configure-image
 
 %changelog
+* Tue Aug 30 2011 Maros Zatko <mzatko@redhat.com> 2.0.2-3
+- Added script for restarting running services
+
 * Tue Aug 16 2011 Maros Zatko <mzatko@redhat.com> 2.0.2-2
 - Added script for listing running services
 
