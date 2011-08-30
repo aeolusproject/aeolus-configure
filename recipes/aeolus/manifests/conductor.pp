@@ -19,7 +19,6 @@ class aeolus::conductor inherits aeolus {
     # specific versions of these two packages are needed and we need to pull the third in
     package {['aeolus-conductor',
               'aeolus-conductor-daemons',
-              'condor',
               'aeolus-all']:
               ensure => 'installed',
               provider => $package_provider }
@@ -32,22 +31,6 @@ class aeolus::conductor inherits aeolus {
 
   ### Setup selinux for deltacloud
     selinux::mode{"permissive":}
-
-  ### Start the aeolus services
-    file {"/etc/condor/config.d/10deltacloud.config":
-           source => "puppet:///modules/aeolus/condor_config.local",
-           require => Package['aeolus-conductor-daemons', 'condor'] }
-     # condor requires an explicit non-localhost hostname
-     # TODO we can also kill the configure sequence here instead
-     exec{"/bin/echo 'hostname/domain should be explicitly set and should not be localhost.localdomain'":
-            logoutput => true,
-            onlyif    => "/usr/bin/test `/bin/hostname` = 'localhost.localdomain'"
-     }
-    service { ['condor']:
-      ensure  => 'running',
-      enable  => true,
-      hasstatus => true,
-      require => File['/etc/condor/config.d/10deltacloud.config'] }
 
   ### Setup apache for deltacloud
     include apache
@@ -64,7 +47,7 @@ class aeolus::conductor inherits aeolus {
       hasstatus => true,
       require => [Package['aeolus-conductor-daemons'],
                   Rails::Migrate::Db[migrate_aeolus_database],
-                  Service['condor', 'httpd'],
+                  Service['httpd'],
                   Apache::Site[aeolus-conductor], Exec[reload-apache]] }
 
   ### Initialize and start the aeolus database
@@ -137,7 +120,7 @@ class aeolus::conductor::disabled {
     }
 
   ### Stop the aeolus services
-    service { ['condor', 'httpd']:
+    service { ['httpd']:
       ensure  => 'stopped',
       enable  => false,
       require => Service['aeolus-conductor',

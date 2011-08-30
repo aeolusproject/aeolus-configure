@@ -31,7 +31,7 @@ AEOLUS_DEPENDENCY_PACKAGES = ['rubygem-aws', 'curl', 'java-1.6.0-openjdk', 'open
                               'appliance-tools', 'livecd-tools', 'python-imgcreate']
 
 # TODO want to include httpd, qpidd here as well but that requires elevated permissions
-AEOLUS_DEPENDENCY_SERVICES = ['mongod', 'condor', 'sshd', 'postgresql']
+AEOLUS_DEPENDENCY_SERVICES = ['mongod', 'sshd', 'postgresql']
 
 IWHD_URI='http://localhost:9090/'
 
