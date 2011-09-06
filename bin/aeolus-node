@@ -3,7 +3,4 @@
 CAT=/bin/cat
 NODE_DIR=/etc/aeolus-configure/nodes
 
-# look for node setting files, or revert to default
-[ -f nodes/$2_$1 ] && NODE=$2_$1 || NODE=default_$1
-
-$CAT $NODE_DIR/$NODE
+$CAT $NODE_DIR/$1
