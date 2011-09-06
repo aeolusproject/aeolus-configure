@@ -53,6 +53,6 @@ class aeolus::profiles::default {
                    Aeolus::Conductor::Provider::Account['mockuser'],
                    Aeolus::Provider['ec2-us-east-1'],
                    Aeolus::Provider['ec2-us-west-1'],
-                   Aeolus::Conductor::Hwp['hwp1']] }
+                   Aeolus::Conductor::Hwp['hwp1', 'hwp2']] }
 
 }
