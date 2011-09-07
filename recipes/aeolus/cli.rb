@@ -47,12 +47,13 @@ while ![:None, :All].include?(installed_component)
 end
 
 providers = []
+profile=''
+profile_requires = []
+profile_packages = ''
+profile_repos    = ''
+
 if install_components.include? "- aeolus::conductor"
   provider_port = 3001
-  profile=''
-  profile_requires = []
-  profile_packages = ''
-  profile_repos    = ''
   while clear_screen && agree("Add provider (y/n)? ")
     name = ask("Cloud provider label: ")
     type = choose do |menu|
