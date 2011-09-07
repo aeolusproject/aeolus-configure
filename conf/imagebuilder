@@ -1,0 +1,6 @@
+parameters:
+  package_provider: rpm
+classes:
+- aeolus::image-factory
+- aeolus::iwhd
+- aeolus::profiles::imagebuilder
