@@ -1,10 +1,10 @@
 {
   "vsphere":
   {
-    "api-url":   "https://<%= vmware_api_endpoint %>/sdk",
-    "username":  "<%= vmware_username %>",
-    "password":     "<%= vmware_password %>",
-    "datastore":    "<%= vmware_datastore %>",
-    "network_name": "<%= vmware_network_name %>"
+    "api-url":   "https://<%= vsphere_deltacloud_provider %>/sdk",
+    "username":  "<%= vsphere_username %>",
+    "password":     "<%= vsphere_password %>",
+    "datastore":    "<%= vsphere_datastore %>",
+    "network_name": "<%= vsphere_network_name %>"
   }
 }

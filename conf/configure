@@ -12,35 +12,16 @@
 #apart from https on the web server for conductor, you should
 #consider intermachine communications insecure.  Securing
 #intermachine service calls is on the roadmap.
+#
 ---
 parameters:
   enable_https: true
   enable_security: false
   package_provider: rpm
-# Uncomment this section and provide reasonable values to
-# enable RHEV values to be populated.
-#  rhevm_nfs_server: nfs.server.com
-#  rhevm_nfs_export: /export/export_domain
-#  rhevm_nfs_mount_point: /mnt/rhevm-nfs
-#  rhevm_deltacloud_port: 3005
-#  rhevm_deltacloud_username: username@fqdn
-#  rhevm_deltacloud_password: password
-#  rhevm_deltacloud_powershell_url: https://rhevm.server.com:8543/rhevm-api-powershell
-#
-# Uncomment this section and provide appropriate values to configure vmware
-#  vmware_api_endpoint: vsphere.server.com
-#  vmware_username: username
-#  vmware_password: password
-#  vmware_datastore: datastore
-#  vmware_network_name: network_name
-#  vmware_deltacloud_port:  3006
 classes:
 - aeolus::conductor
 - aeolus::image-factory
 - aeolus::iwhd
+- aeolus::deltacloud::core
+- aeolus::deltacloud::ec2
 - aeolus::profiles::default
-# Uncomment this section to include rhev setup
-#- aeolus::rhevm
-#
-# Uncomment this section to include vmware setup
-#- aeolus::vmware

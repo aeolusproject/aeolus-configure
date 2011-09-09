@@ -1,0 +1,19 @@
+---
+parameters:
+  enable_https: true
+  enable_security: false
+  package_provider: rpm
+# Uncomment and provide values to match your RHEV environment.
+# Values below are examples.
+#  rhevm_nfs_server: nfs.server.com
+#  rhevm_nfs_export: /export/export_domain
+#  rhevm_nfs_mount_point: /mnt/rhevm-nfs
+#  rhevm_deltacloud_username: username@fqdn
+#  rhevm_deltacloud_password: password
+#  rhevm_deltacloud_provider: https://rhevm.server.com:8443/api
+classes:
+- aeolus::conductor
+- aeolus::image-factory
+- aeolus::iwhd
+- aeolus::deltacloud::core
+- aeolus::profiles::rhevm

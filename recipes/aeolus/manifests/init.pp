@@ -10,8 +10,6 @@ import "conductor"
 import "deltacloud"
 import "iwhd"
 import "image-factory"
-import "rhevm"
-import "vmware"
 
 import "defaults"
 import "profiles/*"
@@ -37,13 +35,4 @@ class aeolus {
     ensure => 'installed',
     source => $package_provider
   }
-}
-
-# Create a new provider in aeolus
-define aeolus::provider($type, $port, $endpoint=""){
-  aeolus::deltacloud{$name: provider_type => $type, endpoint => $endpoint, port => $port}
-  aeolus::conductor::provider{$name:
-                                type           => $type,
-                                url            => "http://localhost:${port}/api",
-                                require        => Aeolus::Deltacloud[$name] }
 }

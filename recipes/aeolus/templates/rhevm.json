@@ -5,7 +5,7 @@
     "nfs-dir": "<%= rhevm_nfs_mount_point %>",
     "nfs-path": "<%= rhevm_nfs_export %>",
     "nfs-host": "<%= rhevm_nfs_server %>",
-    "api-url": "<%= rhevm_deltacloud_powershell_url %>",
+    "api-url": "<%= rhevm_deltacloud_provider %>",
     "password": "<%= rhevm_deltacloud_password %>",
     "cluster": "_any_"
   }

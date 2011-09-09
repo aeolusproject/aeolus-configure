@@ -17,8 +17,6 @@ classes:
 - aeolus::conductor::disabled
 - aeolus::iwhd::disabled
 - aeolus::image-factory::disabled
-- aeolus::conductor::remove_seed_data
+- aeolus::deltacloud::disabled
 # Uncomment this to clean up RHEV details
-#- aeolus::rhevm::disabled
-# Uncomment to remove vmware
-#- aeolus::vmware::disabled
+#- aeolus::profiles::rhevm::disabled

@@ -7,6 +7,18 @@ class aeolus::deltacloud::core {
     package { 'deltacloud-core':
               ensure => 'installed',
               provider => $package_provider }
+
+  ### we need to sync time to communicate w/ cloud providers
+    include ntp::client
+
+  ### Start the aeolus services
+    file { "/var/log/deltacloud-core": ensure => 'directory' }
+
+    service { 'deltacloud-core':
+      ensure => 'running',
+      enable => true,
+      hasstatus => true,
+      require => [Package['deltacloud-core'], File["/var/log/deltacloud-core"]]}
 }
 
 class aeolus::deltacloud::ec2 {
@@ -17,39 +29,10 @@ class aeolus::deltacloud::ec2 {
                 provider => $package_provider }
 }
 
-
-# install the deltacloud component w/ the specified driver
-define aeolus::deltacloud($provider_type="", $endpoint='', $port="3002") {
-  include aeolus::deltacloud::core
-
-  if $provider_type == "ec2" {
-    include aeolus::deltacloud::ec2
-  }
-
-  ### we need to sync time to communicate w/ cloud providers
-    include ntp::client
-
-  ### Start the aeolus services
-    file { "/var/log/deltacloud-${name}": ensure => 'directory' }
-    file {"/etc/init.d/deltacloud-${name}":
-           content => template("aeolus/deltacloud-core"),
-           mode   => 755 }
-    service { "deltacloud-${name}":
-       ensure  => 'running',
-       enable  => true,
-       require => [Package['deltacloud-core'],
-                   $provider_type ? { "ec2" => Package['rubygem-aws'], default => Package['deltacloud-core'] },
-                   File["/etc/init.d/deltacloud-${name}", "/var/log/deltacloud-${name}"]] }
-}
-
-define aeolus::deltacloud::disabled() {
+class aeolus::deltacloud::disabled {
   ### Stop the aeolus services
-    service { "deltacloud-${name}":
+    service { 'deltacloud-core':
       ensure  => 'stopped',
       enable  => false,
       hasstatus => true}
-    file {"/etc/init.d/deltacloud-${name}":
-      ensure => absent,
-      require => Service["deltacloud-${name}"]}
 }
-

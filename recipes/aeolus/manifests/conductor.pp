@@ -116,13 +116,6 @@ class aeolus::conductor inherits aeolus {
              enable  =>  'true' }
 }
 
-
-class aeolus::conductor::remove_seed_data {
-    aeolus::deltacloud::disabled{"mock": }
-    aeolus::deltacloud::disabled{"ec2-us-east-1": }
-    aeolus::deltacloud::disabled{"ec2-us-west-1": }
-}
-
 class aeolus::conductor::disabled {
     file {"/var/lib/aeolus-conductor":
             ensure => absent,
@@ -197,11 +190,12 @@ define aeolus::conductor::logout(){
 }
 
 # Create a new provider via the conductor
-define aeolus::conductor::provider($type="",$url=""){
+define aeolus::conductor::provider($deltacloud_driver="",$url="", $deltacloud_provider=""){
   web_request{ "provider-$name":
     post         => "https://localhost/conductor/providers",
     parameters  => { 'provider[name]'  => $name, 'provider[url]'   => $url,
-                     'provider[provider_type_codename]' => $type },
+                     'provider[provider_type_deltacloud_driver]' => $deltacloud_driver,
+                     'provider[deltacloud_provider]' => $deltacloud_provider },
     returns     => '200',
     follow      => true,
     contains    => "//html/body//li[text() = 'Provider added.']",
