@@ -167,7 +167,7 @@ define aeolus::conductor::site_admin($email="", $password="", $first_name="", $l
 define aeolus::conductor::login($password){
   web_request{ "$name-conductor-login":
     post         => 'https://localhost/conductor/user_session',
-    parameters  => { 'user_session[login]'    => "$name", 'user_session[password]' => "$password",
+    parameters  => { 'login'    => "$name", 'password' => "$password",
                      'commit'                 => 'submit' },
     returns     => '200',
     follow      => true,
@@ -180,7 +180,7 @@ define aeolus::conductor::login($password){
 define aeolus::conductor::logout(){
   web_request{ "$name-conductor-logout":
     post         => 'https://localhost/conductor/logout',
-    parameters  => { 'user_session[login]'    => "admin", 'user_session[password]' => "password",
+    parameters  => { 'login'    => "admin", 'password' => "password",
                      'commit'                 => 'submit' },
     returns     => '200',
     follow      => true,
