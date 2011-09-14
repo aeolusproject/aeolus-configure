@@ -19,6 +19,13 @@ class aeolus::deltacloud::core {
       enable => true,
       hasstatus => true,
       require => [Package['deltacloud-core'], File["/var/log/deltacloud-core"]]}
+
+    # Need to pause for a second for deltacloud-core to complete startup
+    # otherwise one may see connect issues when adding providers
+    exec{"deltacloud-core-startup-wait":
+      cwd         => '/bin',
+      command     => "/bin/sleep 1",
+      require     => Service["deltacloud-core"]}
 }
 
 class aeolus::deltacloud::ec2 {

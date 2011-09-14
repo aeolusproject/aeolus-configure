@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.0.2
-Release:  3%{?extra_release}%{?dist}
+Release:  4%{?extra_release}%{?dist}
 
 Group:    Applications/Internet
 License:  GPLv2+
@@ -62,6 +62,11 @@ Aeolus Configure Puppet Recipe
 %{_sbindir}/aeolus-configure-image
 
 %changelog
+* Wed Sep 14 2011 Richard Su <rwsu@redhat.com> 2.0.2-4
+- single deltacloud-core
+- rhevm and vsphere configurations moved to their own profiles
+- wait 1 sec after deltacloud-core service startup before providers are added
+
 * Tue Aug 30 2011 Maros Zatko <mzatko@redhat.com> 2.0.2-3
 - Added script for restarting running services
 
