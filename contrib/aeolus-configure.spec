@@ -7,7 +7,7 @@ Version:  2.0.2
 Release:  4%{?extra_release}%{?dist}
 
 Group:    Applications/Internet
-License:  GPLv2+
+License:  ASL 2.0
 URL:      http://aeolusproject.org
 
 # git clone  git://git.fedorahosted.org/aeolus/configure.git
