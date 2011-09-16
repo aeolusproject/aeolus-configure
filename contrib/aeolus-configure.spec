@@ -10,7 +10,8 @@ Group:    Applications/Internet
 License:  ASL 2.0
 URL:      http://aeolusproject.org
 
-# git clone  git://git.fedorahosted.org/aeolus/configure.git
+# to build source tarball
+# git clone git://git.fedorahosted.org/aeolus/configure.git
 # cd configure
 # rake pkg
 # cp pkg/aeolus-configure-2.0.1.tgz ~/rpmbuild/SOURCES
@@ -52,6 +53,7 @@ Aeolus Configure Puppet Recipe
 %{__cp} -R %{pbuild}/bin/aeolus-node %{buildroot}/%{_sbindir}/\
 
 %files
+%doc COPYING
 %attr(0755, root, root) %{_sbindir}/aeolus-configure
 %attr(0755, root, root) %{_sbindir}/aeolus-cleanup
 %attr(0755, root, root) %{_sbindir}/aeolus-node
