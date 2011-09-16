@@ -50,7 +50,7 @@ Aeolus Configure Puppet Recipe
 %{__cp} -R %{pbuild}/bin/aeolus-configure-image %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-configure %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-cleanup %{buildroot}/%{_sbindir}/
-%{__cp} -R %{pbuild}/bin/aeolus-node %{buildroot}/%{_sbindir}/\
+%{__cp} -R %{pbuild}/bin/aeolus-node %{buildroot}/%{_sbindir}/
 
 %files
 %doc COPYING
