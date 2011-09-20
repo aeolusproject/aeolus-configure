@@ -15,7 +15,7 @@
 #   limitations under the License.
 
 # ordered as in rc.d
-services = %w(mongod messagebus iwhd postgresql httpd qpidd deltacloud-ec2-us-east-1 deltacloud-ec2-us-west-1 deltacloud-mock libvirtd condor aeolus-conductor conductor-dbomatic imagefactory)
+services = %w(mongod messagebus iwhd postgresql httpd qpidd deltacloud-core libvirtd condor aeolus-conductor conductor-dbomatic imagefactory)
 
 def perform(action, svcs)
   action = action.to_s
