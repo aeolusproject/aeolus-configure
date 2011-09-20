@@ -14,7 +14,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-init_scripts=%w(aeolus-conductor condor deltacloud-core httpd imagefactory iwhd libvirtd mongod ntpd postgresql qpidd)
+init_scripts=%w(mongod iwhd postgresql httpd qpidd deltacloud-core libvirtd condor aeolus-conductor conductor-dbomatic imagefactory ntpd)
 
 init_scripts.each do |script|
 	puts "\nChecking #{script} ..."
