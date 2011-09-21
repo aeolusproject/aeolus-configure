@@ -14,6 +14,18 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+if ARGV.include?('-h') || ARGV.include?('--help')
+  puts "Usage: #{$0} [OPTION]
+Show status of Aeolus services.
+
+  -h, --help  display this help and exit
+
+To restart aeolus services please use aeolus-restart-services.
+"
+
+  exit
+end
+
 # ordered as in rc.d
 init_scripts=%w(mongod iwhd postgresql httpd qpidd deltacloud-core libvirtd aeolus-conductor conductor-dbomatic imagefactory ntpd)
 
