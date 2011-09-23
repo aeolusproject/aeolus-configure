@@ -57,14 +57,14 @@ class aeolus::profiles::rhevm {
     url                 => "http://localhost:3002/api",
     deltacloud_provider => "$rhevm_deltacloud_provider",
     require             => Aeolus::Conductor::Login["admin"] }
-    
+
   aeolus::conductor::provider::account{"rhevm":
       provider           => 'rhevm',
       type               => 'rhevm',
       username           => '$rhevm_deltacloud_username',
       password           => '$rhevm_deltacloud_password',
       require        => Aeolus::Conductor::Provider["rhevm"] }
-    
+
   aeolus::conductor::hwp{"hwp1":
       memory         => "512",
       cpu            => "1",

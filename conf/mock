@@ -1,0 +1,12 @@
+# mock setup configuration.
+---
+parameters:
+  enable_https: true
+  enable_security: false
+  package_provider: rpm
+classes:
+- aeolus::conductor
+- aeolus::image-factory
+- aeolus::iwhd
+- aeolus::deltacloud::core
+- aeolus::profiles::mock

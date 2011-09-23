@@ -12,13 +12,9 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-class aeolus::profiles::vsphere {
-  aeolus::create_bucket{"aeolus":}
+class aeolus::profiles::mock {
 
-  file {"/etc/imagefactory/vsphere.json":
-    content => template("aeolus/vsphere.json"),
-    mode => 755,
-    require => Package['aeolus-conductor-daemons'] }
+  aeolus::create_bucket{"aeolus":}
 
   aeolus::conductor::site_admin{"admin":
      email           => 'dcuser@aeolusproject.org',
@@ -29,18 +25,17 @@ class aeolus::profiles::vsphere {
   aeolus::conductor::login{"admin": password => "password",
      require  => Aeolus::Conductor::Site_admin['admin']}
 
-  aeolus::conductor::provider{"vsphere":
-    deltacloud_driver   => "vsphere",
-    url                 => "http://localhost:3002/api",
-    deltacloud_provider => "$vsphere_deltacloud_provider",
-    require             => [Aeolus::Conductor::Login["admin"]] }
+  aeolus::conductor::provider{"mock":
+      deltacloud_driver  => 'mock',
+      url                => 'http://localhost:3002/api',
+      require            => Aeolus::Conductor::Login["admin"] }
 
-  aeolus::conductor::provider::account{"vsphere":
-      provider           => 'vsphere',
-      type               => 'vsphere',
-      username           => '$vsphere_username',
-      password           => '$vsphere_password',
-      require        => Aeolus::Conductor::Provider["vsphere"] }
+  aeolus::conductor::provider::account{"mockuser":
+      provider           => 'mock',
+      type               => 'mock',
+      username           => 'mockuser',
+      password           => 'mockpassword',
+      require        => Aeolus::Conductor::Provider["mock"] }
 
   aeolus::conductor::hwp{"hwp1":
       memory         => "512",
@@ -50,7 +45,7 @@ class aeolus::profiles::vsphere {
       require        => Aeolus::Conductor::Login["admin"] }
 
   aeolus::conductor::logout{"admin":
-    require    => [Aeolus::Conductor::Provider['vsphere'],
-                   Aeolus::Conductor::Provider::Account['vsphere'],
+    require    => [Aeolus::Conductor::Provider['mock'],
+                   Aeolus::Conductor::Provider::Account['mockuser'],
                    Aeolus::Conductor::Hwp['hwp1']] }
 }
