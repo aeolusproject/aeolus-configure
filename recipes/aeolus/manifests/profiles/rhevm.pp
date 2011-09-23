@@ -13,7 +13,7 @@
 #   limitations under the License.
 
 class aeolus::profiles::rhevm {
-  file {"/etc/rhevm.json":
+  file {"/etc/imagefactory/rhevm.json":
     content => template("aeolus/rhevm.json"),
     mode => 755,
     require => Package['aeolus-conductor-daemons'] }
@@ -38,7 +38,7 @@ class aeolus::profiles::rhevm {
   exec { "/sbin/service iwhd restart":
     require => [Service['iwhd'],
                 Mount["$rhevm_nfs_mount_point"],
-                File["/etc/rhevm.json"],
+                File["/etc/imagefactory/rhevm.json"],
                 File["/etc/iwhd/conf.js"]]}
 
   aeolus::create_bucket{"aeolus":}
