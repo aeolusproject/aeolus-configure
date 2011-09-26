@@ -14,7 +14,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-init_scripts=%w(mongod iwhd postgresql httpd qpidd deltacloud-core libvirtd condor aeolus-conductor conductor-dbomatic imagefactory ntpd)
+# ordered as in rc.d
+init_scripts=%w(mongod iwhd postgresql httpd qpidd deltacloud-core libvirtd aeolus-conductor conductor-dbomatic imagefactory ntpd)
 
 init_scripts.each do |script|
 	puts "\nChecking #{script} ..."
@@ -25,20 +26,4 @@ init_scripts.each do |script|
 	else
 		puts " \e[1;31mFAILURE:\e[0m #{out.strip}"
 	end
-end
-
-# Other checks
-commands = [
- {:name => 'condor_q',		:command => 'condor_q'},
- {:name => 'condor_status',	:command => 'condor_status'}
-]
-commands.each do |cmd|
-	puts "\nChecking #{cmd[:name]} ..."
-	cmd = "#{cmd[:command]}"
-	out = `#{cmd}`
-        if $?.to_i == 0
-                puts " \e[1;32mSuccess:\e[0m #{out.strip}"
-        else
-                puts " \e[1;31mFAILURE:\e[0m #{out.strip}"
-        end
 end

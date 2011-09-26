@@ -69,7 +69,7 @@ export FACTER_AEOLUS_ENABLE_HTTPS=true
 export FACTER_AEOLUS_ENABLE_SECURITY=false
 puppet /usr/share/aeolus-configure/modules/aeolus/aeolus.pp \
        --modulepath=/usr/share/aeolus-configure/modules/ \
-       --external_nodes "/usr/sbin/aeolus-node $PUPPET_NODE" --node_terminus exec \
+       --external_nodes "/bin/sh /usr/share/aeolus-configure/modules/aeolus/aeolus-node $PUPPET_NODE" --node_terminus exec \
        --logdest=/var/log/aeolus-configure/aeolus-configure.log \
        --logdest=console \
        $LOGLEVEL

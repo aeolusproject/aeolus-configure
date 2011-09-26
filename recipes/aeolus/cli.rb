@@ -34,7 +34,7 @@ IMAGE_TEMPLATE='/etc/aeolus-configure/custom_template.tdl'
 PROFILE_RECIPE='/usr/share/aeolus-configure/modules/aeolus/manifests/profiles/custom.pp'
 
 installed_component = nil
-install_components  = []
+install_components  = ["- aeolus::conductor"]
 while ![:None, :All].include?(installed_component)
   clear_screen
   say "Select Aeolus Components to Install"
@@ -45,14 +45,11 @@ while ![:None, :All].include?(installed_component)
       menu.choice :None
       menu.choice :"Image Factory"
       menu.choice :"Image Warehouse"
-      menu.choice :"Conductor"
     end
   if installed_component == :"Image Factory"
     install_components << "- aeolus::image-factory"
   elsif installed_component == :"Image Warehouse"
     install_components << "- aeolus::iwhd"
-  elsif installed_component == :"Conductor"
-    install_components << "- aeolus::conductor"
   elsif installed_component == :All
     install_components << "- aeolus::conductor"  <<
                           "- aeolus::image-factory" <<

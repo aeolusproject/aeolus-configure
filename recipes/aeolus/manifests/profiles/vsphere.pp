@@ -15,6 +15,11 @@
 class aeolus::profiles::vsphere {
   aeolus::create_bucket{"aeolus":}
 
+  file {"/etc/imagefactory/vsphere.json":
+    content => template("aeolus/vsphere.json"),
+    mode => 755,
+    require => Package['aeolus-conductor-daemons'] }
+
   aeolus::conductor::site_admin{"admin":
      email           => 'dcuser@aeolusproject.org',
      password        => "password",
