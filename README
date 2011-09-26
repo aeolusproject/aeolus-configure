@@ -12,8 +12,8 @@ to install and configure aeolus components. To make use
 of this recipe, drop it into your puppet module path or
 alternatively build and install the aeolus-configure rpm
 which contains the recipe and some wrapper scripts to configure
-the aeolus components.
-
+the aeolus components. Before executing the rake rpms task, you
+will need to install the aeolus-conductor-devel package.
 
 Building and Installing the Aeolus Recipe
 ---------------------------------
