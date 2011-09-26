@@ -19,6 +19,7 @@ Source0:  %{name}-%{version}.tgz
 BuildArch:  noarch
 Requires:   puppet >= 2.6.6
 Requires:   rubygem(uuidtools)
+BuildRequires: rubygem(rspec-core)
 # To send a request to iwhd rest interface to
 # create buckets, eventually replace w/ an
 # iwhd client
