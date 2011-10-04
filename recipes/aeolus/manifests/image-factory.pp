@@ -18,9 +18,10 @@ class aeolus::image-factory inherits aeolus {
 
   # image factory client
   package { 'rubygem-aeolus-image': ensure => 'installed' }
+  package { 'rubygem-aeolus-cli': ensure => 'installed' }
   file{"/root/.aeolus-cli":
-    source => "/usr/lib/ruby/gems/1.8/gems/aeolus-image-0.1.0/examples/aeolus-cli",
-    require => Package['rubygem-aeolus-image'] }
+    source => "/usr/lib/ruby/gems/1.8/gems/aeolus-cli-0.1.0/examples/aeolus-cli",
+    require => Package['rubygem-aeolus-image', 'rubygem-aeolus-cli'] }
 
   # image factory services
   package { 'libvirt':
