@@ -1,0 +1,23 @@
+:default_deltacloud_url: http://localhost:3002/api
+
+:auth:
+  # supported strategies: database, ldap
+  :strategy: database
+  :ldap:
+    :host: localhost
+    # '%s' expression in username_dn string will be replaced
+    # by user's login
+    # username_dn: "deltacloud\%s"
+    :username_dn: uid=%s,ou=People,dc=my-domain,dc=com
+    # :port: 389
+:iwhd:
+  :url: http://localhost:9090
+  :oauth:
+    :consumer_key: <%= iwhd_oauth_user %>
+    :consumer_secret: <%= iwhd_oauth_password %>
+ 
+:imagefactory:
+  :url: https://localhost:8075/imagefactory
+  :oauth:
+    :consumer_key: <%= imagefactory_oauth_user %>
+    :consumer_secret: <%= imagefactory_oauth_password %>

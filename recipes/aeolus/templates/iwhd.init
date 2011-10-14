@@ -1,0 +1,146 @@
+#!/bin/sh
+
+# The following is the LSB init header.  See
+# http://www.linux-foundation.org/spec/booksets/LSB-Core-generic/LSB-Core-generic.html#INITSCRCOMCONV
+#
+### BEGIN INIT INFO
+# Provides: iwhd
+# Default-Start: 3 4 5
+# Short-Description: image warehouse daemon
+# Description: This is the primary server process for the image warehouse
+### END INIT INFO
+
+# the following is chkconfig init header
+#
+# iwhd: image warehouse daemon
+#
+# chkconfig: - 40 60
+# Description: This is the primary server process for the image warehouse
+#
+# processname: iwhd
+# pidfile: /var/run/iwhd.pid
+
+. /etc/rc.d/init.d/functions
+
+SERVICE=iwhd
+PROCESS=iwhd
+PIDFILE=/var/run/$SERVICE.pid
+CONFIG_JS=/etc/iwhd/conf.js
+MONGOD_SERVER_SPEC=localhost:27017
+
+# How many seconds to wait for mongod to become usable before giving up.
+MONGOD_N_SECONDS=2
+
+# Tell iwhd to use /var/cache/iwhd, not /tmp for a small S3-related
+# temporary file.  This avoids conflict with SELinux policy that discourages
+# writing in /tmp.
+export TMPDIR=/var/cache/iwhd
+
+IWHD_ARGS="-d $MONGOD_SERVER_SPEC -l /var/log/iwhd.log"
+
+test -r /etc/sysconfig/iwhd && . /etc/sysconfig/iwhd
+
+RETVAL=0
+
+wait_for()
+{
+    local sleep_seconds=$1
+    local max_n_sleeps=$2
+    local cmd=$3
+    case $max_n_sleeps in
+        [0-9]*);; *) echo invalid max_n_sleeps $max_n_sleeps 1>&2; exit 1;;
+    esac
+    case $sleep_seconds in
+        [0-9]*|.[0-9]*);; *)
+          echo invalid sleep interval $sleep_seconds 1>&2; exit 1;;
+    esac
+    local i=0
+    while :; do
+        eval "$cmd" && return 0
+        sleep $sleep_seconds
+        i=$(expr $i + 1)
+        test $i = $max_n_sleeps && return 1
+    done
+}
+
+wait_for_mongod() {
+    # Wait for up to $1 seconds for mongod to begin listening.
+    wait_for .1 $(($1 * 10)) 'mongo $MONGOD_SERVER_SPEC \
+      < /dev/null >/dev/null 2>&1'
+}
+
+start() {
+    # This is a bit kludgey.  We'll use the standard daemon
+    # framework once iwhd knows how to daemonize itself.
+    test -f $PIDFILE && kill -0 $(cat $PIDFILE) 2>/dev/null \
+        && { printf %s $"$PROCESS appears to already be running"
+             echo_failure; echo; return 1; }
+    mkdir -p /var/cache/iwhd
+    rm -rf /var/cache/iwhd/*
+    printf %s $"waiting for mongod to listen on $MONGOD_SERVER_SPEC"
+    wait_for_mongod $MONGOD_N_SECONDS && echo_success \
+	|| { echo_failure; echo; return 1; }
+    echo
+
+    printf %s $"Starting $SERVICE daemon: "
+    $PROCESS -c "$CONFIG_JS" $IWHD_ARGS -o -U <%= iwhd_oauth_user %>:<%= iwhd_oauth_password %>&
+    pid=$!
+    RETVAL=$?
+    if test $RETVAL = 0; then
+        echo $pid > $PIDFILE
+        touch /var/lock/subsys/$SERVICE
+        success
+    else
+        failure
+    fi
+    echo
+    return $RETVAL
+}
+
+stop() {
+    action $"Stopping $SERVICE daemon: " killproc -p $PIDFILE $PROCESS
+    RETVAL=$?
+    if test $RETVAL = 0; then
+        rm -f /var/lock/subsys/$SERVICE
+        rm -f $PIDFILE
+        rm -rf /var/cache/iwhd/*
+    fi
+    return $RETVAL
+}
+
+restart() {
+    stop
+    start
+}
+
+reload() {
+    printf %s $"Reloading $SERVICE configuration: "
+
+    killproc -p $PIDFILE $PROCESS -HUP
+    RETVAL=$?
+    echo
+    return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+    start|stop|restart|reload)
+        $1
+        ;;
+    status)
+        status -p $PIDFILE $PROCESS
+        ;;
+    force-reload)
+        reload
+        ;;
+    condrestart|try-restart)
+        test -f /var/lock/subsys/$SERVICE && restart || :
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|reload|force-reload|try-restart}"
+        exit 2
+        ;;
+esac
+
+# Exit with the result of the "case" statement.
+exit $?

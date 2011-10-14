@@ -30,6 +30,11 @@ class aeolus::iwhd inherits aeolus {
     file { "/etc/iwhd": ensure => 'directory'}
     file { "/var/lib/iwhd":  ensure => 'directory' }
 
+    file {"/etc/init.d/iwhd":
+      content => template("aeolus/iwhd.init"),
+      mode => 755,
+      require => Package['iwhd'] }
+
     service { 'mongod':
       ensure  => 'running',
       enable  => true,
@@ -39,9 +44,9 @@ class aeolus::iwhd inherits aeolus {
       ensure  => 'running',
       enable  => true,
       hasstatus => true,
-      require => [Package['iwhd'],
-                  Service[mongod],
-                  File['/var/lib/iwhd']]}
+      require => [Service[mongod],
+                  File['/var/lib/iwhd',
+                       '/etc/init.d/iwhd']]}
 
     # XXX ugly hack but iwhd might take some time to come up
     exec{"iwhd_startup_pause":

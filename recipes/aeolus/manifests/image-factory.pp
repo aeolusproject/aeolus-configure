@@ -59,8 +59,16 @@ class aeolus::image-factory inherits aeolus {
                enable  => true,
                hasstatus => true,
                require => Package['libvirt']}
+
+
+    file {"/etc/imagefactory/imagefactory.conf":
+      content => template("aeolus/imagefactory.conf"),
+      mode => 755,
+      require => Package['imagefactory'] }
+
     $requires = [Package['imagefactory'],
-                 File['/var/tmp/imagefactory-mock'],
+                 File['/var/tmp/imagefactory-mock',
+                      '/etc/imagefactory/imagefactory.conf'],
                  Service[qpidd], Service[libvirtd],
                  Rails::Seed::Db[seed_aeolus_database]]
     service { 'imagefactory':

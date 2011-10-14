@@ -23,6 +23,10 @@ class aeolus::conductor inherits aeolus {
               ensure => 'installed',
               provider => $package_provider }
 
+    file{"/usr/share/aeolus-conductor/config/settings.yml":
+      content => template("aeolus/conductor-settings.yml"),
+      require => Package['aeolus-conductor']}
+
     file {"/var/lib/aeolus-conductor":
       ensure => directory,
       owner => 'aeolus',
@@ -48,7 +52,8 @@ class aeolus::conductor inherits aeolus {
       require => [Package['aeolus-conductor-daemons'],
                   Rails::Migrate::Db[migrate_aeolus_database],
                   Service['httpd'],
-                  Apache::Site[aeolus-conductor], Exec[reload-apache]] }
+                  Apache::Site[aeolus-conductor], Exec[reload-apache],
+                  File['/usr/share/aeolus-conductor/config/settings.yml']] }
 
   ### Initialize and start the aeolus database
     # Right now we configure and start postgres, at some point I want
