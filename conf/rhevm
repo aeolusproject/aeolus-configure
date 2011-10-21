@@ -11,6 +11,7 @@ parameters:
 #  rhevm_deltacloud_username: username@fqdn
 #  rhevm_deltacloud_password: password
 #  rhevm_deltacloud_provider: https://rhevm.server.com:8443/api
+#  rhevm_push_timeout: 1800
 classes:
 - aeolus::conductor
 - aeolus::image-factory

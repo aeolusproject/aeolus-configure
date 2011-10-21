@@ -7,6 +7,7 @@
     "nfs-host": "<%= rhevm_nfs_server %>",
     "api-url": "<%= rhevm_deltacloud_provider %>",
     "password": "<%= rhevm_deltacloud_password %>",
-    "cluster": "_any_"
+    "cluster": "_any_",
+    "timeout": <%= rhevm_push_timeout %>
   }
 }
