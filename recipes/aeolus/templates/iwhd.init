@@ -83,7 +83,7 @@ start() {
     echo
 
     printf %s $"Starting $SERVICE daemon: "
-    $PROCESS -c "$CONFIG_JS" $IWHD_ARGS -o -U <%= iwhd_oauth_user %>:<%= iwhd_oauth_password %>&
+    $PROCESS -c "$CONFIG_JS" $IWHD_ARGS -o -u /etc/iwhd/users.js &
     pid=$!
     RETVAL=$?
     if test $RETVAL = 0; then
