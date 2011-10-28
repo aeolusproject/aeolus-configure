@@ -68,11 +68,6 @@ echo "Launching aeolus configuration recipe..."
 export FACTER_AEOLUS_ENABLE_HTTPS=true
 export FACTER_AEOLUS_ENABLE_SECURITY=false
 
-export FACTER_IWHD_OAUTH_USER=`uuidgen`
-export FACTER_IWHD_OAUTH_PASSWORD=`uuidgen`
-export FACTER_IMAGEFACTORY_OAUTH_USER=`uuidgen`
-export FACTER_IMAGEFACTORY_OAUTH_PASSWORD=`uuidgen`
-
 NODE_ARRAY=(`echo $PUPPET_NODE | tr "," "\n"`)
 for x in "${NODE_ARRAY[@]}"
 do

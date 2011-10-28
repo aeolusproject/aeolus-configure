@@ -64,7 +64,7 @@ class aeolus::image-factory inherits aeolus {
     file {"/etc/imagefactory/imagefactory.conf":
       content => template("aeolus/imagefactory.conf"),
       mode => 755,
-      require => Package['imagefactory'] }
+      require => [Package['imagefactory'],Package['aeolus-conductor']] }
 
     $requires = [Package['imagefactory'],
                  File['/var/tmp/imagefactory-mock',
