@@ -18,11 +18,6 @@ class aeolus::profiles::rhevm {
     mode => 755,
     require => Package['aeolus-conductor-daemons'] }
 
-  file {"/etc/iwhd/conf.js":
-    content => template("aeolus/iwhd-conf.js"),
-    mode => 755,
-    require => Package['aeolus-conductor-daemons'] }
-
   file {"$rhevm_nfs_mount_point":
     ensure => 'directory'}
 
@@ -32,14 +27,6 @@ class aeolus::profiles::rhevm {
     fstype => "nfs",
     options => "rw",
     require => File["$rhevm_nfs_mount_point"]}
-
-  # give iwhd a restart to pick up new configuration files
-  # in the event iwhd had already initialized at /var/lib/iwhd
-  exec { "/sbin/service iwhd restart":
-    require => [Service['iwhd'],
-                Mount["$rhevm_nfs_mount_point"],
-                File["/etc/imagefactory/rhevm.json"],
-                File["/etc/iwhd/conf.js"]]}
 
   aeolus::create_bucket{"aeolus":}
 
