@@ -26,7 +26,7 @@ class apache {
 
   # if selinux is enabled and we want to use mod_proxy, we need todo this
   exec{'permit-http-networking':
-         command => '/usr/sbin/setsebool httpd_can_network_connect 1',
+         command => '/usr/sbin/setsebool -P httpd_can_network_connect 1',
          logoutput => true,
          unless   => "/usr/bin/test 'Disabled' = `/usr/sbin/getenforce`"
   }
