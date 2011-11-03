@@ -1,0 +1,25 @@
+local6.*                                                /var/log/aeolus.log
+
+# setup on disk queue
+$ModLoad imuxsock
+$WorkDirectory /rsyslog/work
+$ActionQueueType LinkedList
+$ActionQueueFileName srvrfwd
+$ActionResumeRetryCount -1
+$ActionQueueSaveOnShutdown
+
+# setup relp server
+$ModLoad imrelp
+$InputRELPServerRun 20514
+
+# setup relp client
+$ModLoad omrelp
+*.* :omrelp:localhost:20514;RSYSLOG_ForwardFormat
+
+# setup tcp server if we want this
+#$ModLoad imtcp
+#$InputTCPMaxSessions 50
+#$InputTCPServerRun 514
+
+# setup tcp client if we want this
+#*.* @@localhost:514

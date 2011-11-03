@@ -27,6 +27,20 @@ class aeolus::conductor inherits aeolus {
       content => template("aeolus/conductor-settings.yml"),
       require => Package['aeolus-conductor']}
 
+    file{"/rsyslog": ensure => 'directory' }
+    file{"/rsyslog/work":
+         ensure  => 'directory',
+         require => File['/rsyslog'] }
+
+    file{"/etc/rsyslog.d/aeolus.conf":
+      content => template("aeolus/rsyslog"),
+      notify  => Service['rsyslog']}
+
+    service { 'rsyslog':
+        ensure  => 'running',
+        enable  => true,
+        require => File['/etc/rsyslog.d/aeolus.conf', '/rsyslog/work'] }
+
     file {"/var/lib/aeolus-conductor":
       ensure => directory,
       owner => 'aeolus',

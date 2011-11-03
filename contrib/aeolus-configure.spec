@@ -26,6 +26,7 @@ BuildRequires: rubygem(rspec-core)
 Requires:  curl
 Requires:  rubygem(curb)
 Requires:  rubygem(highline)
+Requires:  rsyslog-relp
 
 %description
 Aeolus Configure Puppet Recipe
