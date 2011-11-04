@@ -55,4 +55,8 @@ puppet /usr/share/aeolus-configure/modules/aeolus/aeolus.pp \
        --external_nodes "/bin/sh /usr/share/aeolus-configure/modules/aeolus/aeolus-node $PUPPET_NODE" --node_terminus exec \
        --logdest=/var/log/aeolus-configure/aeolus-cleanup.log \
        --logdest=console \
-       $LOGLEVEL
+       $LOGLEVEL \
+       --detailed-exitcodes
+if [ $? != 0 -a $? != 2 ] ; then
+    exit 1
+fi
