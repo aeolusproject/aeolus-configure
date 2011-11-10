@@ -38,6 +38,12 @@ class aeolus::profiles::ec2 {
       url                       => 'http://localhost:3002/api',
       require        => Aeolus::Conductor::Login["admin"] }
 
+  aeolus::conductor::provider{"ec2-us-west-2":
+      deltacloud_driver         => 'ec2',
+      deltacloud_provider       => 'us-west-2',
+      url                       => 'http://localhost:3002/api',
+      require        => Aeolus::Conductor::Login["admin"] }
+
   aeolus::conductor::provider{"ec2-eu-west-1":
       deltacloud_driver         => 'ec2',
       deltacloud_provider       => 'eu-west-1',
