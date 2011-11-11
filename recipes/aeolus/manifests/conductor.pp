@@ -32,6 +32,7 @@ class aeolus::conductor inherits aeolus {
          ensure  => 'directory',
          require => File['/rsyslog'] }
 
+    file{"/etc/rsyslog.d": ensure => 'directory' }
     file{"/etc/rsyslog.d/aeolus.conf":
       content => template("aeolus/rsyslog"),
       notify  => Service['rsyslog']}
