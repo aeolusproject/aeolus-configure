@@ -19,7 +19,7 @@ init_scripts=%w(mongod iwhd postgresql httpd qpidd deltacloud-core libvirtd aeol
 
 init_scripts.each do |script|
 	puts "\nChecking #{script} ..."
-        cmd = "/etc/init.d/#{script} status"
+        cmd = "service #{script} status"
 	out = `#{cmd}`
 	if $?.to_i == 0
 		puts " \e[1;32mSuccess:\e[0m #{out.strip}"
