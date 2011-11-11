@@ -6,20 +6,24 @@ $WorkDirectory /rsyslog/work
 $ActionQueueType LinkedList
 $ActionQueueFileName srvrfwd
 $ActionResumeRetryCount -1
-$ActionQueueSaveOnShutdown
+$ActionQueueSaveOnShutdown on
 
-# setup relp server
-$ModLoad imrelp
-$InputRELPServerRun 20514
+# Uncomment the next 2 lines to start local relp server
+# This also needs an selinux policy to run under enforcing
+#$ModLoad imrelp
+#$InputRELPServerRun 20514
 
 # setup relp client
 $ModLoad omrelp
-*.* :omrelp:localhost:20514;RSYSLOG_ForwardFormat
+# Uncomment the line below and specify your remote host
+# if you wish to use relp
+#local6.* :omrelp:<your-remote-host>:20514;RSYSLOG_ForwardFormat
 
 # setup tcp server if we want this
 #$ModLoad imtcp
 #$InputTCPMaxSessions 50
 #$InputTCPServerRun 514
 
-# setup tcp client if we want this
-#*.* @@localhost:514
+# Uncomment the line below and specify your remote host
+# if you wish to use  TCP
+#local6.* @@localhost:514
