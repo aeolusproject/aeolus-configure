@@ -139,6 +139,11 @@ class aeolus::conductor::disabled {
             force  => true
     }
 
+    file {"/etc/rsyslog.d/aeolus.conf":
+            ensure => absent,
+            force  => true
+    }
+
   ### Stop the aeolus services
     service { ['httpd']:
       ensure  => 'stopped',
