@@ -183,7 +183,7 @@ Puppet::Type.type(:web_request).provide :curl do
         result = Curl::Easy::web_request(method, condition[method],
                                          :parameters => condition['parameters'],
                                          :file_parameters => condition['file_parameters'],
-                                         :cookie => cookie, :follow => condition[:follow])
+                                         :cookie => cookie, :follow => params[:follow])
         result_succeeded = true
         begin
           verify_result(result, condition)
