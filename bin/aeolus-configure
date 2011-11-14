@@ -26,7 +26,7 @@ OPTIONS:
    -d | --debug      Debug logging mode.
    -v | --verbose    Verbose logging mode.
    -i | --interactive Interactive installer.
-   -p | --profile    Name of profile to use
+   -p | --profile    Name of profile to use. A comma separated list can be used to specify multiple profiles. 
 EOF
 }
 
