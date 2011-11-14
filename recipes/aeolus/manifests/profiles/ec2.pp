@@ -62,8 +62,6 @@ class aeolus::profiles::ec2 {
       url                       => 'http://localhost:3002/api',
       require        => Aeolus::Conductor::Login["admin"] }
 
-
-
   aeolus::conductor::hwp{"hwp1":
       memory         => "512",
       cpu            => "1",
@@ -71,8 +69,8 @@ class aeolus::profiles::ec2 {
       architecture   => "x86_64",
       require        => Aeolus::Conductor::Login["admin"] }
 
+  Aeolus::Conductor::Provider <| |> -> Aeolus::Conductor::Logout <| |>
+
   aeolus::conductor::logout{"admin":
-    require    => [Aeolus::Conductor::Provider['ec2-us-east-1'],
-                   Aeolus::Conductor::Provider['ec2-us-west-1'],
-                   Aeolus::Conductor::Hwp['hwp1']] }
+    require    => [Aeolus::Conductor::Hwp['hwp1']] }
 }
