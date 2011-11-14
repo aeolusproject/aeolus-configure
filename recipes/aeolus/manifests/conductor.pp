@@ -48,9 +48,6 @@ class aeolus::conductor inherits aeolus {
       group => 'aeolus',
       require => Package['aeolus-conductor']}
 
-  ### Setup selinux for deltacloud
-    selinux::mode{"permissive":}
-
   ### Setup apache for deltacloud
     include apache
     if $enable_https {
@@ -58,7 +55,7 @@ class aeolus::conductor inherits aeolus {
     } else{
       apache::site{"aeolus-conductor": source => 'puppet:///modules/aeolus/aggregator-httpd.conf'}
     }
-    
+
     service { ['aeolus-conductor',
                'conductor-dbomatic' ]:
       ensure    => 'running',
