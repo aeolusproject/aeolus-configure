@@ -60,15 +60,19 @@ class aeolus::image-factory inherits aeolus {
                hasstatus => true,
                require => Package['libvirt']}
 
-
-    file {"/etc/imagefactory/imagefactory.conf":
-      content => template("aeolus/imagefactory.conf"),
-      mode => 755,
-      require => [Package['imagefactory'],Package['aeolus-conductor']] }
+    augeas { 'imagefactory.conf':
+      incl => '/etc/imagefactory/imagefactory.conf',
+      lens => 'Json.lns',
+      changes => ["set /files/etc/imagefactory/imagefactory.conf/dict/entry[. = 'warehouse_key']/string \"$iwhd_oauth_user\"",
+                  "set /files/etc/imagefactory/imagefactory.conf/dict/entry[. = 'warehouse_secret']/string \"$iwhd_oauth_password\"",
+                  "set /files/etc/imagefactory/imagefactory.conf/dict/entry[. = 'clients']/dict/entry \"$imagefactory_oauth_user\"",
+                  "set /files/etc/imagefactory/imagefactory.conf/dict/entry[. = 'clients']/dict/entry/string \"$imagefactory_oauth_password\""],
+      require => [Package['imagefactory'],Package['aeolus-conductor']]
+    }
 
     $requires = [Package['imagefactory'],
-                 File['/var/tmp/imagefactory-mock',
-                      '/etc/imagefactory/imagefactory.conf'],
+                 File['/var/tmp/imagefactory-mock'],
+                 Augeas['imagefactory.conf'],
                  Service[qpidd], Service[libvirtd],
                  Rails::Seed::Db[seed_aeolus_database]]
     service { 'imagefactory':
