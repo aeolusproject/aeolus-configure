@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.3.0
-Release:  0%{?extra_release}%{?dist}
+Release:  1%{?extra_release}%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -65,6 +65,9 @@ Aeolus Configure Puppet Recipe
 %{_sbindir}/aeolus-configure-image
 
 %changelog
+* Wed Nov 16 2011 Steve Linabery <slinaber@redhat.com> 2.3.0-1
+- Bump release for building release package
+
 * Wed Sep 14 2011 Richard Su <rwsu@redhat.com> 2.0.2-4
 - single deltacloud-core
 - rhevm and vsphere configurations moved to their own profiles
