@@ -27,6 +27,10 @@ class aeolus::conductor inherits aeolus {
       content => template("aeolus/conductor-settings.yml"),
       require => Package['aeolus-conductor']}
 
+    file{"/usr/share/aeolus-conductor/config/initializers/secret_token.rb":
+      content => template("aeolus/secret_token.rb"),
+      require => Package['aeolus-conductor']}
+
     file{"/rsyslog": ensure => 'directory' }
     file{"/rsyslog/work":
          ensure  => 'directory',
@@ -65,7 +69,8 @@ class aeolus::conductor inherits aeolus {
                   Rails::Migrate::Db[migrate_aeolus_database],
                   Service['httpd'],
                   Apache::Site[aeolus-conductor], Exec[reload-apache],
-                  File['/usr/share/aeolus-conductor/config/settings.yml']] }
+                  File['/usr/share/aeolus-conductor/config/settings.yml'],
+                  File['/usr/share/aeolus-conductor/config/initializers/secret_token.rb']] }
 
   ### Initialize and start the aeolus database
     # Right now we configure and start postgres, at some point I want

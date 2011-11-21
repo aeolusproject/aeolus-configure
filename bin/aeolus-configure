@@ -67,6 +67,7 @@ echo "Launching aeolus configuration recipe..."
 
 export FACTER_AEOLUS_ENABLE_HTTPS=true
 export FACTER_AEOLUS_ENABLE_SECURITY=false
+export FACTER_RAILS_TOKEN=`</dev/urandom tr -dc a-f0-9 | head -c128`
 
 NODE_ARRAY=(`echo $PUPPET_NODE | tr "," "\n"`)
 for x in "${NODE_ARRAY[@]}"
