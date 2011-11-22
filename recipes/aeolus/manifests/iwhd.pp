@@ -64,9 +64,10 @@ class aeolus::iwhd inherits aeolus {
 
 class aeolus::iwhd::disabled {
   exec { 'clean_iwhd':
-    command => '/usr/bin/ruby /usr/share/aeolus-configure/modules/aeolus/clean-iwhd.rb http://localhost:9090',
-    before  => Service[iwhd],
-    onlyif  => '/usr/bin/curl http://localhost:9090'
+    command   => '/usr/bin/ruby /usr/share/aeolus-configure/modules/aeolus/clean-iwhd.rb http://localhost:9090',
+    before    => Service[iwhd],
+    onlyif    => '/usr/bin/curl http://localhost:9090',
+    logoutput => true,
   }
 
   ### Stop the aeolus services
