@@ -134,4 +134,12 @@ Puppet::Type.newtype(:web_request) do
       desc "Invoke request unless the specified request returns true"
     end
 
+    newparam(:username) do
+      desc "HTTP authentication username"
+    end
+ 
+    newparam(:password) do
+      desc "HTTP authentication password"
+    end
+
 end
