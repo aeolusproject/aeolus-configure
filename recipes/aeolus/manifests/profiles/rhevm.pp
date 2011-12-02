@@ -18,6 +18,14 @@ class aeolus::profiles::rhevm {
     mode => 755,
     require => Package['aeolus-conductor-daemons'] }
 
+  web_request{ "rhevm-check-export-path-is-export-type":
+    get         =>  "$rhevm_deltacloud_provider/storagedomains?search=export",
+    username => "$rhevm_deltacloud_username",
+    password => "$rhevm_deltacloud_password",
+    returns     => '200',
+    contains    => "//storage_domains/storage_domain/storage/path[text() = '$rhevm_nfs_export']"
+  }
+
   file {"$rhevm_nfs_mount_point":
     ensure => 'directory'}
 
@@ -26,7 +34,7 @@ class aeolus::profiles::rhevm {
     device => "$rhevm_nfs_server:$rhevm_nfs_export",
     fstype => "nfs",
     options => "rw",
-    require => File["$rhevm_nfs_mount_point"]}
+    require => [File["$rhevm_nfs_mount_point"], Web_Request["rhevm-check-export-path-is-export-type"]]}
 
   aeolus::create_bucket{"aeolus":}
 

@@ -58,6 +58,14 @@ class Curl::Easy
       curl.cookiejar  = params[:cookie]
     end
 
+    if params.has_key?(:username) && !params[:username].nil?
+      curl.username = params[:username]
+    end
+ 
+    if params.has_key?(:password) && !params[:password].nil?
+      curl.password = params[:password]
+    end
+
     curl.follow_location = (params.has_key?(:follow) && params[:follow])
     request_params = params[:parameters]
     file_params    = params[:file_parameters]
@@ -158,7 +166,9 @@ Puppet::Type.type(:web_request).provide :curl do
                                        :parameters => params[:parameters],
                                        :file_parameters => params[:file_parameters],
                                        :cookie => cookies,
-                                       :follow => params[:follow])
+                                       :follow => params[:follow],
+                                       :username => params[:username],
+                                       :password => params[:password])
       verify_result(result,
                     :returns          => params[:returns],
                     :does_not_return  => params[:does_not_return],
