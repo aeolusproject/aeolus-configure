@@ -3,8 +3,8 @@
 
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
-Version:  2.4.0
-Release:  1%{?extra_release}%{?dist}
+Version:  2.5.0
+Release:  0%{?extra_release}%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
