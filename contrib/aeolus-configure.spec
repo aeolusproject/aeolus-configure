@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.4.0
-Release:  0%{?extra_release}%{?dist}
+Release:  1%{?extra_release}%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -65,6 +65,23 @@ Aeolus Configure Puppet Recipe
 %{_sbindir}/aeolus-configure-image
 
 %changelog
+* Thu Dec  1 2011 Steve Linabery <slinaber@redhat.com> - 2.4.0-1
+- ffc966c Regenerate conductor secret_token.rb file each time configure is executed
+- 4dfb1c3 Bump the version of aeolus-cli to 0.2.0
+- d8e6c40 Fix the collision in the /conductor/images/ path
+- fc84050 Log the image warehouse cleanup output
+- 1337d60 Redmine #2807 - Add ability to flush out iwhd in aeolus-cleaup
+- de3c009 Bump version following release of 2.3.0-1 on 2.3.x branch
+- fa3f661 BZ753258 - aeolus-configure overwrites contents in /etc/imagefactory/imagefactory.conf every time its executed
+- 43ad235 Ensure logout is called after all provider adds in ec2 profile.
+- f365b00 BZ752975 - multiple executions of aeolus-cleanup/configure not working as expected
+- 2b67daf Fix for Redmine #2680
+- 32f555a Document how to specify multiple profiles in aeolus-configure -h.
+- 7a0e110 Clean up rsyslog config file
+- dc67269 BZ 753273 - rsyslog configuration causes messages log to grow rapidly.
+- 0087203 BZ 753250: - aeolus-configure fails No such file or directory
+- 0af7031 update aeolus check/restart services scripts for f16 (jlaska's fix for BZ #747762 rebased)
+
 * Thu Nov 17 2011 Steve Linabery <slinaber@redhat.com> - 2.4.0-0
 - Bump version following release of 2.3.0-1 from 2.3.x branch
 
