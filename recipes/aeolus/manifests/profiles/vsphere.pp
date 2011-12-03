@@ -38,8 +38,8 @@ class aeolus::profiles::vsphere {
   aeolus::conductor::provider::account{"vsphere":
       provider           => 'vsphere',
       type               => 'vsphere',
-      username           => '$vsphere_username',
-      password           => '$vsphere_password',
+      username           => "$vsphere_username",
+      password           => "$vsphere_password",
       require        => Aeolus::Conductor::Provider["vsphere"] }
 
   aeolus::conductor::hwp{"hwp1":
