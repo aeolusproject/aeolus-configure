@@ -234,7 +234,7 @@ define aeolus::conductor::provider($deltacloud_driver="",$url="", $deltacloud_pr
 define aeolus::conductor::provider::account($provider="", $type="", $username="",$password="", $account_id="",$x509private="", $x509public=""){
   if $type != "ec2" {
     web_request{ "provider-account-$name":
-      post         => "https://localhost/conductor/provider_accounts",
+      post         => "https://localhost/conductor/providers/0/provider_accounts",
       parameters  => { 'provider_account[label]'  => $name,
                        'provider_account[provider]' => $provider,
                        'provider_account[credentials_hash[username]]'   => $username,

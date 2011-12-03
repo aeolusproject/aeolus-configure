@@ -48,8 +48,8 @@ class aeolus::profiles::rhevm {
   aeolus::conductor::provider::account{"rhevm":
       provider           => 'rhevm',
       type               => 'rhevm',
-      username           => '$rhevm_deltacloud_username',
-      password           => '$rhevm_deltacloud_password',
+      username           => "$rhevm_deltacloud_username",
+      password           => "$rhevm_deltacloud_password",
       require        => Aeolus::Conductor::Provider["rhevm"] }
 
   aeolus::conductor::hwp{"hwp1":
