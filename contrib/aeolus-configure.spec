@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.4.0
-Release:  1%{?extra_release}%{?dist}
+Release:  2%{?extra_release}%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -65,6 +65,10 @@ Aeolus Configure Puppet Recipe
 %{_sbindir}/aeolus-configure-image
 
 %changelog
+* Mon Dec  5 2011 Steve Linabery <slinaber@redhat.com> - 2.4.0-2
+- f2657d9 RM 2879 - Fix adding provider accounts through aeolus-configure
+- dcee3da BZ 758473 - aeolus-configure should check RHEVM export directory has correct type
+
 * Thu Dec  1 2011 Steve Linabery <slinaber@redhat.com> - 2.4.0-1
 - ffc966c Regenerate conductor secret_token.rb file each time configure is executed
 - 4dfb1c3 Bump the version of aeolus-cli to 0.2.0
