@@ -37,7 +37,7 @@ class aeolus::iwhd inherits aeolus {
 
     file {"/etc/iwhd/users.js":
       content => template("aeolus/iwhd-users.js"),
-      mode => 755,
+      mode => 700,
       require => Package['iwhd'] }
 
     service { 'mongod':
