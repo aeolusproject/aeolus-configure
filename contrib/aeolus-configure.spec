@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.4.0
-Release:  2%{?extra_release}%{?dist}
+Release:  3%{?extra_release}%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -65,6 +65,9 @@ Aeolus Configure Puppet Recipe
 %{_sbindir}/aeolus-configure-image
 
 %changelog
+* Tue Dec  6 2011 Steve Linabery <slinaber@redhat.com> - 2.4.0-3
+- c120cdc iwhd rest.c requires the users.js mode to be 700
+
 * Mon Dec  5 2011 Steve Linabery <slinaber@redhat.com> - 2.4.0-2
 - f2657d9 RM 2879 - Fix adding provider accounts through aeolus-configure
 - dcee3da BZ 758473 - aeolus-configure should check RHEVM export directory has correct type
