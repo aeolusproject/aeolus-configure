@@ -30,7 +30,7 @@ class aeolus::profiles::mock {
       url                => 'http://localhost:3002/api',
       require            => Aeolus::Conductor::Login["admin"] }
 
-  aeolus::conductor::provider::account{"mockuser":
+  aeolus::conductor::provider::account{"mock":
       provider           => 'mock',
       type               => 'mock',
       username           => 'mockuser',
@@ -46,6 +46,6 @@ class aeolus::profiles::mock {
 
   aeolus::conductor::logout{"admin":
     require    => [Aeolus::Conductor::Provider['mock'],
-                   Aeolus::Conductor::Provider::Account['mockuser'],
+                   Aeolus::Conductor::Provider::Account['mock'],
                    Aeolus::Conductor::Hwp['hwp1']] }
 }
