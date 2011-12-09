@@ -49,7 +49,6 @@ Aeolus Configure Puppet Recipe
 %{__cp} -R %{pbuild}/bin/aeolus-node %{buildroot}/%{aeolushome}/modules/aeolus/
 %{__cp} -R %{pbuild}/bin/aeolus-check-services %{buildroot}/%{_bindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-restart-services %{buildroot}/%{_sbindir}/
-%{__cp} -R %{pbuild}/bin/aeolus-configure-image %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-configure %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-cleanup %{buildroot}/%{_sbindir}/
 
@@ -61,7 +60,6 @@ Aeolus Configure Puppet Recipe
 %attr(0755, root, root) %{_bindir}/aeolus-check-services
 %attr(0755, root, root) %{_sbindir}/aeolus-restart-services
 %{aeolushome}
-%{_sbindir}/aeolus-configure-image
 
 %changelog
 * Thu Dec  1 2011 Steve Linabery <slinaber@redhat.com> - 2.4.0-1
