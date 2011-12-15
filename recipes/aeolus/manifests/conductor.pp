@@ -105,6 +105,8 @@ class aeolus::conductor inherits aeolus {
       file { "/var/lib/pgsql/data/pg_hba.conf":
                source => "puppet:///modules/aeolus/pg_hba.conf",
                require => Exec["pginitdb"],
+               owner   => 'postgres',
+               group   => 'postgres',
                notify  => Service['postgresql']}
     }
     postgres::user{"aeolus":
