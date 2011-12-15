@@ -19,21 +19,24 @@ usage()
 cat << EOF
 
 USAGE:
-aeolus-cleanup [-d|--debug] [-h|--help] [-v|--verbose]
+aeolus-cleanup [-d|--debug] [-h|--help] [-v|--verbose] [-s|--savedata]
 
 OPTIONS:
    -h | --help       Show this message.
    -d | --debug      Debug logging mode.
    -v | --verbose    Verbose logging mode.
+   -s | --savedata   Do not delete existing data.
 EOF
 }
 
-args=`getopt -o :hdv --long help,debug,verbose -- "$@"`
+args=`getopt -o :hdvs --long help,debug,verbose,savedata -- "$@"`
 if test $? != 0
      then
          usage
          exit 1
 fi
+
+SAVE_DATA=false
 
 eval set -- $args
 while true ; do
@@ -41,6 +44,7 @@ while true ; do
                 -h|--help) usage ; exit 1 ;  shift ;;
                 -d|--debug) LOGLEVEL="--debug" ; shift ;;
                 -v|--verbose) LOGLEVEL="--verbose" ; shift  ;;
+	        -s|--savedata) SAVE_DATA=true ; shift ;;
                 --) shift ; break ;;
                 *)  usage ; exit 1 ;;
         esac
@@ -50,6 +54,8 @@ PUPPET_NODE='cleanup'
 
 export FACTER_AEOLUS_ENABLE_HTTPS=true
 export FACTER_AEOLUS_ENABLE_SECURITY=false
+export FACTER_AEOLUS_SAVE_DATA=$SAVE_DATA
+
 puppet /usr/share/aeolus-configure/modules/aeolus/aeolus.pp \
        --modulepath=/usr/share/aeolus-configure/modules/ \
        --external_nodes "/bin/sh /usr/share/aeolus-configure/modules/aeolus/aeolus-node $PUPPET_NODE" --node_terminus exec \

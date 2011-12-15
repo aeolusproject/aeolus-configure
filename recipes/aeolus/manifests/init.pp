@@ -42,7 +42,6 @@ if $aeolus_enable_security == "true" or $aeolus_enable_security == "1" {
   $enable_security = false
 }
 
-
 # Base aeolus class
 class aeolus {
   package{'curl':

@@ -138,10 +138,12 @@ class aeolus::conductor inherits aeolus {
 }
 
 class aeolus::conductor::disabled {
+  if $aeolus_save_data == "false" {
     file {"/var/lib/aeolus-conductor":
             ensure => absent,
             force  => true
     }
+  }
 
     file {"/etc/rsyslog.d/aeolus.conf":
             ensure => absent,
@@ -160,7 +162,8 @@ class aeolus::conductor::disabled {
       enable => false,
       hasstatus => true }
 
-  ### Destroy the aeolus database
+  if $aeolus_save_data == "false" {
+    ### Destroy the aeolus database
     rails::drop::db{"drop_aeolus_database":
                 cwd        => "/usr/share/aeolus-conductor",
                 rails_env  => "production",
@@ -169,6 +172,7 @@ class aeolus::conductor::disabled {
     postgres::user{"aeolus":
                     ensure => 'dropped',
                     require => Rails::Drop::Db["drop_aeolus_database"]}
+  }
 }
 
 # Create a new site admin conductor web user

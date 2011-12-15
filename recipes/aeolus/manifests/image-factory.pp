@@ -91,8 +91,10 @@ class aeolus::image-factory::disabled {
       hasstatus => true,
       enable  => false}
 
-  ### Destroy and cleanup aeolus artifacts
+  if $aeolus_save_data == "false" {
+    ### Destroy and cleanup aeolus artifacts
     exec{"remove_aeolus_templates":     command => "/bin/rm -rf /templates"}
+  }
 }
 
 define aeolus::image($template, $provider='', $target='', $hwp=''){
