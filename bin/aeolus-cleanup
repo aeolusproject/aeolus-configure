@@ -19,17 +19,18 @@ usage()
 cat << EOF
 
 USAGE:
-aeolus-cleanup [-d|--debug] [-h|--help] [-v|--verbose] [-s|--savedata]
+aeolus-cleanup [-d|--debug] [-h|--help] [-v|--verbose] [-s|--savedata] [-p|--profile]
 
 OPTIONS:
    -h | --help       Show this message.
    -d | --debug      Debug logging mode.
    -v | --verbose    Verbose logging mode.
    -s | --savedata   Do not delete existing data.
+   -p | --profile    Name of profile to use. A comma separated list can be used to specify multiple profiles.
 EOF
 }
 
-args=`getopt -o :hdvs --long help,debug,verbose,savedata -- "$@"`
+args=`getopt -o :hdvsp: --long help,debug,verbose,savedata,profile -- "$@"`
 if test $? != 0
      then
          usage
@@ -37,6 +38,7 @@ if test $? != 0
 fi
 
 SAVE_DATA=false
+PUPPET_NODE='default'
 
 eval set -- $args
 while true ; do
@@ -45,24 +47,27 @@ while true ; do
                 -d|--debug) LOGLEVEL="--debug" ; shift ;;
                 -v|--verbose) LOGLEVEL="--verbose" ; shift  ;;
 	        -s|--savedata) SAVE_DATA=true ; shift ;;
+                -p|--profile) PUPPET_NODE=$2 ; shift ; shift ;;
                 --) shift ; break ;;
                 *)  usage ; exit 1 ;;
         esac
 done
 
-PUPPET_NODE='cleanup'
-
 export FACTER_AEOLUS_ENABLE_HTTPS=true
 export FACTER_AEOLUS_ENABLE_SECURITY=false
 export FACTER_AEOLUS_SAVE_DATA=$SAVE_DATA
 
-puppet /usr/share/aeolus-configure/modules/aeolus/aeolus.pp \
+NODE_ARRAY=(`echo $PUPPET_NODE | tr "," "\n"`)
+for x in "${NODE_ARRAY[@]}"
+do
+    puppet /usr/share/aeolus-configure/modules/aeolus/aeolus.pp \
        --modulepath=/usr/share/aeolus-configure/modules/ \
-       --external_nodes "/bin/sh /usr/share/aeolus-configure/modules/aeolus/aeolus-node $PUPPET_NODE" --node_terminus exec \
+       --external_nodes "/bin/sh /usr/share/aeolus-configure/modules/aeolus/aeolus-node ${x}_cleanup" --node_terminus exec \
        --logdest=/var/log/aeolus-configure/aeolus-cleanup.log \
        --logdest=console \
        $LOGLEVEL \
        --detailed-exitcodes
-if [ $? != 0 -a $? != 2 ] ; then
-    exit 1
-fi
+    if [ $? != 0 -a $? != 2 ] ; then
+	exit 1
+    fi
+done

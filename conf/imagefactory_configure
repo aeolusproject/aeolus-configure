@@ -1,0 +1,4 @@
+parameters:
+  package_provider: rpm
+classes:
+- aeolus::image-factory

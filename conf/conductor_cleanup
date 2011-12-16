@@ -1,0 +1,12 @@
+#conductor-only cleanup specification
+
+#You can override the default behavior
+#by renaming this to  <fqdn>_cleanup.
+#This will result in only conductor being
+#disabled
+---
+parameters:
+  enable_https: true
+  enable_security: false
+classes:
+- aeolus::conductor::disabled
