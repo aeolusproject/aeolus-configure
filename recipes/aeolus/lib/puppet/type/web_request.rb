@@ -126,6 +126,15 @@ Puppet::Type.newtype(:web_request) do
       munge    do |value| Puppet::Type::Web_request.munge_array_params(value)   end
     end
 
+    newparam(:log_to) do
+      desc "Log requests/responses to the specified file or directory"
+    end
+
+    newparam(:only_log_errors) do
+      desc "Boolean indicating if we should only log responses which did not pass validations"
+      newvalues(:true, :false)
+    end
+
     newparam(:if) do
       desc "Invoke request only if the specified request returns true"
     end

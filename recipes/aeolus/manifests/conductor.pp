@@ -230,6 +230,8 @@ define aeolus::conductor::provider($deltacloud_driver="",$url="", $deltacloud_pr
     follow      => true,
     contains    => "//html/body//li[text() = 'Provider added.']",
     use_cookies_at => '/tmp/aeolus-admin',
+    log_to      => '/tmp/configure-provider-request.log',
+    only_log_errors => true,
     unless      => { 'get'             => 'https://localhost/conductor/providers',
                      'contains'        => "//html/body//a[text() = '$name']" },
     require    => [Service['aeolus-conductor'], Exec['grant_site_admin_privs'], Exec['deltacloud-core-startup-wait']]

@@ -150,6 +150,7 @@ Puppet::Type.type(:web_request).provide :curl do
   # Helper to process/parse web parameters
   def process_params(request_method, params, uri)
     begin
+      error = nil
       cookies = nil
       if params[:store_cookies_at]
         FileUtils.touch(params[:store_cookies_at]) if !File.exist?(params[:store_cookies_at])
@@ -169,17 +170,27 @@ Puppet::Type.type(:web_request).provide :curl do
                                        :follow => params[:follow],
                                        :username => params[:username],
                                        :password => params[:password])
+
+      result_body = result.body_str.to_s
+
       verify_result(result,
                     :returns          => params[:returns],
                     :does_not_return  => params[:does_not_return],
                     :contains         => params[:contains],
                     :does_not_contain => params[:does_not_contain] )
+
       result.close
 
     rescue Exception => e
+      error = e
       raise Puppet::Error, "An exception was raised when invoking web request: #{e}"
 
     ensure
+      unless result.nil?
+        log_response(:result => result_body,
+                     :method => request_method, :uri => uri,
+                     :puppet_params => params,  :error => error)
+      end
       FileUtils.rm_f(cookies) if params[:remove_cookies]
     end
   end
@@ -233,6 +244,33 @@ Puppet::Type.type(:web_request).provide :curl do
     if !verify[:does_not_contain].nil? &&
        result.valid_xpath?(verify[:does_not_contain])
          raise Puppet::Error, "Not expecting #{verify[:does_not_contain]} in the result"
+    end
+  end
+
+  def log_response(params)
+    method  = params[:method]
+    uri     = params[:uri]
+    result  = params[:result]
+    error   = params[:error]
+    puppet_params = params[:puppet_params]
+
+    if puppet_params[:log_to]
+      return if puppet_params[:only_log_errors] == :true && error.nil?
+      logfile = puppet_params[:log_to].strip
+      exists = File.exists?(logfile)
+      isfile = File.file?(logfile) || (!exists && (logfile[-1].chr != '/'))
+      if !isfile
+        FileUtils.mkdir_p(logfile) if !exists
+	logfile += puppet_params[:name]
+      end
+
+      f = File.open(logfile, 'a')
+      f.write("=====BEGIN=====\n")
+      f.write(Time.now.strftime("%Y-%m-%d %H:%M:%S"))
+      f.write(" #{method} request to #{uri}\n")
+      f.write(result.to_s)
+      f.write("\n=====END=====\n\n")
+      f.close
     end
   end
 end
