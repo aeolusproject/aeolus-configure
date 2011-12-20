@@ -76,7 +76,8 @@ class aeolus::profiles::rhevm {
 }
 
 class aeolus::profiles::rhevm::disabled {
-  mount {"$rhevm_nfs_mount_point":
-    ensure => unmounted,
-    device => "$rhevm_nfs_server:$rhevm_nfs_export"}
+  exec {"umount $rhevm_nfs_mount_point":
+        path => ["/sbin", "/bin"],
+        onlyif => [["mount -l | grep $rhevm_nfs_mount_point"],
+                   ["/bin/sh -c '! (ps -ef | grep -v grep | grep dc-rhev-image)'"]]}
 }
