@@ -72,6 +72,10 @@ export FACTER_RAILS_TOKEN=`</dev/urandom tr -dc a-f0-9 | head -c128`
 NODE_ARRAY=(`echo $PUPPET_NODE | tr "," "\n"`)
 for x in "${NODE_ARRAY[@]}"
 do
+    /usr/share/aeolus-configure/modules/aeolus/aeolus-node-check /etc/aeolus-configure/nodes/${x}_configure
+    if [ $? != 0 ]; then
+	exit 1
+    fi
     puppet /usr/share/aeolus-configure/modules/aeolus/aeolus.pp \
        --modulepath=/usr/share/aeolus-configure/modules/ \
        --external_nodes "/bin/sh /usr/share/aeolus-configure/modules/aeolus/aeolus-node ${x}_configure" --node_terminus exec \

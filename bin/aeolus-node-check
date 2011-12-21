@@ -1,0 +1,41 @@
+#!/usr/bin/ruby
+
+#   Copyright 2011 Red Hat, Inc.
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
+require "yaml"
+
+filename = ARGV[0]
+
+if File.exist?(filename) == false
+  puts "File not found: #{filename}"
+  exit 1
+else
+  begin
+    YAML::parse_file(filename)
+  rescue => e
+    puts "Error found in #{filename}"
+    if e.to_s.index("line")
+      line_number = e.to_s.split("line")[1].split(",")[0].strip.to_i + 1
+      puts "Incorrect format found on or before line #{line_number}"
+    else
+      puts e
+    end
+    puts "parameters must be in the form [space][space][parameter name][colon][space][parameter value]"
+    puts "classes must be in the form [dash][space][class name]"
+    exit 1
+  end
+end
+
+exit 0

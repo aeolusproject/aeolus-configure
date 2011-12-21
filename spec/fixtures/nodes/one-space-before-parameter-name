@@ -1,0 +1,3 @@
+parameters:
+  enable_https: true
+ rhevm_nfs_server: server.com

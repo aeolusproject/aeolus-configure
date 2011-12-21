@@ -60,6 +60,11 @@ export FACTER_AEOLUS_SAVE_DATA=$SAVE_DATA
 NODE_ARRAY=(`echo $PUPPET_NODE | tr "," "\n"`)
 for x in "${NODE_ARRAY[@]}"
 do
+    /usr/share/aeolus-configure/modules/aeolus/aeolus-node-check /etc/aeolus-configure/nodes/${x}_cleanup
+    if [ $? != 0 ]; then
+	exit 1
+    fi
+    
     puppet /usr/share/aeolus-configure/modules/aeolus/aeolus.pp \
        --modulepath=/usr/share/aeolus-configure/modules/ \
        --external_nodes "/bin/sh /usr/share/aeolus-configure/modules/aeolus/aeolus-node ${x}_cleanup" --node_terminus exec \

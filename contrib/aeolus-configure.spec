@@ -47,6 +47,7 @@ Aeolus Configure Puppet Recipe
 %{__cp} -R %{pbuild}/recipes/openssl/ %{buildroot}/%{aeolushome}/modules/openssl
 %{__cp} -R %{pbuild}/recipes/postgres/ %{buildroot}/%{aeolushome}/modules/postgres
 %{__cp} -R %{pbuild}/bin/aeolus-node %{buildroot}/%{aeolushome}/modules/aeolus/
+%{__cp} -R %{pbuild}/bin/aeolus-node-check %{buildroot}/%{aeolushome}/modules/aeolus/
 %{__cp} -R %{pbuild}/bin/aeolus-check-services %{buildroot}/%{_bindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-restart-services %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-configure %{buildroot}/%{_sbindir}/
