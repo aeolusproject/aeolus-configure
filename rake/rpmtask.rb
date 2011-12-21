@@ -26,7 +26,7 @@ module Rake
   # Create a package based upon a RPM spec.
   # RPM packages, can be produced by this task.
   class RpmTask < PackageTask
-    # RPM spec containing the metadata for this package
+    # filename for output RPM spec
     attr_accessor :rpm_spec
 
     # RPM build dir
@@ -35,15 +35,29 @@ module Rake
     # Include extra_release information in the rpm
     attr_accessor :include_extra_release
 
-    def initialize(rpm_spec)
-      init(rpm_spec)
+    def initialize(rpm_spec, args = {})
+      init(rpm_spec,args)
       yield self if block_given?
       define if block_given?
     end
 
-    def init(rpm_spec)
-      @include_extra_release = true
+    def init(rpm_spec,args)
       @rpm_spec = rpm_spec
+      
+      if args[:suffix]
+        rpm_spec_in = @rpm_spec + args[:suffix]
+        @include_extra_release = eval `grep -q '^[[:space:]]*Release:[[:space:]]*0' #{rpm_spec_in} && echo true || echo false`
+
+        git_head = `git log -1 --pretty=format:%h`
+        extra_release = @include_extra_release ? ("." + Time.now.strftime("%Y%m%d%H%M%S").gsub(/\s/, '') + "git" + "#{git_head}") : ''
+
+        if args[:pkg_version]
+          pkg_version = args[:pkg_version]
+          `sed -e "s|@VERSION@|#{pkg_version}|;s|^\\(Release:[^%]*\\)|\\1#{extra_release}|" #{rpm_spec_in} > #{@rpm_spec}`
+        else
+          `sed -e "s|^\\(Release:[^%]*\\)|\\1#{extra_release}|" #{rpm_spec_in} > #{@rpm_spec}`
+        end
+      end
 
       # parse this out of the rpmbuild macros,
       # not ideal but better than hardcoding this
@@ -85,14 +99,10 @@ module Rake
 
       # FIXME properly determine :package build artifact(s) to copy to sources dir
       file rpm_file, [:include_extra_release] => [:package, "#{@topdir}/SOURCES", "#{@topdir}/SPECS"] do |t,args|
-        @include_extra_release = args.include_extra_release != "false"
-        git_head = `git log -1 --pretty=format:%h`
-        extra_release = "." + Time.now.strftime("%Y%m%d%H%M%S").gsub(/\s/, '') + "git" + "#{git_head}"
         cp "#{package_dir}/#{@name}-#{@version}.tgz", "#{@topdir}/SOURCES/"
         cp @rpm_spec, "#{@topdir}/SPECS"
         sh "#{@rpmbuild_cmd} " +
            "--define '_topdir #{@topdir}' " +
-           "--define 'extra_release #{@include_extra_release ? extra_release : ''}' " +
            "-ba #{@rpm_spec}"
       end
     end

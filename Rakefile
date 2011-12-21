@@ -28,10 +28,11 @@ CLEAN.include('pkg', 'repo')
 CLOBBER.include('aeolus')
 PKG_NAME = "aeolus-configure"
 RPM_SPEC = "contrib/aeolus-configure.spec"
+PKG_VERSION = "2.5.0"
 
 # Build the rpm
 rpm_task =
-Rake::RpmTask.new(RPM_SPEC) do |rpm|
+Rake::RpmTask.new(RPM_SPEC, {:suffix => '.in', :pkg_version => PKG_VERSION}) do |rpm|
   rpm.need_tar = true
   rpm.package_files.include("COPYING", "bin/*", "recipes/**/*", "conf/*")
   rpm.topdir = "#{RPMBUILD_DIR}"
