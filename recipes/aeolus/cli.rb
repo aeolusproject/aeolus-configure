@@ -33,22 +33,25 @@ NODE_YAML='/etc/aeolus-configure/nodes/custom'
 IMAGE_TEMPLATE='/etc/aeolus-configure/custom_template.tdl'
 PROFILE_RECIPE='/usr/share/aeolus-configure/modules/aeolus/manifests/profiles/custom.pp'
 
+
 installed_component = nil
 install_components  = ["- aeolus::conductor"]
-while ![:None, :All].include?(installed_component)
+component_options = [:"Select All Components", :"Finish Selection",
+                     :"Select Image Factory", :"Select Image Warehouse"]
+all_option,none_option,imagefactory_option, image_warehouse_option = *component_options
+while ![none_option, all_option].include?(installed_component)
   clear_screen
   say "Select Aeolus Components to Install"
   installed_component =
     choose do |menu|
       menu.prompt = "Install Aeolus Component: "
-      menu.choice :All
-      menu.choice :None
-      menu.choice :"Image Factory"
-      menu.choice :"Image Warehouse"
+      component_options.each { |op|
+        menu.choice op
+      }
     end
-  if installed_component == :"Image Factory"
+  if installed_component == imagefactory_option
     install_components << "- aeolus::image-factory"
-  elsif installed_component == :"Image Warehouse"
+  elsif installed_component == image_warehouse_option
     install_components << "- aeolus::iwhd"
   elsif installed_component == :All
     install_components << "- aeolus::conductor"  <<
