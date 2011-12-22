@@ -13,6 +13,18 @@
 #   limitations under the License.
 
 class aeolus::profiles::rhevm {
+  $missing = ensure_vardef("rhevm_nfs_server",
+                           "rhevm_nfs_export",
+                           "rhevm_nfs_mount_point",
+                           "rhevm_deltacloud_username",
+                           "rhevm_deltacloud_password",
+                           "rhevm_deltacloud_provider",
+                           "rhevm_push_timeout")
+
+  if $missing {
+    fail("Missing required parameter ${missing} in /etc/aeolus-configure/nodes/rhevm_configure")
+  }
+
   file {"/etc/imagefactory/rhevm.json":
     content => template("aeolus/rhevm.json"),
     mode => 755,
