@@ -63,6 +63,28 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Wed Jan 04 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-1
+- 17b704a Changes to build behavior in rpmtask.rb, Rakefile
+- d030803 BZ #766661 - provide mechanism to log aeolus-configure web requests, responses, and errors
+- d3ed726 BZ 746702 - Check node config files are in correct format before executing puppet - v3
+- 5f58c68 BZ#740089: fix wording in interactive installer (rev2)
+- 83993ba BZ 725596 - umount rhev export only if it is not in use
+- 3d8c09b BZ 731863 - option to disable select components
+- 87b9402 BZ 731863 - add --savedata (-s) option to aeolus-cleanup
+- 161eb91 BZ# 768131: Configure should set owner of pg_hba.conf to postgres
+- 3b61da5 BZ# 768123: Configure should not write /root/.aeolus-cli
+- 990f43d added usage to aeolus-restart-services
+- 05360db added usage to aeolus-check-services
+- 876df0d BZ #761447: aeolus-configure-image returns (LoadError).
+- 384600b Rename mock account from mockuser to mock
+- aeeb579 Changed iwhd user.js mode to 600
+- 4da2686 iwhd rest.c requires the users.js mode to be 700
+- 8c7b96e BZ 758473 - aeolus-configure should check RHEVM export directory has correct type
+- fd42729 RM 2879 - Fix adding provider accounts through aeolus-configure
+- 78bebcc Remove relp dependency, this should be tracked in aeolus-all metapackage instead.
+- 387f161 Bump version for ongoing development on master branch
+- da3d340 Bump release and add changelog for 2.4.0 RC
+
 * Thu Dec  1 2011 Steve Linabery <slinaber@redhat.com> - 2.4.0-1
 - ffc966c Regenerate conductor secret_token.rb file each time configure is executed
 - 4dfb1c3 Bump the version of aeolus-cli to 0.2.0
