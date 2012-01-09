@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  0%{?dist}
+Release:  1%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -63,6 +63,13 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Mon Jan 09 2012 Steve Linabery <slinaber@redhat.com> - 2.6.0-1
+- f0043e8 Remove extra_release from spec.in
+- c4d94bf Bump release
+- 97295c9 Bring in changelog from 2.5.0 release specfile
+- 196b80d BZ#766661 - more ec2 provider errors with aeolus-configure
+- 6956414 BZ#766697 - running configure -p rhevm without updating rhevm config needs better error msg
+
 * Wed Jan 04 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-1
 - 17b704a Changes to build behavior in rpmtask.rb, Rakefile
 - d030803 BZ #766661 - provide mechanism to log aeolus-configure web requests, responses, and errors
