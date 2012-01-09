@@ -63,7 +63,7 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
-* Mon Jan 09 2012 Steve Linabery <slinaber@redhat.com> - 2.6.0-1
+* Mon Jan 09 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-2
 - f0043e8 Remove extra_release from spec.in
 - c4d94bf Bump release
 - 97295c9 Bring in changelog from 2.5.0 release specfile
