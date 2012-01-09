@@ -13,6 +13,16 @@
 #   limitations under the License.
 
 class aeolus::profiles::vsphere {
+  $missing = ensure_vardef("vsphere_deltacloud_provider",
+                           "vsphere_username",
+                           "vsphere_password",
+                           "vsphere_datastore",
+                           "vsphere_network_name")
+
+  if $missing {
+    fail("Missing required parameter ${missing} in /etc/aeolus-configure/nodes/vsphere_configure")
+  }
+
   aeolus::create_bucket{"aeolus":}
 
   file {"/etc/imagefactory/vsphere.json":
