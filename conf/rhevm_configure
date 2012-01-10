@@ -10,7 +10,8 @@ parameters:
 #  rhevm_nfs_mount_point: /mnt/rhevm-nfs
 #  rhevm_deltacloud_username: username@fqdn
 #  rhevm_deltacloud_password: password
-#  rhevm_deltacloud_provider: https://rhevm.server.com:8443/api
+#  rhevm_deltacloud_api: https://rhevm.server.com:8443/api
+#  rhevm_deltacloud_data_center: data center uuid
 #  rhevm_push_timeout: 1800
 classes:
 - aeolus::conductor

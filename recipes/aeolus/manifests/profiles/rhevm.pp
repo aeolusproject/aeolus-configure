@@ -18,7 +18,8 @@ class aeolus::profiles::rhevm {
                            "rhevm_nfs_mount_point",
                            "rhevm_deltacloud_username",
                            "rhevm_deltacloud_password",
-                           "rhevm_deltacloud_provider",
+                           "rhevm_deltacloud_api",
+                           "rhevm_deltacloud_data_center",
                            "rhevm_push_timeout")
 
   if $missing {
@@ -31,7 +32,7 @@ class aeolus::profiles::rhevm {
     require => Package['aeolus-conductor-daemons'] }
 
   web_request{ "rhevm-check-export-path-is-export-type":
-    get         =>  "$rhevm_deltacloud_provider/storagedomains?search=export",
+    get         =>  "$rhevm_deltacloud_api/storagedomains?search=export",
     username => "$rhevm_deltacloud_username",
     password => "$rhevm_deltacloud_password",
     returns     => '200',
@@ -62,7 +63,7 @@ class aeolus::profiles::rhevm {
   aeolus::conductor::provider{"rhevm":
     deltacloud_driver   => "rhevm",
     url                 => "http://localhost:3002/api",
-    deltacloud_provider => "$rhevm_deltacloud_provider",
+    deltacloud_provider => "$rhevm_deltacloud_api;$rhevm_deltacloud_data_center",
     require             => Aeolus::Conductor::Login["admin"] }
 
   aeolus::conductor::provider::account{"rhevm":
