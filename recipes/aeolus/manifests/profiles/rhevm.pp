@@ -66,13 +66,6 @@ class aeolus::profiles::rhevm {
     deltacloud_provider => "$rhevm_deltacloud_api;$rhevm_deltacloud_data_center",
     require             => Aeolus::Conductor::Login["admin"] }
 
-  aeolus::conductor::provider::account{"rhevm":
-      provider           => 'rhevm',
-      type               => 'rhevm',
-      username           => "$rhevm_deltacloud_username",
-      password           => "$rhevm_deltacloud_password",
-      require        => Aeolus::Conductor::Provider["rhevm"] }
-
   aeolus::conductor::hwp{"hwp1":
       memory         => "512",
       cpu            => "1",
@@ -82,7 +75,6 @@ class aeolus::profiles::rhevm {
 
   aeolus::conductor::logout{"admin":
     require    => [Aeolus::Conductor::Provider['rhevm'],
-                   Aeolus::Conductor::Provider::Account['rhevm'],
                    Aeolus::Conductor::Hwp['hwp1']] }
 
   # TODO: create a realm and mappings
