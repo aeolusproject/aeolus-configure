@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  3%{?dist}
+Release:  4%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -63,6 +63,10 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Wed Jan 11 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-4
+- 5cd7786 BZ#773060 - do not add provider accounts for rhevm, vshpere in aeolus-configure
+- 6f108fc Bump release, add changelog, 2.5.0-3
+
 * Tue Jan 10 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-3
 - e32ce7e BZ 773037 - update RHEVM configuration to support data centers
 - caf1355 Set version in Rakefile to 2.5.0
