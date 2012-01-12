@@ -153,7 +153,11 @@ Puppet::Type.type(:web_request).provide :curl do
       error = nil
       cookies = nil
       if params[:store_cookies_at]
-        FileUtils.touch(params[:store_cookies_at]) if !File.exist?(params[:store_cookies_at])
+        if File.exist?(params[:store_cookies_at])
+          File.truncate(params[:store_cookies_at], 0)
+        else
+          FileUtils.touch(params[:store_cookies_at])
+        end
         cookies = params[:store_cookies_at]
       elsif params[:use_cookies_at]
         cookies = params[:use_cookies_at]
