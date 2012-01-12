@@ -17,25 +17,49 @@
 require "yaml"
 
 filename = ARGV[0]
+errors = []
 
 if File.exist?(filename) == false
   puts "File not found: #{filename}"
   exit 1
 else
+
+  # file should be parseable
   begin
     YAML::parse_file(filename)
   rescue => e
-    puts "Error found in #{filename}"
     if e.to_s.index("line")
       line_number = e.to_s.split("line")[1].split(",")[0].strip.to_i + 1
-      puts "Incorrect format found on or before line #{line_number}"
+      errors << "Incorrect format found on or before line #{line_number}"
     else
+      errors << e
+    end
+  end
+
+  # file should only have parameters and classes as top nodes
+  if errors.size == 0
+    begin
+      root = YAML::load_file(filename)
+      root.each do |key, value|
+        if key != "parameters" && key != "classes"
+          errors << "Please check formatting in line containing #{key} #{value}"
+        end
+      end
+    rescue => e
+      errors << e
+    end
+  end
+
+  if errors.size > 0
+    puts "Error found in #{filename}"
+    errors.each do |e|
       puts e
     end
     puts "parameters must be in the form [space][space][parameter name][colon][space][parameter value]"
     puts "classes must be in the form [dash][space][class name]"
     exit 1
   end
+
 end
 
 exit 0
