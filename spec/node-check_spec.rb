@@ -28,6 +28,7 @@ describe "aeolus-node-check" do
     run_and_check_status("no-colon-between-parameter-name-and-value", 1)
     run_and_check_status("no-space-between-dash-and-class-name", 1)
     run_and_check_status("no-space-between-parameter-name-and-value", 1)
+    run_and_check_status("no-two-spaces-before-parameter-name", 1)
     run_and_check_status("one-space-before-parameter-name", 1)
     run_and_check_status("three-spaces-before-parameter-name", 1)
   end
