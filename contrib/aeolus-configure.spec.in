@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  4%{?dist}
+Release:  5%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -63,6 +63,13 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Wed Jan 18 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-5
+- c8f5c12 Merge branch '1.0-staging' into 1.0-product
+- eebd68a BZ 758644 (part 2) - decrement login counter after aeolus-configure script
+- cea160c BZ 758644 (part 1) - clean old cookies when doing a web request
+- be20e0c BZ 746702 - improve whitepace checking in /etc/aeolus-configure/nodes configs
+- 39de207 Bump release, add changelog, 2.5.0-4
+
 * Wed Jan 11 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-4
 - 5cd7786 BZ#773060 - do not add provider accounts for rhevm, vshpere in aeolus-configure
 - 6f108fc Bump release, add changelog, 2.5.0-3
