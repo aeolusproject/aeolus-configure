@@ -3,16 +3,18 @@ parameters:
   enable_https: true
   enable_security: false
   package_provider: rpm
-# Uncomment and provide values to match your vSphere environment.
-# Values below are examples.
-#  vsphere_deltacloud_provider: vsphere.server.com
-#  vsphere_username: username
-#  vsphere_password: password
-#  vsphere_datastore: datastore
-#  vsphere_network_name: network_name
 classes:
-- aeolus::conductor
-- aeolus::image-factory
-- aeolus::iwhd
-- aeolus::deltacloud::core
-- aeolus::profiles::vsphere
+  aeolus::conductor:
+  aeolus::image-factory:
+  aeolus::iwhd:
+  aeolus::deltacloud::core:
+  aeolus::profiles::vsphere:
+    instances:
+      default:
+        # Uncomment and provide values to match your vSphere environment.
+        # Values below are examples.
+        #  deltacloud_provider: vsphere.server.com
+        #  username: username
+        #  password: password
+        #  datastore: datastore
+        #  network_name: network_name
