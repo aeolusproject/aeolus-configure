@@ -29,7 +29,7 @@ def clear_screen
   true
 end
 
-NODE_YAML='/etc/aeolus-configure/nodes/custom'
+NODE_YAML='/etc/aeolus-configure/nodes/custom_configure'
 IMAGE_TEMPLATE='/etc/aeolus-configure/custom_template.tdl'
 PROFILE_RECIPE='/usr/share/aeolus-configure/modules/aeolus/manifests/profiles/custom.pp'
 
