@@ -51,6 +51,7 @@ Puppet::Parser::Functions::newfunction(:create_resources2, :doc => <<-'ENDHEREDO
   # iterate through the resources to create
   defaults = args[2] || {}
   args[1].each do |title, params|
+    params ||= {}
     raise ArgumentError, 'params should not contain title' if(params['title'])
     params = defaults.merge(params)
     case type_of_resource
