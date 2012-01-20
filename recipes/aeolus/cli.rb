@@ -29,7 +29,7 @@ def clear_screen
   true
 end
 
-NODE_YAML='/etc/aeolus-configure/nodes/custom'
+NODE_YAML='/etc/aeolus-configure/nodes/custom_configure'
 IMAGE_TEMPLATE='/etc/aeolus-configure/custom_template.tdl'
 PROFILE_RECIPE='/usr/share/aeolus-configure/modules/aeolus/manifests/profiles/custom.pp'
 
@@ -69,7 +69,10 @@ profile_repos    = ''
 if install_components.include? "- aeolus::conductor"
   provider_port = 3001
   while clear_screen && agree("Add provider (y/n)? ")
-    name = ask("Cloud provider label: ")
+    name = ask("Cloud provider label: ") { |q|
+       q.validate = /^[a-zA-Z0-9_-]+$/
+       q.responses[:not_valid] = "Invalid label (must be alphanumeric). Cloud provider label: "
+    }
     type = choose do |menu|
       menu.prompt = "Cloud provider type: "
       menu.choice :mock

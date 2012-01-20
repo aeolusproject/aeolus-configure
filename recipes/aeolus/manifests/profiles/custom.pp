@@ -14,8 +14,6 @@
 
 class aeolus::profiles::custom {
 
-aeolus::create_bucket{"aeolus":}
-
 aeolus::conductor::site_admin{"admin":
    email           => 'dcuser@aeolusproject.org',
    password        => "password",
