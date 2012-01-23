@@ -31,12 +31,12 @@ class aeolus::profiles::rhevm {
     mode => 755,
     require => Package['aeolus-conductor-daemons'] }
 
-  web_request{ "rhevm-check-export-path-is-export-type":
-    get         =>  "$rhevm_deltacloud_api/storagedomains?search=export",
-    username => "$rhevm_deltacloud_username",
-    password => "$rhevm_deltacloud_password",
-    returns     => '200',
-    contains    => "//storage_domains/storage_domain/storage/path[text() = '$rhevm_nfs_export']"
+  aeolus::rhevm::validate{"RHEV NFS export validation":
+    rhevm_rest_api_url => "$rhevm_deltacloud_api",
+    rhevm_data_center => "$rhevm_deltacloud_data_center",
+    rhevm_username => "$rhevm_deltacloud_username",
+    rhevm_password => "$rhevm_deltacloud_password",
+    rhevm_nfs_export => "$rhevm_nfs_export"
   }
 
   file {"$rhevm_nfs_mount_point":
@@ -47,7 +47,7 @@ class aeolus::profiles::rhevm {
     device => "$rhevm_nfs_server:$rhevm_nfs_export",
     fstype => "nfs",
     options => "rw",
-    require => [File["$rhevm_nfs_mount_point"], Web_Request["rhevm-check-export-path-is-export-type"]]}
+    require => [File["$rhevm_nfs_mount_point"], Aeolus::Rhevm::Validate['RHEV NFS export validation']]}
 
   aeolus::create_bucket{"aeolus":}
 
@@ -78,6 +78,13 @@ class aeolus::profiles::rhevm {
                    Aeolus::Conductor::Hwp['hwp1']] }
 
   # TODO: create a realm and mappings
+}
+
+define aeolus::rhevm::validate($rhevm_rest_api_url,$rhevm_data_center,$rhevm_username,$rhevm_password,$rhevm_nfs_export){
+  $result = rhevm_validate_export_type($rhevm_rest_api_url,$rhevm_data_center,$rhevm_username,$rhevm_password,$rhevm_nfs_export)
+  notify {"RHEV NFS export validation":
+    message => "the RHEV NFS export is on the correct storage domain and has type 'export' => ${result}"
+  }
 }
 
 class aeolus::profiles::rhevm::disabled {
