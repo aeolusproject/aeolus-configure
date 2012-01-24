@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  6%{?dist}
+Release:  7%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -63,6 +63,9 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Tue Jan 24 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-7
+- 1348210 BZ # 741947. RFE: add support for all ec2 regions
+
 * Fri Jan 20 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-6
 - 618b3e0 BZ# 769526 - handle invalid blank cloud provider entries
 - aa7c527 BZ #771305 - fixes error found when using custom profiles
