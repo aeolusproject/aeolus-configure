@@ -25,7 +25,8 @@ class aeolus::conductor inherits aeolus {
 
     file{"/usr/share/aeolus-conductor/config/settings.yml":
       content => template("aeolus/conductor-settings.yml"),
-      require => Package['aeolus-conductor']}
+      require => Package['aeolus-conductor'],
+      mode    => 640, owner => 'root', group => 'aeolus'}
 
     file{"/usr/share/aeolus-conductor/config/initializers/secret_token.rb":
       content => template("aeolus/secret_token.rb"),
