@@ -69,6 +69,8 @@ export FACTER_AEOLUS_ENABLE_HTTPS=true
 export FACTER_AEOLUS_ENABLE_SECURITY=false
 export FACTER_RAILS_TOKEN=`</dev/urandom tr -dc a-f0-9 | head -c128`
 
+HAS_FAILURES=0
+
 NODE_ARRAY=(`echo $PUPPET_NODE | tr "," "\n"`)
 for x in "${NODE_ARRAY[@]}"
 do
@@ -84,6 +86,10 @@ do
        $LOGLEVEL \
        --detailed-exitcodes
     if [ $? != 0 -a $? != 2 ] ; then
-        exit 1
+	HAS_FAILURES=1
     fi
 done
+
+if [ $HAS_FAILURES == 1 ]; then
+    exit 1
+fi
