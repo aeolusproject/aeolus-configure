@@ -1,10 +1,15 @@
 {
-  "vsphere":
+<% remaining_instances = instances.size
+   instances.each_pair do |name, params|
+   remaining_instances -= 1
+   params ||= {} -%>
+  "<%= name %>":
   {
-    "api-url":   "https://<%= vsphere_deltacloud_provider %>/sdk",
-    "username":  "<%= vsphere_username %>",
-    "password":     "<%= vsphere_password %>",
-    "datastore":    "<%= vsphere_datastore %>",
-    "network_name": "<%= vsphere_network_name %>"
-  }
+    "api-url":   "https://<%= params['deltacloud_provider'] %>/sdk",
+    "username":  "<%= params['username'] %>",
+    "password":     "<%= params['password'] %>",
+    "datastore":    "<%= params['datastore'] %>",
+    "network_name": "<%= params['network_name'] %>"
+  }<%= remaining_instances.zero? ? nil : ',' %>
+<% end -%>
 }

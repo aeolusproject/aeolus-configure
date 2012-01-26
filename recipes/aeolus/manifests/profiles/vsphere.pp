@@ -12,22 +12,16 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-class aeolus::profiles::vsphere {
-  $missing = ensure_vardef("vsphere_deltacloud_provider",
-                           "vsphere_username",
-                           "vsphere_password",
-                           "vsphere_datastore",
-                           "vsphere_network_name")
-
-  if $missing {
-    fail("Missing required parameter ${missing} in /etc/aeolus-configure/nodes/vsphere_configure")
-  }
+class aeolus::profiles::vsphere ($instances) {
+  create_resources2('aeolus::profiles::vsphere::instance', $instances)
 
   aeolus::create_bucket{"aeolus":}
 
   file {"/etc/imagefactory/vsphere.json":
     content => template("aeolus/vsphere.json"),
-    mode => 755,
+    owner => root,
+    group => aeolus,
+    mode => 640,
     require => Package['aeolus-conductor-daemons'] }
 
   aeolus::conductor::site_admin{"admin":
@@ -39,12 +33,6 @@ class aeolus::profiles::vsphere {
   aeolus::conductor::login{"admin": password => "password",
      require  => Aeolus::Conductor::Site_admin['admin']}
 
-  aeolus::conductor::provider{"vsphere":
-    deltacloud_driver   => "vsphere",
-    url                 => "http://localhost:3002/api",
-    deltacloud_provider => "$vsphere_deltacloud_provider",
-    require             => [Aeolus::Conductor::Login["admin"]] }
-
   aeolus::conductor::hwp{"hwp1":
       memory         => "512",
       cpu            => "1",
@@ -53,6 +41,7 @@ class aeolus::profiles::vsphere {
       require        => Aeolus::Conductor::Login["admin"] }
 
   aeolus::conductor::logout{"admin":
-    require    => [Aeolus::Conductor::Provider['vsphere'],
-                   Aeolus::Conductor::Hwp['hwp1']] }
+    require    => Aeolus::Conductor::Hwp['hwp1'] }
+
+  Aeolus::Conductor::Provider<| |> -> Aeolus::Conductor::Logout["admin"]
 }
