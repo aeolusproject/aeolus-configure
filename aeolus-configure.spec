@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.5.0
-Release:  8%{?dist}
+Release:  9%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -58,6 +58,9 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Thu Jan 26 2012 John Eckersberg <jeckersb@redhat.com> 2.5.0-9
+- Build with tito
+
 * Wed Jan 25 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-8
 - a7c67d3 BZ 783373 - Execute all provider configurations even if there are failures
 - 22a1623 shebang comments are not valid JSON, so remove them
