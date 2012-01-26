@@ -3,8 +3,8 @@
 
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
-Version:  @VERSION@
-Release:  0%{?dist}
+Version:  2.5.0
+Release:  8%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -63,6 +63,43 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Wed Jan 25 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-8
+- a7c67d3 BZ 783373 - Execute all provider configurations even if there are failures
+- 22a1623 shebang comments are not valid JSON, so remove them
+- 60ff5ac Update rhevm and vsphere to support multiple configured providers
+- a52ac95 Use YAML format for parameterized classes
+- fee6871 Pull in create_resources function from puppet 2.7 tree
+- ecf8334 BZ 782210 - improved RHEV NFS export validation
+
+* Tue Jan 24 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-7
+- 1348210 BZ # 741947. RFE: add support for all ec2 regions
+
+* Fri Jan 20 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-6
+- 618b3e0 BZ# 769526 - handle invalid blank cloud provider entries
+- aa7c527 BZ #771305 - fixes error found when using custom profiles
+- 775dccd Bump release, add changelog 2.5.0-5
+
+* Wed Jan 18 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-5
+- c8f5c12 Merge branch '1.0-staging' into 1.0-product
+- eebd68a BZ 758644 (part 2) - decrement login counter after aeolus-configure script
+- cea160c BZ 758644 (part 1) - clean old cookies when doing a web request
+- be20e0c BZ 746702 - improve whitepace checking in /etc/aeolus-configure/nodes configs
+- 39de207 Bump release, add changelog, 2.5.0-4
+
+* Wed Jan 11 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-4
+- 5cd7786 BZ#773060 - do not add provider accounts for rhevm, vshpere in aeolus-configure
+- 6f108fc Bump release, add changelog, 2.5.0-3
+
+* Tue Jan 10 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-3
+- e32ce7e BZ 773037 - update RHEVM configuration to support data centers
+- caf1355 Set version in Rakefile to 2.5.0
+- f1dbbad Set release number
+- cc97b46 Fixing merge conflict
+- e36cfec Correct versioning in changelog entry
+- bcbbde2 Revert version bump
+- 4dbabc3 Bump version, reset release
+- fdce4e6 Bump release, add changelog
+
 * Mon Jan 09 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-2
 - f0043e8 Remove extra_release from spec.in
 - c4d94bf Bump release
