@@ -3,7 +3,7 @@
    instances.each_pair do |name, params|
    remaining_instances -= 1
    params ||= {} -%>
-  "<%= name %>":
+  "vsphere-<%= name %>":
   {
     "api-url":   "https://<%= params['deltacloud_provider'] %>/sdk",
     "username":  "<%= params['username'] %>",
