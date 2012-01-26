@@ -10,12 +10,7 @@ Group:    Applications/Internet
 License:  ASL 2.0
 URL:      http://aeolusproject.org
 
-# to build source tarball
-# git clone git://git.fedorahosted.org/aeolus/configure.git
-# cd configure
-# rake pkg
-# cp pkg/aeolus-configure-2.0.1.tgz ~/rpmbuild/SOURCES
-Source0:  %{name}-%{version}.tgz
+Source0:  %{name}-%{version}.tar.gz
 BuildArch:  noarch
 Requires:   puppet >= 2.6.6
 Requires:   rubygem(uuidtools)
