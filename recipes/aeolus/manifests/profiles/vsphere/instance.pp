@@ -18,7 +18,7 @@ define aeolus::profiles::vsphere::instance ($deltacloud_provider,
                                             $datastore,
                                             $network_name)
 {
-    aeolus::conductor::provider { "${name}":
+    aeolus::conductor::provider { "vsphere-${name}":
       deltacloud_driver   => "vsphere",
       url                 => "http://localhost:3002/api",
       deltacloud_provider => "$deltacloud_provider",
