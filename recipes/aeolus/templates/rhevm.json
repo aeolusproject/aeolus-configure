@@ -3,7 +3,7 @@
    instances.each_pair do |name, params|
    remaining_instances -= 1
    params ||= {} -%>
-  "<%= name %>":
+  "rhevm-<%= name %>":
   {
     "username": "<%= params['deltacloud_username'] %>",
     "nfs-dir": "<%= params['nfs_mount_point'] %>",
