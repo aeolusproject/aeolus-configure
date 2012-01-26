@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  7%{?dist}
+Release:  8%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -63,6 +63,14 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Wed Jan 25 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-8
+- a7c67d3 BZ 783373 - Execute all provider configurations even if there are failures
+- 22a1623 shebang comments are not valid JSON, so remove them
+- 60ff5ac Update rhevm and vsphere to support multiple configured providers
+- a52ac95 Use YAML format for parameterized classes
+- fee6871 Pull in create_resources function from puppet 2.7 tree
+- ecf8334 BZ 782210 - improved RHEV NFS export validation
+
 * Tue Jan 24 2012 Steve Linabery <slinaber@redhat.com> - 2.5.0-7
 - 1348210 BZ # 741947. RFE: add support for all ec2 regions
 
