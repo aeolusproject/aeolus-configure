@@ -15,7 +15,7 @@ classes:
         #
         # The data center id can be found through the RHEV REST API or by executing
         # the following command. Note you may need to use insecure mode (-k).
-        # curl https://rhevm.server.com:8443/api/datacenters --user username@fqdn:password
+        # curl https://rhevm.example.org:8443/api/datacenters --user username@fqdn:password
         #
         # Values below are examples.
         #
