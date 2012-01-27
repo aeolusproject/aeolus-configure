@@ -236,7 +236,7 @@ define aeolus::conductor::provider($deltacloud_driver="",$url="", $deltacloud_pr
                      'provider[deltacloud_provider]' => $deltacloud_provider },
     returns     => '200',
     follow      => true,
-    contains    => "//html/body//li[text() = 'Provider added.']",
+    contains    => "//img[@alt='Notices']", # in the case of an error, @alt='Warnings'
     use_cookies_at => '/tmp/aeolus-admin',
     log_to      => '/tmp/configure-provider-request.log',
     only_log_errors => true,
