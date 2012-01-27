@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  2.5.0
-Release:  9%{?dist}
+Release:  10%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -58,6 +58,14 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Fri Jan 27 2012 Steve Linabery <slinaber@redhat.com> 2.5.0-10
+- Merge branch '1.0-staging' into 1.0-product (slinaber@redhat.com)
+- bz784915 - aeolus-configure names vsphere provider "default", change to
+  "vsphere-default" (jeckersb@redhat.com)
+- BZ 773347 - rename redhat.com to example.org (rwsu@redhat.com)
+- BZ 773347 - add a note in rhevm_configure on how to find the data center id
+  (rwsu@redhat.com)
+
 * Thu Jan 26 2012 John Eckersberg <jeckersb@redhat.com> 2.5.0-9
 - Build with tito
 
