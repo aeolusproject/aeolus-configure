@@ -12,12 +12,18 @@ classes:
     instances:
       default:
         # Uncomment and provide values to match your RHEV environment.
+        #
+        # The data center id can be found through the RHEV REST API or by executing
+        # the following command. Note you may need to use insecure mode (-k).
+        # curl https://rhevm.example.org:8443/api/datacenters --user username@fqdn:password
+        #
         # Values below are examples.
+        #
         #  nfs_server: nfs.server.com
         #  nfs_export: /export/export_domain
         #  nfs_mount_point: /mnt/rhevm-nfs
         #  deltacloud_username: username@fqdn
         #  deltacloud_password: password
         #  deltacloud_api: https://rhevm.server.com:8443/api
-        #  deltacloud_data_center: data center uuid
+        #  deltacloud_data_center: data center id
         #  push_timeout: 1800
