@@ -25,6 +25,8 @@ OPTIONS:
    -h | --help       Show this message.
    -d | --debug      Debug logging mode.
    -v | --verbose    Verbose logging mode.
+                     Note that you can only set one of the previous two options per run. If both are set,
+                     the last one passed in will be honored.
    -p | --profile    Name of profile to use. A comma separated list can be used to specify multiple profiles. 
 EOF
 }
