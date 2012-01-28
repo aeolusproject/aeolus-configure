@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  10%{?dist}
+Release:  11%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -63,6 +63,11 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Fri Jan 27 2012 Steve Linabery <slinaber@redhat.com> 2.5.0-11
+- db6407f BZ 785217 - check provider add success by inspecting the flash image alt text
+- 32fc095 BZ #784833. -d param is positionally dependent
+- 9ccb4f0 bz784978 - aeolus-configure is not properly settting the /etc/imagefactory/$provider.json file
+
 * Fri Jan 27 2012 Steve Linabery <slinaber@redhat.com> 2.5.0-10
 - Merge branch '1.0-staging' into 1.0-product (slinaber@redhat.com)
 - bz784915 - aeolus-configure names vsphere provider "default", change to
