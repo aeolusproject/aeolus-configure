@@ -55,8 +55,11 @@ else
     errors.each do |e|
       puts e
     end
-    puts "parameters must be in the form [space][space][parameter name][colon][space][parameter value]"
-    puts "classes must be in the form [dash][space][class name]"
+    puts "The config files are in YAML. Please use the following conventions: "
+    puts "* Spaces and not tabs should be used to indent."
+    puts "* A node must be indented further away from its parent node. We use 2 spaces."
+    puts "* All sibling nodes must be indented with the same number of spaces. "
+    puts "* The parameter name and value is separated by a colon and a space."
     exit 1
   end
 
