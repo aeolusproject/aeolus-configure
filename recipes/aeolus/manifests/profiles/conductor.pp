@@ -15,10 +15,10 @@
 class aeolus::profiles::conductor {
 
   aeolus::conductor::site_admin{"admin":
-     email           => 'dcuser@aeolusproject.org',
+     email           => 'root@localhost.localdomain',
      password        => "password",
-     first_name      => 'aeolus',
-     last_name       => 'user'}
+     first_name      => 'Administrator',
+     last_name       => ''}
 
   aeolus::conductor::login{"admin": password => "password",
      require  => Aeolus::Conductor::Site_admin['admin']}
