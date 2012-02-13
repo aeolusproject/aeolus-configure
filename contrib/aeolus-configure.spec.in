@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  12%{?dist}
+Release:  13%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -63,6 +63,9 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Mon Feb 13 2012 Steve Linabery <slinaber@redhat.com> 2.5.0-13
+- 5c22f94 BZ 788397 - /var/lib/iwhd should not be removed to maintain consistency with mongodb
+
 * Mon Feb  6 2012 John Eckersberg <jeckersb@redhat.com> - 2.5.0-12
 - ca36312 BZ #783220 - change default admin email to 'root@localhost' (rev 2)
 - 3ac179b BZ 746702 - Update the error message displayed when there is a problem with a config file
