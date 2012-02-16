@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  13%{?dist}
+Release:  14%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -63,6 +63,9 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Thu Feb 16 2012 Steve Linabery <slinaber@redhat.com> 2.5.0-14
+- de97aa1 BZ 788644 - multiple RHEV providers with aeolus_cleanup
+
 * Mon Feb 13 2012 Steve Linabery <slinaber@redhat.com> 2.5.0-13
 - 5c22f94 BZ 788397 - /var/lib/iwhd should not be removed to maintain consistency with mongodb
 
