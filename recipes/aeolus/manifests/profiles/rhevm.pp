@@ -54,9 +54,6 @@ define aeolus::rhevm::validate($rhevm_rest_api_url,$rhevm_data_center,$rhevm_use
   }
 }
 
-class aeolus::profiles::rhevm::disabled {
-  exec {"umount $rhevm_nfs_mount_point":
-        path => ["/sbin", "/bin"],
-        onlyif => [["mount -l | grep $rhevm_nfs_mount_point"],
-                   ["/bin/sh -c '! (ps -ef | grep -v grep | grep dc-rhev-image)'"]]}
+class aeolus::profiles::rhevm::disabled($instances) {
+    create_resources2('aeolus::profiles::rhevm::disable', $instances)
 }

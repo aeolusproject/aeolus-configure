@@ -8,10 +8,13 @@
 parameters:
   enable_https: true
   enable_security: false
-# Uncomment and provide values to match your RHEV environment.
-# Values below are examples.
-#  rhevm_nfs_server: nfs.server.com
-#  rhevm_nfs_export: /export/export_domain
-#  rhevm_nfs_mount_point: /mnt/rhevm-nfs
+  package_provider: rpm
 classes:
-- aeolus::profiles::rhevm::disabled
+  aeolus::profiles::rhevm::disabled:
+    instances:
+      default:
+        # Uncomment and provide values to match your RHEV environment.
+        #
+        # Values below are examples.
+        #
+        #  nfs_mount_point: /mnt/rhevm-nfs
