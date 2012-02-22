@@ -1,9 +1,4 @@
 #imagefactory-only cleanup specification
-
-#You can override the default behavior
-#by renaming this to  <fqdn>_cleanup.
-#This will result in only imagefactory being
-#disabled
 ---
 parameters:
   enable_https: true
