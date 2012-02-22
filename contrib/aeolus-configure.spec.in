@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  14%{?dist}
+Release:  15%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -63,6 +63,10 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Wed Feb 22 2012 John Eckersberg <jeckersb@redhat.com> 2.5.0-15
+- 7076803 BZ 794755 - Static assets don't set Cache-Control headers
+  https://bugzilla.redhat.com/show_bug.cgi?id=794755
+
 * Thu Feb 16 2012 Steve Linabery <slinaber@redhat.com> 2.5.0-14
 - de97aa1 BZ 788644 - multiple RHEV providers with aeolus_cleanup
 
