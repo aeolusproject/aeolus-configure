@@ -190,7 +190,7 @@ define aeolus::conductor::site_admin($email="", $password="", $first_name="", $l
          environment => "RAILS_ENV=production",
          command     => "/usr/bin/rake dc:site_admin[${name}]",
          logoutput   => true,
-         unless      => "/usr/bin/test `psql conductor aeolus -P tuples_only -c \"select count(*) FROM roles INNER JOIN permissions ON (roles.id = permissions.role_id) INNER JOIN users ON (permissions.user_id = users.id) where roles.name = 'Administrator' AND users.login = '${name}';\"` = \"1\"",
+         unless      => "/usr/bin/test `psql conductor aeolus -P tuples_only -c \"select count(*) FROM roles INNER JOIN permissions ON (roles.id = permissions.role_id) INNER JOIN users ON (permissions.user_id = users.id) where roles.name = 'base.admin' AND users.login = '${name}';\"` = \"1\"",
          require     => Exec[create_site_admin_user]}
 }
 
