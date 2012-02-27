@@ -6,8 +6,6 @@
   "vsphere-<%= name %>":
   {
     "api-url":   "https://<%= params['deltacloud_provider'] %>/sdk",
-    "username":  "<%= params['username'] %>",
-    "password":     "<%= params['password'] %>",
     "datastore":    "<%= params['datastore'] %>",
     "network_name": "<%= params['network_name'] %>"
   }<%= remaining_instances.zero? ? nil : ',' %>

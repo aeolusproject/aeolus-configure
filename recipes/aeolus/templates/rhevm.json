@@ -10,7 +10,6 @@
     "nfs-path": "<%= params['nfs_export'] %>",
     "nfs-host": "<%= params['nfs_server'] %>",
     "api-url": "<%= params['deltacloud_api'] %>",
-    "password": "<%= params['deltacloud_password'] %>",
     "cluster": "_any_",
     "timeout": <%= params['push_timeout'] %>
   }<%= remaining_instances.zero? ? nil : ',' %>
