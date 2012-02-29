@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  15%{?dist}
+Release:  16%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -63,6 +63,11 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Wed Feb 29 2012 Steve Linabery <slinaber@redhat.com> 2.5.0-16
+- 10cfd49 BZ #796797: Fix Role string for sql statement
+- 529d24c BZ 795935 - Remove passwords from /etc/imagefactory/.json files
+- dfa0fcc BZ 788644 - remove confusing comments in cleanup config files
+
 * Wed Feb 22 2012 John Eckersberg <jeckersb@redhat.com> 2.5.0-15
 - 7076803 BZ 794755 - Static assets don't set Cache-Control headers
   https://bugzilla.redhat.com/show_bug.cgi?id=794755
