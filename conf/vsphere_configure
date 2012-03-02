@@ -14,5 +14,7 @@ classes:
         # Uncomment and provide values to match your vSphere environment.
         # Values below are examples.
         #  deltacloud_provider: vsphere.server.com
+        #  username: username
+        #  password: password
         #  datastore: datastore
         #  network_name: network_name
