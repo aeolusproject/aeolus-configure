@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  16%{?dist}
+Release:  17%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -64,6 +64,9 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Fri Mar 02 2012 Steve Linabery <slinaber@redhat.com> 2.5.0-17
+- 9c94d5a BZ 798440 - /etc/aeolus-configure/nodes/* should be not be world readable
+
 * Wed Feb 29 2012 Steve Linabery <slinaber@redhat.com> 2.5.0-16
 - 10cfd49 BZ #796797: Fix Role string for sql statement
 - 529d24c BZ 795935 - Remove passwords from /etc/imagefactory/.json files
