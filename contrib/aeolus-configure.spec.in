@@ -58,6 +58,7 @@ Aeolus Configure Puppet Recipe
 %attr(0755, root, root) %{_sbindir}/aeolus-configure
 %attr(0755, root, root) %{_sbindir}/aeolus-cleanup
 %config(noreplace) %{_sysconfdir}/aeolus-configure/*
+%attr(0600, root, root) %{_sysconfdir}/aeolus-configure/nodes/*
 %attr(0755, root, root) %{_bindir}/aeolus-check-services
 %attr(0755, root, root) %{_sbindir}/aeolus-restart-services
 %{aeolushome}

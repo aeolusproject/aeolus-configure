@@ -57,6 +57,9 @@ class aeolus::image-factory inherits aeolus {
                hasstatus => true,
                require => Package['libvirt']}
 
+    file { "/etc/imagefactory/imagefactory.conf":
+      mode => 0600 }
+
     augeas { 'imagefactory.conf':
       incl => '/etc/imagefactory/imagefactory.conf',
       lens => 'Json.lns',
