@@ -13,6 +13,8 @@
 #   limitations under the License.
 
 define aeolus::profiles::vsphere::instance ($deltacloud_provider,
+                                            $username,
+                                            $password,
                                             $datastore,
                                             $network_name)
 {
