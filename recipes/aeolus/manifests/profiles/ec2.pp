@@ -69,14 +69,21 @@ class aeolus::profiles::ec2 {
       require        => Aeolus::Conductor::Login["admin"] }
 
   aeolus::conductor::hwp{"hwp1":
-      memory         => "512",
+      memory         => "7500",
       cpu            => "1",
       storage        => "",
       architecture   => "x86_64",
       require        => Aeolus::Conductor::Login["admin"] }
 
+  aeolus::conductor::hwp{"small":
+      memory         => "500",
+      cpu            => "1",
+      storage        => "",
+      architecture   => "i386",
+      require        => Aeolus::Conductor::Login["admin"] }
+
   Aeolus::Conductor::Provider <| |> -> Aeolus::Conductor::Logout <| |>
 
   aeolus::conductor::logout{"admin":
-    require    => [Aeolus::Conductor::Hwp['hwp1']] }
+    require    => [Aeolus::Conductor::Hwp['hwp1'], Aeolus::Conductor::Hwp['small']] }
 }
