@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  17%{?dist}
+Release:  18%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -64,6 +64,11 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Tue Mar 06 2012 Steve Linabery <slinaber@redhat.com> 2.5.0-18
+- d2056aa BZ 794505: lower cost hwp for ec2
+- c899572 BZ 795935 - put back username and password for conf/vsphere_configure
+- 8badc62 BZ 795935 - remove username from rhevm.json
+
 * Fri Mar 02 2012 Steve Linabery <slinaber@redhat.com> 2.5.0-17
 - 9c94d5a BZ 798440 - /etc/aeolus-configure/nodes/* should be not be world readable
 
