@@ -64,4 +64,8 @@ class aeolus::deltacloud::disabled {
     file { '/etc/init.d/deltacloud-mock': ensure => 'absent' }
     file { '/etc/init.d/deltacloud-rhevm': ensure => 'absent' }
     file { '/etc/init.d/deltacloud-vsphere': ensure => 'absent' }
+
+    if $aeolus_save_data == "false" {
+      exec{"remove_deltacloud_tmp_files":        command => "/bin/rm -rf /var/tmp/deltacloud-mock*"}
+    }
 }
