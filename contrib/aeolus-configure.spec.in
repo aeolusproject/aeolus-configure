@@ -36,6 +36,7 @@ Aeolus Configure Puppet Recipe
 %build
 
 %install
+%{__mkdir} -p %{buildroot}/%{_mandir}/man1
 %{__mkdir} -p %{buildroot}/%{aeolushome}/modules/aeolus %{buildroot}/%{_sbindir}
 %{__mkdir} -p %{buildroot}/%{_bindir}
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
@@ -52,6 +53,7 @@ Aeolus Configure Puppet Recipe
 %{__cp} -R %{pbuild}/bin/aeolus-restart-services %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-configure %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-cleanup %{buildroot}/%{_sbindir}/
+%{__cp} %{pbuild}/docs/man1/* %{buildroot}/%{_mandir}/man1/
 
 %files
 %doc COPYING
@@ -61,6 +63,7 @@ Aeolus Configure Puppet Recipe
 %attr(0600, root, root) %{_sysconfdir}/aeolus-configure/nodes/*
 %attr(0755, root, root) %{_bindir}/aeolus-check-services
 %attr(0755, root, root) %{_sbindir}/aeolus-restart-services
+%doc %{_mandir}/man1/*
 %{aeolushome}
 
 %changelog
