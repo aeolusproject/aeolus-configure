@@ -34,7 +34,7 @@ PKG_VERSION = "2.6.0"
 rpm_task =
 Rake::RpmTask.new(RPM_SPEC, {:suffix => '.in', :pkg_version => PKG_VERSION}) do |rpm|
   rpm.need_tar = true
-  rpm.package_files.include("COPYING", "bin/*", "recipes/**/*", "conf/*")
+  rpm.package_files.include("COPYING", "bin/*", "recipes/**/*", "conf/*", "docs/**/*")
   rpm.topdir = "#{RPMBUILD_DIR}"
 end
 
