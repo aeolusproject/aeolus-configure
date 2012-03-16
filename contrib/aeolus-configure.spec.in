@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  18%{?dist}
+Release:  1%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -67,6 +67,9 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Fri Mar 16 2012 Steve Linabery <slinaber@redhat.com> 2.5.1-1
+- 7312999 BZ #802871: added man pages for configure executables
+
 * Tue Mar 06 2012 Steve Linabery <slinaber@redhat.com> 2.5.0-18
 - d2056aa BZ 794505: lower cost hwp for ec2
 - c899572 BZ 795935 - put back username and password for conf/vsphere_configure
