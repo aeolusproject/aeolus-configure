@@ -24,8 +24,8 @@ class aeolus::profiles::default {
 
   aeolus::conductor::login{"admin": password => "password",
      require  => Aeolus::Conductor::Site_admin['admin']}
-   
-  aeolus::conductor::hwp{"hwp1":
+
+  aeolus::conductor::hwp{"small-x86_64":
       memory         => "512",
       cpu            => "1",
       storage        => "",
@@ -33,6 +33,6 @@ class aeolus::profiles::default {
       require        => Aeolus::Conductor::Login["admin"] }
 
   aeolus::conductor::logout{"admin":
-    require    => Aeolus::Conductor::Hwp['hwp1']}
+    require    => Aeolus::Conductor::Hwp['small-x86_64']}
 
 }
