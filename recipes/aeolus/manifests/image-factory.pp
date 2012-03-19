@@ -29,9 +29,6 @@ class aeolus::image-factory inherits aeolus {
                ensure => 'installed',
                provider => $package_provider
   }
-  package { 'qpid-cpp-server':
-               ensure => 'installed',
-               provider => $package_provider }
 
   ### Configure pulp to fetch from Fedora
     # TODO uncomment when factory/warehouse uses pulp
@@ -40,14 +37,6 @@ class aeolus::image-factory inherits aeolus {
     #}
 
   ### Start the aeolus services
-    file { "/etc/qpidd.conf":
-               source => "puppet:///modules/aeolus/qpidd.conf",
-               mode   => 644 }
-    service {'qpidd':
-               ensure  => 'running',
-               enable  => true,
-               require => [File['/etc/qpidd.conf'],
-                           Package['qpid-cpp-server']]}
     file { "/var/tmp/imagefactory-mock":
                ensure => "directory",
                mode   => 755 }
@@ -73,7 +62,7 @@ class aeolus::image-factory inherits aeolus {
     $requires = [Package['imagefactory'],
                  File['/var/tmp/imagefactory-mock'],
                  Augeas['imagefactory.conf'],
-                 Service[qpidd], Service[libvirtd],
+                 Service[libvirtd],
                  Rails::Seed::Db[seed_aeolus_database]]
     service { 'imagefactory':
       ensure  => 'running',
@@ -84,11 +73,6 @@ class aeolus::image-factory inherits aeolus {
 
 class aeolus::image-factory::disabled {
   ### Stop the aeolus services
-    service {'qpidd':
-               ensure  => 'stopped',
-               enable  => false,
-               require => Service['imagefactory']}
-
     service { 'imagefactory':
       ensure  => 'stopped',
       hasstatus => true,

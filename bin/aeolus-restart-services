@@ -27,7 +27,7 @@ To show status of aeolus services please use aeolus-check-services.
 end
 
 # ordered as in rc.d
-services = %w(mongod iwhd postgresql httpd qpidd deltacloud-core libvirtd aeolus-conductor conductor-dbomatic imagefactory ntpd)
+services = %w(mongod iwhd postgresql httpd deltacloud-core libvirtd aeolus-conductor conductor-dbomatic imagefactory ntpd)
 
 def perform(action, svcs)
   action = action.to_s
