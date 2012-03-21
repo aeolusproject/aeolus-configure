@@ -67,6 +67,11 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Tue Mar 20 2012 Steve Linabery <slinaber@redhat.com> 2.5.2-1
+- 3d39608 BZ 803745 - Warn credentials are incorrect if authentication with RHEV fails when checking export type
+- 1da2db5 BZ 803249 - Remove qpidd from configure
+- fdb718e BZ 802847 - cleanup hardware profiles and fix provider ordering effects
+
 * Fri Mar 16 2012 Steve Linabery <slinaber@redhat.com> 2.5.1-1
 - 7312999 BZ #802871: added man pages for configure executables
 
