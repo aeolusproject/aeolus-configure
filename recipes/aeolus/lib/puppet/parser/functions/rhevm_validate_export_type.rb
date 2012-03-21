@@ -18,6 +18,12 @@ ENDDOC
   curl.http_get
   result_body = curl.body_str.to_s
 
+  if curl.response_code == 401
+    raise Puppet::ParseError, "Unable to authenticate with RHEV. Please check\
+ deltacloud_username and deltacloud_password in /etc/aeolus-configure/nodes/r\
+hevm_configure."
+  end
+
   storagedomains  = Nokogiri::XML(result_body)
   found = storagedomains.xpath("/storage_domains/storage_domain[type=\"export\"] and /storage_domains/storage_domain/storage[path=\"#{args[4]}\"]")
 

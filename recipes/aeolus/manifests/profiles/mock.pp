@@ -37,7 +37,7 @@ class aeolus::profiles::mock {
       password           => 'mockpassword',
       require        => Aeolus::Conductor::Provider["mock"] }
 
-  aeolus::conductor::hwp{"hwp1":
+  aeolus::conductor::hwp{"small-x86_64":
       memory         => "512",
       cpu            => "1",
       storage        => "",
@@ -47,5 +47,5 @@ class aeolus::profiles::mock {
   aeolus::conductor::logout{"admin":
     require    => [Aeolus::Conductor::Provider['mock'],
                    Aeolus::Conductor::Provider::Account['mock'],
-                   Aeolus::Conductor::Hwp['hwp1']] }
+                   Aeolus::Conductor::Hwp['small-x86_64']] }
 }
