@@ -67,6 +67,9 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Thu Apr 12 2012 John Eckersberg <jeckersb@redhat.com> 2.5.3-1
+- dbe8dd8 BZ811373 - Add KeepAlive on to vhost in conductor.conf
+
 * Tue Mar 20 2012 Steve Linabery <slinaber@redhat.com> 2.5.2-1
 - 3d39608 BZ 803745 - Warn credentials are incorrect if authentication with RHEV fails when checking export type
 - 1da2db5 BZ 803249 - Remove qpidd from configure
