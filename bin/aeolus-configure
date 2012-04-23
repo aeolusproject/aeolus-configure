@@ -27,11 +27,12 @@ OPTIONS:
    -v | --verbose    Verbose logging mode.
                      Note that you can only set one of the previous two options per run. If both are set,
                      the last one passed in will be honored.
-   -p | --profile    Name of profile to use. A comma separated list can be used to specify multiple profiles. 
+   -p | --profile    Name of profile to use. A comma separated list can be used to specify multiple profiles.
+   -s | --skip-missing  Skip missing profiles provided by -p option.
 EOF
 }
 
-args=`getopt -o :hdvip: --long help,debug,verbose,interactive,profile: -- "$@"`
+args=`getopt -o hdvip:s --long help,debug,verbose,interactive,profile:,skip-missing -- "$@"`
 if test $? != 0
      then
          usage
@@ -41,6 +42,7 @@ fi
 INTERACTIVE=1
 
 PUPPET_NODE='default'
+SKIP_MISSING_NODE=0
 
 eval set -- $args
 while true ; do
@@ -49,11 +51,17 @@ while true ; do
                 -d|--debug) LOGLEVEL="--debug" ; shift ;;
                 -v|--verbose) LOGLEVEL="--verbose" ; shift  ;;
                 -p|--profile) PUPPET_NODE=$2 ; shift ; shift ;;
+                -s|--skip-missing) SKIP_MISSING_NODE=1 ; shift ;;
                 --) shift ; break ;;
                 *)  usage ; exit 1 ;;
         esac
 done
-
+echo $args | grep -e '--\ .*' -q
+if [ $? == 0 ]; then
+  echo "Invalid options supplied."
+  usage
+  exit 1
+fi
 echo "Launching aeolus configuration recipe..."
 
 export FACTER_AEOLUS_ENABLE_HTTPS=true
@@ -65,9 +73,21 @@ HAS_FAILURES=0
 NODE_ARRAY=(`echo $PUPPET_NODE | tr "," "\n"`)
 for x in "${NODE_ARRAY[@]}"
 do
-    /usr/share/aeolus-configure/modules/aeolus/aeolus-node-check /etc/aeolus-configure/nodes/${x}_configure
+    if [ -f /etc/aeolus-configure/nodes/${x}_configure ]; then
+      /usr/share/aeolus-configure/modules/aeolus/aeolus-node-check /etc/aeolus-configure/nodes/${x}_configure
+    else
+      echo Error: ${x} configure node is missing
+      echo \"/etc/aeolus-configure/nodes/${x}_configure\" does not exist
+      if [ $SKIP_MISSING_NODE == 1 ]; then
+        echo ignoring
+        continue
+      else
+        echo exiting
+        exit
+      fi
+    fi
     if [ $? != 0 ]; then
-	exit 1
+      exit 1
     fi
     puppet /usr/share/aeolus-configure/modules/aeolus/aeolus.pp \
        --modulepath=/usr/share/aeolus-configure/modules/ \
@@ -77,7 +97,7 @@ do
        $LOGLEVEL \
        --detailed-exitcodes
     if [ $? != 0 -a $? != 2 ] ; then
-	HAS_FAILURES=1
+      HAS_FAILURES=1
     fi
 done
 
