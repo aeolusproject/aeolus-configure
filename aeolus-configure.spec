@@ -2,7 +2,7 @@
 
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
-Version:  2.5.3
+Version:  2.5.4
 Release:  1%{?dist}
 
 Group:    Applications/Internet
@@ -61,6 +61,9 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Thu May 03 2012 John Eckersberg <jeckersb@redhat.com> 2.5.4-1
+- Build with tito
+
 * Thu Apr 12 2012 John Eckersberg <jeckersb@redhat.com> 2.5.3-1
 - dbe8dd8 BZ811373 - Add KeepAlive on to vhost in conductor.conf
 
