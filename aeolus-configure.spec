@@ -3,7 +3,7 @@
 
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
-Version:  @VERSION@
+Version:  2.5.3
 Release:  1%{?dist}
 
 Group:    Applications/Internet
