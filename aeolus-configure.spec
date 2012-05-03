@@ -1,5 +1,4 @@
 %global aeolushome /usr/share/aeolus-configure
-%global pbuild %{_builddir}/%{name}-%{version}
 
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
@@ -10,12 +9,7 @@ Group:    Applications/Internet
 License:  ASL 2.0
 URL:      http://aeolusproject.org
 
-# to build source tarball
-# git clone git://git.fedorahosted.org/aeolus/configure.git
-# cd configure
-# rake pkg
-# cp pkg/aeolus-configure-2.0.1.tgz ~/rpmbuild/SOURCES
-Source0:  %{name}-%{version}.tgz
+Source0:  %{name}-%{version}.tar.gz
 BuildArch:  noarch
 Requires:   puppet >= 2.6.6
 Requires:   rubygem(uuidtools)
@@ -40,20 +34,20 @@ Aeolus Configure Puppet Recipe
 %{__mkdir} -p %{buildroot}/%{aeolushome}/modules/aeolus %{buildroot}/%{_sbindir}
 %{__mkdir} -p %{buildroot}/%{_bindir}
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
-%{__cp} -R %{pbuild}/conf/* %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
+%{__cp} -R conf/* %{buildroot}%{_sysconfdir}/aeolus-configure/nodes
 %{__mv} %{buildroot}%{_sysconfdir}/aeolus-configure/nodes/custom_template.tdl %{buildroot}%{_sysconfdir}/aeolus-configure/
-%{__cp} -R %{pbuild}/recipes/aeolus/* %{buildroot}/%{aeolushome}/modules/aeolus
-%{__cp} -R %{pbuild}/recipes/apache/ %{buildroot}/%{aeolushome}/modules/apache
-%{__cp} -R %{pbuild}/recipes/ntp/ %{buildroot}/%{aeolushome}/modules/ntp
-%{__cp} -R %{pbuild}/recipes/openssl/ %{buildroot}/%{aeolushome}/modules/openssl
-%{__cp} -R %{pbuild}/recipes/postgres/ %{buildroot}/%{aeolushome}/modules/postgres
-%{__cp} -R %{pbuild}/bin/aeolus-node %{buildroot}/%{aeolushome}/modules/aeolus/
-%{__cp} -R %{pbuild}/bin/aeolus-node-check %{buildroot}/%{aeolushome}/modules/aeolus/
-%{__cp} -R %{pbuild}/bin/aeolus-check-services %{buildroot}/%{_bindir}/
-%{__cp} -R %{pbuild}/bin/aeolus-restart-services %{buildroot}/%{_sbindir}/
-%{__cp} -R %{pbuild}/bin/aeolus-configure %{buildroot}/%{_sbindir}/
-%{__cp} -R %{pbuild}/bin/aeolus-cleanup %{buildroot}/%{_sbindir}/
-%{__cp} %{pbuild}/docs/man1/* %{buildroot}/%{_mandir}/man1/
+%{__cp} -R recipes/aeolus/* %{buildroot}/%{aeolushome}/modules/aeolus
+%{__cp} -R recipes/apache/ %{buildroot}/%{aeolushome}/modules/apache
+%{__cp} -R recipes/ntp/ %{buildroot}/%{aeolushome}/modules/ntp
+%{__cp} -R recipes/openssl/ %{buildroot}/%{aeolushome}/modules/openssl
+%{__cp} -R recipes/postgres/ %{buildroot}/%{aeolushome}/modules/postgres
+%{__cp} -R bin/aeolus-node %{buildroot}/%{aeolushome}/modules/aeolus/
+%{__cp} -R bin/aeolus-node-check %{buildroot}/%{aeolushome}/modules/aeolus/
+%{__cp} -R bin/aeolus-check-services %{buildroot}/%{_bindir}/
+%{__cp} -R bin/aeolus-restart-services %{buildroot}/%{_sbindir}/
+%{__cp} -R bin/aeolus-configure %{buildroot}/%{_sbindir}/
+%{__cp} -R bin/aeolus-cleanup %{buildroot}/%{_sbindir}/
+%{__cp} docs/man1/* %{buildroot}/%{_mandir}/man1/
 
 %files
 %doc COPYING
