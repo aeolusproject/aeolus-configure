@@ -62,7 +62,8 @@ class aeolus::conductor inherits aeolus {
     }
 
     service { ['aeolus-conductor',
-               'conductor-dbomatic' ]:
+               'conductor-dbomatic',
+               'conductor-delayed_job']:
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
@@ -158,7 +159,8 @@ class aeolus::conductor::disabled {
       require => Service['aeolus-conductor',
                          'conductor-dbomatic'] }
     service { ['aeolus-conductor',
-               'conductor-dbomatic']:
+               'conductor-dbomatic',
+               'conductor-delayed_job']:
       ensure => 'stopped',
       enable => false,
       hasstatus => true }
@@ -169,7 +171,8 @@ class aeolus::conductor::disabled {
                 cwd        => "/usr/share/aeolus-conductor",
                 rails_env  => "production",
                 require    => Service["aeolus-conductor",
-                                      "conductor-dbomatic"]}
+                                      "conductor-dbomatic",
+                                      "conductor-delayed_job"]}
     postgres::user{"aeolus":
                     ensure => 'dropped',
                     require => Rails::Drop::Db["drop_aeolus_database"]}
