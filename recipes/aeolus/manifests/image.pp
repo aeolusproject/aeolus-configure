@@ -1,5 +1,5 @@
 define aeolus::image($template, $provider='', $target='', $hwp=''){
-  exec{"build-$name-image": logoutput => true, timeout => 0,
+  exec{"build-${name}-image": logoutput => true, timeout => 0,
         command => "/usr/sbin/aeolus-configure-image $name $target $template $provider $hwp",
         require => Service['aeolus-conductor', 'iwhd', 'imagefactory']}
 
@@ -17,6 +17,6 @@ define aeolus::image($template, $provider='', $target='', $hwp=''){
     use_cookies_at => '/tmp/aeolus-admin',
     #unless      => { 'get'             => 'https://localhost/conductor/providers',
     #                 'contains'        => "//html/body//a[text() = '$name']" },
-    require    => Exec["build-$name-image"]
+    require    => Exec["build-${name}-image"]
   }
 }

@@ -1,6 +1,6 @@
 # login to the aeolus conductor
 define aeolus::conductor::login($password){
-  web_request{ "$name-conductor-login":
+  web_request{ "${name}-conductor-login":
     post         => 'https://localhost/conductor/user_session',
     parameters  => { 'login'    => "$name", 'password' => "$password",
                      'commit'                 => 'submit' },
@@ -14,6 +14,6 @@ define aeolus::conductor::login($password){
     environment => "RAILS_ENV=production",
     command     => "/usr/bin/rake dc:decrement_counter[${name}]",
     logoutput   => true,
-    require => Web_Request["$name-conductor-login"]
+    require => Web_Request["${name}-conductor-login"]
   }
 }

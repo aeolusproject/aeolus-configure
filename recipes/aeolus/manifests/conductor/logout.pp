@@ -1,6 +1,6 @@
 # log out of the aeolus conductor
 define aeolus::conductor::logout(){
-  web_request{ "$name-conductor-logout":
+  web_request{ "${name}-conductor-logout":
     post         => 'https://localhost/conductor/logout',
     parameters  => { 'login'    => "admin", 'password' => "password",
                      'commit'                 => 'submit' },
