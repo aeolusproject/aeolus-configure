@@ -15,5 +15,6 @@
 parameters:
   enable_https: true
   enable_security: false
+  package_provider: rpm
 classes:
 - aeolus::iwhd

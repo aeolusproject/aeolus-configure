@@ -56,14 +56,13 @@ class aeolus::image-factory inherits aeolus {
                   "set /files/etc/imagefactory/imagefactory.conf/dict/entry[. = 'warehouse_secret']/string \"$iwhd_oauth_password\"",
                   "set /files/etc/imagefactory/imagefactory.conf/dict/entry[. = 'clients']/dict/entry \"$imagefactory_oauth_user\"",
                   "set /files/etc/imagefactory/imagefactory.conf/dict/entry[. = 'clients']/dict/entry/string \"$imagefactory_oauth_password\""],
-      require => [Package['imagefactory'],Package['aeolus-conductor']]
+      require => [Package['imagefactory']]
     }
 
     $requires = [Package['imagefactory'],
                  File['/var/tmp/imagefactory-mock'],
                  Augeas['imagefactory.conf'],
-                 Service[libvirtd],
-                 Rails::Seed::Db[seed_aeolus_database]]
+                 Service[libvirtd]]
     service { 'imagefactory':
       ensure  => 'running',
       enable  => true,
