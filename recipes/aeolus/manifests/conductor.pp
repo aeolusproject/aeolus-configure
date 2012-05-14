@@ -68,7 +68,7 @@ class aeolus::conductor inherits aeolus {
       enable    => true,
       hasstatus => true,
       require => [Package['aeolus-conductor-daemons'],
-                  Rails::Migrate::Db[migrate_aeolus_database],
+                  Aeolus::Rails::Migrate::Db[migrate_aeolus_database],
                   Service['httpd'],
                   Apache::Site[aeolus-conductor], Exec[reload-apache],
                   File['/usr/share/aeolus-conductor/config/settings.yml'],
@@ -118,18 +118,18 @@ class aeolus::conductor inherits aeolus {
 
 
     # Create aeolus database
-    rails::create::db{"create_aeolus_database":
+    aeolus::rails::create::db{"create_aeolus_database":
                 cwd        => "/usr/share/aeolus-conductor",
                 rails_env  => "production",
                 require    => [Postgres::User[aeolus], Package['aeolus-conductor']] }
-    rails::migrate::db{"migrate_aeolus_database":
+    aeolus::rails::migrate::db{"migrate_aeolus_database":
                 cwd             => "/usr/share/aeolus-conductor",
                 rails_env       => "production",
-                require         => [Rails::Create::Db[create_aeolus_database]]}
-    rails::seed::db{"seed_aeolus_database":
+                require         => [Aeolus::Rails::Create::Db[create_aeolus_database]]}
+    aeolus::rails::seed::db{"seed_aeolus_database":
                 cwd             => "/usr/share/aeolus-conductor",
                 rails_env       => "production",
-                require         => Rails::Migrate::Db[migrate_aeolus_database]}
+                require         => Aeolus::Rails::Migrate::Db[migrate_aeolus_database]}
 
   ### Setup sshd for deltacloud
   package { "openssh-server": ensure => installed }
@@ -137,210 +137,4 @@ class aeolus::conductor inherits aeolus {
              require  => Package["openssh-server"],
              ensure   =>  'running',
              enable  =>  'true' }
-}
-
-class aeolus::conductor::disabled {
-  if $aeolus_save_data == "false" {
-    file {"/var/lib/aeolus-conductor":
-            ensure => absent,
-            force  => true
-    }
-  }
-
-    file {"/etc/rsyslog.d/aeolus.conf":
-            ensure => absent,
-            force  => true
-    }
-
-  ### Stop the aeolus services
-    service { ['httpd']:
-      ensure  => 'stopped',
-      enable  => false,
-      require => Service['aeolus-conductor',
-                         'conductor-dbomatic'] }
-    service { ['aeolus-conductor',
-               'conductor-dbomatic',
-               'conductor-delayed_job']:
-      ensure => 'stopped',
-      enable => false,
-      hasstatus => true }
-
-  if $aeolus_save_data == "false" {
-    ### Destroy the aeolus database
-    rails::drop::db{"drop_aeolus_database":
-                cwd        => "/usr/share/aeolus-conductor",
-                rails_env  => "production",
-                require    => Service["aeolus-conductor",
-                                      "conductor-dbomatic",
-                                      "conductor-delayed_job"]}
-    postgres::user{"aeolus":
-                    ensure => 'dropped',
-                    require => Rails::Drop::Db["drop_aeolus_database"]}
-  }
-}
-
-# Create a new site admin conductor web user
-class aeolus::conductor::default_admin {
-  exec{"create_site_admin_user":
-         cwd         => '/usr/share/aeolus-conductor',
-         environment => "RAILS_ENV=production",
-         command     => "/usr/bin/rake dc:create_user[${admin_login},${admin_password},${admin_email},${admin_first_name},${admin_last_name}]",
-         logoutput   => true,
-         unless      => "/usr/bin/test `psql conductor aeolus -P tuples_only -c \"select count(*) from roles, permissions, users where roles.id = permissions.role_id and users.id = permissions.user_id and roles.name = 'base.admin' and users.login = '${admin_login}'\"` = \"1\"",
-         require     => Rails::Seed::Db["seed_aeolus_database"]}
-  exec{"grant_site_admin_privs":
-         cwd         => '/usr/share/aeolus-conductor',
-         environment => "RAILS_ENV=production",
-         command     => "/usr/bin/rake dc:site_admin[${admin_login}]",
-         logoutput   => true,
-         unless      => "/usr/bin/test `psql conductor aeolus -P tuples_only -c \"select count(*) FROM roles INNER JOIN permissions ON (roles.id = permissions.role_id) INNER JOIN users ON (permissions.user_id = users.id) where roles.name = 'base.admin' AND users.login = '${admin_login}';\"` = \"1\"",
-         require     => Exec[create_site_admin_user]}
-}
-
-define aeolus::conductor::temp_admin($password=""){
-    exec{"create_temp_admin":
-      cwd         => '/usr/share/aeolus-conductor',
-      environment => "RAILS_ENV=production",
-      command     => "/usr/bin/rake dc:create_user[${name},${password},'temp-admin@localhost.localdomain','temp','admin']",
-      logoutput   => true,
-      require     => Rails::Seed::Db["seed_aeolus_database"]}
-    exec{"grant_temp_admin_privs":
-      cwd         => '/usr/share/aeolus-conductor',
-      environment => "RAILS_ENV=production",
-      command     => "/usr/bin/rake dc:site_admin[${name}]",
-      logoutput   => true,
-      require     => Exec[create_temp_admin]}
-  }
-
-
-define aeolus::conductor::destroy_temp_admin{
-  exec{"destroy_temp_admin":
-    cwd         => '/usr/share/aeolus-conductor',
-    environment => "RAILS_ENV=production",
-    command     => "/usr/bin/rake dc:destroy_user[${name}]",
-    logoutput   => true,
-    require     => Rails::Seed::Db["seed_aeolus_database"]
-  }
-}
-
-
-# login to the aeolus conductor
-define aeolus::conductor::login($password){
-  web_request{ "$name-conductor-login":
-    post         => 'https://localhost/conductor/user_session',
-    parameters  => { 'login'    => "$name", 'password' => "$password",
-                     'commit'                 => 'submit' },
-    returns     => '200',
-    follow      => true,
-    store_cookies_at => "/tmp/aeolus-$name",
-    require    => Service['aeolus-conductor']
-  }
-  exec{"decrement_login_counter":
-    cwd         => '/usr/share/aeolus-conductor',
-    environment => "RAILS_ENV=production",
-    command     => "/usr/bin/rake dc:decrement_counter[${name}]",
-    logoutput   => true,
-    require => Web_Request["$name-conductor-login"]
-  }
-}
-
-# log out of the aeolus conductor
-define aeolus::conductor::logout(){
-  web_request{ "$name-conductor-logout":
-    post         => 'https://localhost/conductor/logout',
-    parameters  => { 'login'    => "admin", 'password' => "password",
-                     'commit'                 => 'submit' },
-    returns     => '200',
-    follow      => true,
-    use_cookies_at => "/tmp/aeolus-$name",
-    remove_cookies => true
-  }
-}
-
-# Create a new provider via the conductor
-define aeolus::conductor::provider($deltacloud_driver="",$url="", $deltacloud_provider="", $admin_login=""){
-  web_request{ "provider-$name":
-    post         => "https://localhost/conductor/providers",
-    parameters  => { 'provider[name]'  => $name, 'provider[url]'   => $url,
-                     'provider[provider_type_deltacloud_driver]' => $deltacloud_driver,
-                     'provider[deltacloud_provider]' => $deltacloud_provider },
-    returns     => '200',
-    follow      => true,
-    contains    => "//img[@alt='Notices']", # in the case of an error, @alt='Warnings'
-    use_cookies_at => "/tmp/aeolus-${admin_login}",
-    log_to      => '/tmp/configure-provider-request.log',
-    only_log_errors => true,
-    unless      => { 'get'             => 'https://localhost/conductor/providers',
-                     'contains'        => "//html/body//a[text() = '$name']" },
-    require    => [Service['aeolus-conductor'], Exec['grant_temp_admin_privs'], Exec['deltacloud-core-startup-wait']]
-  }
-}
-
-# Create a new provider account via the conductor
-define aeolus::conductor::provider::account($provider="", $type="", $username="",$password="", $account_id="",$x509private="", $x509public="", $admin_login=""){
-  if $type != "ec2" {
-    web_request{ "provider-account-$name":
-      post         => "https://localhost/conductor/providers/0/provider_accounts",
-      parameters  => { 'provider_account[label]'  => $name,
-                       'provider_account[provider]' => $provider,
-                       'provider_account[credentials_hash[username]]'   => $username,
-                       'provider_account[credentials_hash[password]]'   => $password,
-                       'quota[max_running_instances]'   => 'unlimited',
-                       'commit' => 'Save' },
-
-      returns     => '200',
-      #contains    => "//table/thead/tr/th[text() = 'Properties for $name']",
-      follow      => true,
-      use_cookies_at => "/tmp/aeolus-${admin_login}",
-      unless      => { 'get'             => 'https://localhost/conductor/provider_accounts',
-                       'contains'        => "//html/body//a[text() = '$name']" },
-      require    => Service['aeolus-conductor']}
-
-  } else {
-    web_request{ "provider-account-$name":
-      post         => "https://localhost/conductor/provider_accounts",
-      parameters  => { 'provider_account[label]'  => $name,
-                       'provider_account[provider]' => $provider,
-                       'provider_account[credentials_hash[username]]'   => $username,
-                       'provider_account[credentials_hash[password]]'   => $password,
-                       'provider_account[credentials_hash[account_id]]' => $account_id,
-                       'quota[max_running_instances]'   => 'unlimited',
-                       'commit' => 'Save' },
-      file_parameters  => { 'provider_account[credentials_hash[x509private]]'=> $x509private,
-                            'provider_account[credentials_hash[x509public]]' => $x509public  },
-
-      returns     => '200',
-      #contains    => "//table/thead/tr/th[text() = 'Properties for $name']",
-      follow      => true,
-      use_cookies_at => "/tmp/aeolus-${admin_login}",
-      unless      => { 'get'             => 'https://localhost/conductor/provider_accounts',
-                       'contains'        => "//html/body//a[text() = '$name']" },
-      require    => Service['aeolus-conductor']
-    }
-  }
-}
-
-define aeolus::conductor::hwp($memory='', $cpu='', $storage='', $architecture='', $admin_login=''){
-  web_request{ "hwp-$name":
-    post         => "https://localhost/conductor/hardware_profiles",
-    parameters  => {'hardware_profile[name]'  => $name,
-                    'hardware_profile[memory_attributes][value]'       => $memory,
-                    'hardware_profile[cpu_attributes][value]'          => $cpu,
-                    'hardware_profile[storage_attributes][value]'      => $storage,
-                    'hardware_profile[architecture_attributes][value]' => $architecture,
-                    'hardware_profile[memory_attributes][name]'        => 'memory',
-                    'hardware_profile[memory_attributes][unit]'        => 'MB',
-                    'hardware_profile[cpu_attributes][name]'           => 'cpu',
-                    'hardware_profile[cpu_attributes][unit]'           => 'count',
-                    'hardware_profile[storage_attributes][name]'       => 'storage',
-                    'hardware_profile[storage_attributes][unit]'       => 'GB',
-                    'hardware_profile[architecture_attributes][name]'  => 'architecture',
-                    'hardware_profile[architecture_attributes][unit]'  => 'label',
-                    'commit' => 'Save'},
-    returns     => '200',
-    #verify      => '.*Hardware profile added.*',
-    follow      => true,
-    use_cookies_at => "/tmp/aeolus-${admin_login}",
-    require    => [Service['aeolus-conductor'], Exec['grant_temp_admin_privs']]
-  }
 }

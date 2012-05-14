@@ -61,35 +61,3 @@ class aeolus::iwhd inherits aeolus {
                 logoutput => true,
                 require => Service['iwhd']}
 }
-
-class aeolus::iwhd::disabled {
-  if $aeolus_save_data == "false" {
-    exec { 'clean_iwhd':
-      command   => '/usr/bin/ruby /usr/share/aeolus-configure/modules/aeolus/clean-iwhd.rb http://localhost:9090',
-      before    => Service[iwhd],
-      onlyif    => '/usr/bin/curl http://localhost:9090',
-      logoutput => true,
-    }
-  }
-
-  ### Stop the aeolus services
-    service { 'mongod':
-      ensure  => 'stopped',
-      enable  => false,
-      require => Service[iwhd]}
-
-    service { 'iwhd':
-      ensure  =>  'stopped',
-      enable  =>  false,
-      hasstatus =>  true}
-
-}
-
-# Create a named bucket in iwhd
-define aeolus::create_bucket(){
-  exec{"create-bucket-${name}":
-         command => "/usr/bin/curl --proxy '' -X PUT http://localhost:9090/templates",
-         logoutput => true,
-         require => [Exec['iwhd_startup_pause'], Package[curl]] }
-}
-
