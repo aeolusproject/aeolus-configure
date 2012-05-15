@@ -16,7 +16,11 @@ require 'spec_helper'
 
 require 'nokogiri'
 require 'open-uri'
-require 'postgres'
+begin
+  require 'pg'
+rescue LoadError
+  require 'postgres'
+end
 
 ENV['RAILS_ENV'] = 'production'
 
