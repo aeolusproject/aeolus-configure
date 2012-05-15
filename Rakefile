@@ -15,8 +15,8 @@
 # Aeolus Configure/Recipe Rakefile
 
 require 'rake/clean'
-require 'rake/rpmtask'
-require 'rake/yumtask'
+require './rake/rpmtask'
+require './rake/yumtask'
 require 'rubygems'
 require 'rspec/core/rake_task'
 
