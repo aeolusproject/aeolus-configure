@@ -18,8 +18,6 @@ require 'nokogiri'
 require 'open-uri'
 
 ENV['RAILS_ENV'] = 'production'
-$: << "#{CONDUCTOR_PATH}/dutils"
-require "dutils"
 
 describe "aeolus-cleanup" do
   before(:all) do

@@ -31,8 +31,6 @@ describe "aeolus-configure seed data api" do
     $?.exitstatus.should == 0
 
     ENV['RAILS_ENV'] = 'production'
-    $: << "#{CONDUCTOR_PATH}/dutils"
-    require "dutils"
   end
 
   after(:each) do

@@ -19,8 +19,6 @@ require 'open-uri'
 require 'postgres'
 
 ENV['RAILS_ENV'] = 'production'
-$: << "#{CONDUCTOR_PATH}/dutils"
-require "dutils"
 
 describe "aeolus-configure" do
   before(:all) do
