@@ -13,8 +13,8 @@
 #   limitations under the License.
 
 require 'rubygems'
-require 'spec'
-require 'spec/autorun'
+require 'rspec'
+require 'rspec/autorun'
 
 $test_scripts = ENV['test_scripts']
 $test_scripts = ($test_scripts != "false" && $test_scripts != "n")

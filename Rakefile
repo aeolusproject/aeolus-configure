@@ -18,7 +18,7 @@ require 'rake/clean'
 require 'rake/rpmtask'
 require 'rake/yumtask'
 require 'rubygems'
-require 'spec/rake/spectask'
+require 'rspec/core/rake_task'
 
 CURRENT_DIR  = File.dirname(__FILE__)
 RPMBUILD_DIR = "#{File.expand_path('~')}/rpmbuild"
@@ -44,18 +44,18 @@ Rake::YumTask.new(YUM_REPO) do |repo|
 end
 
 desc "Run configure spec tests locally"
-Spec::Rake::SpecTask.new(:configure_spec) do |t|
-  t.spec_files = FileList['spec/configure_spec.rb']
+RSpec::Core::RakeTask.new(:configure_spec) do |t|
+  t.pattern = FileList['spec/configure_spec.rb']
 end
 
 desc "Run cleanup spec tests locally"
-Spec::Rake::SpecTask.new(:cleanup_spec) do |t|
-  t.spec_files = FileList['spec/cleanup_spec.rb']
+RSpec::Core::RakeTask.new(:cleanup_spec) do |t|
+  t.pattern = FileList['spec/cleanup_spec.rb']
 end
 
 desc "Run seed spec tests locally"
-Spec::Rake::SpecTask.new(:seed_spec) do |t|
-  t.spec_files = FileList['spec/seed_data_spec.rb']
+RSpec::Core::RakeTask.new(:seed_spec) do |t|
+  t.pattern = FileList['spec/seed_data_spec.rb']
 end
 
 begin
