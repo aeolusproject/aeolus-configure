@@ -177,22 +177,49 @@ class aeolus::conductor::disabled {
 }
 
 # Create a new site admin conductor web user
-define aeolus::conductor::site_admin($email="", $password="", $first_name="", $last_name=""){
+class aeolus::conductor::default_admin {
   exec{"create_site_admin_user":
          cwd         => '/usr/share/aeolus-conductor',
          environment => "RAILS_ENV=production",
-         command     => "/usr/bin/rake dc:create_user[${name},${password},${email},${first_name},${last_name}]",
+         command     => "/usr/bin/rake dc:create_user[${admin_login},${admin_password},${admin_email},${admin_first_name},${admin_last_name}]",
          logoutput   => true,
-         unless      => "/usr/bin/test `psql conductor aeolus -P tuples_only -c \"select count(*) from users where login = '${name}';\"` = \"1\"",
+         unless      => "/usr/bin/test `psql conductor aeolus -P tuples_only -c \"select count(*) from roles, permissions, users where roles.id = permissions.role_id and users.id = permissions.user_id and roles.name = 'base.admin' and users.login = '${admin_login}'\"` = \"1\"",
          require     => Rails::Seed::Db["seed_aeolus_database"]}
   exec{"grant_site_admin_privs":
          cwd         => '/usr/share/aeolus-conductor',
          environment => "RAILS_ENV=production",
-         command     => "/usr/bin/rake dc:site_admin[${name}]",
+         command     => "/usr/bin/rake dc:site_admin[${admin_login}]",
          logoutput   => true,
-         unless      => "/usr/bin/test `psql conductor aeolus -P tuples_only -c \"select count(*) FROM roles INNER JOIN permissions ON (roles.id = permissions.role_id) INNER JOIN users ON (permissions.user_id = users.id) where roles.name = 'base.admin' AND users.login = '${name}';\"` = \"1\"",
+         unless      => "/usr/bin/test `psql conductor aeolus -P tuples_only -c \"select count(*) FROM roles INNER JOIN permissions ON (roles.id = permissions.role_id) INNER JOIN users ON (permissions.user_id = users.id) where roles.name = 'base.admin' AND users.login = '${admin_login}';\"` = \"1\"",
          require     => Exec[create_site_admin_user]}
 }
+
+define aeolus::conductor::temp_admin($password=""){
+    exec{"create_temp_admin":
+      cwd         => '/usr/share/aeolus-conductor',
+      environment => "RAILS_ENV=production",
+      command     => "/usr/bin/rake dc:create_user[${name},${password},'temp-admin@localhost.localdomain','temp','admin']",
+      logoutput   => true,
+      require     => Rails::Seed::Db["seed_aeolus_database"]}
+    exec{"grant_temp_admin_privs":
+      cwd         => '/usr/share/aeolus-conductor',
+      environment => "RAILS_ENV=production",
+      command     => "/usr/bin/rake dc:site_admin[${name}]",
+      logoutput   => true,
+      require     => Exec[create_temp_admin]}
+  }
+
+
+define aeolus::conductor::destroy_temp_admin{
+  exec{"destroy_temp_admin":
+    cwd         => '/usr/share/aeolus-conductor',
+    environment => "RAILS_ENV=production",
+    command     => "/usr/bin/rake dc:destroy_user[${name}]",
+    logoutput   => true,
+    require     => Rails::Seed::Db["seed_aeolus_database"]
+  }
+}
+
 
 # login to the aeolus conductor
 define aeolus::conductor::login($password){
@@ -228,7 +255,7 @@ define aeolus::conductor::logout(){
 }
 
 # Create a new provider via the conductor
-define aeolus::conductor::provider($deltacloud_driver="",$url="", $deltacloud_provider=""){
+define aeolus::conductor::provider($deltacloud_driver="",$url="", $deltacloud_provider="", $admin_login=""){
   web_request{ "provider-$name":
     post         => "https://localhost/conductor/providers",
     parameters  => { 'provider[name]'  => $name, 'provider[url]'   => $url,
@@ -237,17 +264,17 @@ define aeolus::conductor::provider($deltacloud_driver="",$url="", $deltacloud_pr
     returns     => '200',
     follow      => true,
     contains    => "//img[@alt='Notices']", # in the case of an error, @alt='Warnings'
-    use_cookies_at => '/tmp/aeolus-admin',
+    use_cookies_at => "/tmp/aeolus-${admin_login}",
     log_to      => '/tmp/configure-provider-request.log',
     only_log_errors => true,
     unless      => { 'get'             => 'https://localhost/conductor/providers',
                      'contains'        => "//html/body//a[text() = '$name']" },
-    require    => [Service['aeolus-conductor'], Exec['grant_site_admin_privs'], Exec['deltacloud-core-startup-wait']]
+    require    => [Service['aeolus-conductor'], Exec['grant_temp_admin_privs'], Exec['deltacloud-core-startup-wait']]
   }
 }
 
 # Create a new provider account via the conductor
-define aeolus::conductor::provider::account($provider="", $type="", $username="",$password="", $account_id="",$x509private="", $x509public=""){
+define aeolus::conductor::provider::account($provider="", $type="", $username="",$password="", $account_id="",$x509private="", $x509public="", $admin_login=""){
   if $type != "ec2" {
     web_request{ "provider-account-$name":
       post         => "https://localhost/conductor/providers/0/provider_accounts",
@@ -261,7 +288,7 @@ define aeolus::conductor::provider::account($provider="", $type="", $username=""
       returns     => '200',
       #contains    => "//table/thead/tr/th[text() = 'Properties for $name']",
       follow      => true,
-      use_cookies_at => '/tmp/aeolus-admin',
+      use_cookies_at => "/tmp/aeolus-${admin_login}",
       unless      => { 'get'             => 'https://localhost/conductor/provider_accounts',
                        'contains'        => "//html/body//a[text() = '$name']" },
       require    => Service['aeolus-conductor']}
@@ -282,7 +309,7 @@ define aeolus::conductor::provider::account($provider="", $type="", $username=""
       returns     => '200',
       #contains    => "//table/thead/tr/th[text() = 'Properties for $name']",
       follow      => true,
-      use_cookies_at => '/tmp/aeolus-admin',
+      use_cookies_at => "/tmp/aeolus-${admin_login}",
       unless      => { 'get'             => 'https://localhost/conductor/provider_accounts',
                        'contains'        => "//html/body//a[text() = '$name']" },
       require    => Service['aeolus-conductor']
@@ -290,7 +317,7 @@ define aeolus::conductor::provider::account($provider="", $type="", $username=""
   }
 }
 
-define aeolus::conductor::hwp($memory='', $cpu='', $storage='', $architecture=''){
+define aeolus::conductor::hwp($memory='', $cpu='', $storage='', $architecture='', $admin_login=''){
   web_request{ "hwp-$name":
     post         => "https://localhost/conductor/hardware_profiles",
     parameters  => {'hardware_profile[name]'  => $name,
@@ -310,7 +337,7 @@ define aeolus::conductor::hwp($memory='', $cpu='', $storage='', $architecture=''
     returns     => '200',
     #verify      => '.*Hardware profile added.*',
     follow      => true,
-    use_cookies_at => '/tmp/aeolus-admin',
-    require    => [Service['aeolus-conductor'], Exec['grant_site_admin_privs']]
+    use_cookies_at => "/tmp/aeolus-${admin_login}",
+    require    => [Service['aeolus-conductor'], Exec['grant_temp_admin_privs']]
   }
 }

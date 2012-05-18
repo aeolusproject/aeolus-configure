@@ -22,6 +22,7 @@ define aeolus::profiles::vsphere::instance ($deltacloud_provider,
       deltacloud_driver   => "vsphere",
       url                 => "http://localhost:3002/api",
       deltacloud_provider => "$deltacloud_provider",
-      require             => Aeolus::Conductor::Login["admin"],
+      admin_login         => $temp_admin_login,
+      require             => Aeolus::Conductor::Login[$temp_admin_login],
     }
 }

@@ -1,0 +1,10 @@
+parameters:
+  enable_https: true
+  admin_login: admin
+  admin_password: password
+  admin_email: root@localhost.localdomain
+  admin_first_name: Administrator
+  admin_last_name: ""
+classes:
+- aeolus::conductor
+- aeolus::conductor::default_admin
