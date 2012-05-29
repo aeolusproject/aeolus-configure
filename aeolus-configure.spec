@@ -2,7 +2,7 @@
 
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
-Version:  2.5.4
+Version:  2.5.5
 Release:  1%{?dist}
 
 Group:    Applications/Internet
@@ -61,6 +61,11 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Tue May 29 2012 Steve Linabery <slinaber@redhat.com> 2.5.5-1
+- be20821 BZ 806001 aeolus-configure will always create an admin user, need to
+  key of a uuid not name
+- 72722e9 Add releasers.conf for ce-rhel-6
+
 * Thu May 03 2012 John Eckersberg <jeckersb@redhat.com> 2.5.4-1
 - Build with tito
 
