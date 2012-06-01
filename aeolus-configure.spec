@@ -2,7 +2,7 @@
 
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
-Version:  2.5.5
+Version:  2.5.6
 Release:  1%{?dist}
 
 Group:    Applications/Internet
@@ -63,6 +63,10 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Fri Jun 01 2012 Steve Linabery <slinaber@redhat.com> 2.5.6-1
+- 997ea0d BZ 827562 - Upgrade from CloudForms 1.0 to CloudForms 1.0.1 requires
+  additional data definition not provided by rails migration
+
 * Tue May 29 2012 Steve Linabery <slinaber@redhat.com> 2.5.5-1
 - be20821 BZ 806001 aeolus-configure will always create an admin user, need to
   key of a uuid not name
