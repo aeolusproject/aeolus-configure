@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env ruby
 
 #   Copyright 2011 Red Hat, Inc.
 #
@@ -14,7 +14,71 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-puppet /usr/share/aeolus-configure/aeolus_stop_services.pp \
-       --modulepath=/usr/share/aeolus-configure/modules/ \
-       --logdest=/var/log/aeolus-configure/aeolus-services.log \
-       --logdest=console
+if ARGV.include?('-h') || ARGV.include?('--help')
+  puts "Usage: #{$0} stop|start|restart
+Stop, Start, or Restart Aeolus services.
+
+  -h, --help  display this help and exit
+
+To show status of aeolus services please use aeolus-check-services.
+"
+  exit
+end
+
+if !['stop','start','restart'].include?(ARGV[0])
+  puts "Usage: #{$0} stop|start|restart
+Stop, Start, or Restart Aeolus services.
+
+To show status of aeolus services please use aeolus-check-services.
+"
+  exit(1)
+end
+
+# ordered as in rc.d
+$services = %w(mongod iwhd postgresql httpd deltacloud-core libvirtd aeolus-conductor conductor-dbomatic imagefactory ntpd)
+
+def perform(action, svcs)
+  action = action.to_s
+  svcs.map do |script|
+    puts "\n#{action.capitalize}ing #{script} ..."
+    cmd = "service #{script} #{action}"
+    out = `#{cmd}`
+    if $?.to_i == 0
+      puts " \e[1;32mSuccess:\e[0m #{out.strip}"
+    else
+      puts " \e[1;31mFAILURE:\e[0m #{out.strip}"
+    end
+    $?.to_i
+  end
+end
+
+def mongod_cleanup_and_restart
+  if perform(:status, ['mongod']) == [1]
+    lockfile = '/var/lib/mongodb/mongod.lock'
+    if File.exists?(lockfile)
+      puts " \e[1;33mremoving\e[0m leftover #{lockfile}"
+      File.delete(lockfile)
+      perform :restart, %w(mongod iwhd)
+    end
+  end
+end
+
+def start
+  perform :start, $services
+  mongod_cleanup_and_restart
+end
+
+def stop
+  perform :stop, $services.reverse
+end
+
+def restart
+  stop
+  start
+end
+
+case ARGV[0]
+  when "start"   then start
+  when "stop"    then stop
+  when "restart" then restart
+end
