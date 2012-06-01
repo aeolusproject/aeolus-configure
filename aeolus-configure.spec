@@ -45,6 +45,7 @@ Aeolus Configure Puppet Recipe
 %{__cp} -R bin/aeolus-node-check %{buildroot}/%{aeolushome}/modules/aeolus/
 %{__cp} -R bin/aeolus-check-services %{buildroot}/%{_bindir}/
 %{__cp} -R bin/aeolus-restart-services %{buildroot}/%{_sbindir}/
+%{__cp} -R bin/aeolus-services %{buildroot}/%{_sbindir}/
 %{__cp} -R bin/aeolus-configure %{buildroot}/%{_sbindir}/
 %{__cp} -R bin/aeolus-cleanup %{buildroot}/%{_sbindir}/
 %{__cp} docs/man1/* %{buildroot}/%{_mandir}/man1/
@@ -57,6 +58,7 @@ Aeolus Configure Puppet Recipe
 %attr(0600, root, root) %{_sysconfdir}/aeolus-configure/nodes/*
 %attr(0755, root, root) %{_bindir}/aeolus-check-services
 %attr(0755, root, root) %{_sbindir}/aeolus-restart-services
+%attr(0755, root, root) %{_sbindir}/aeolus-services
 %doc %{_mandir}/man1/*
 %{aeolushome}
 
