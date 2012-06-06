@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  0%{?dist}
+Release:  1%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
@@ -69,6 +69,73 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Wed Jun 06 2012 Steve Linabery <slinaber@redhat.com> - 2.6.0-1
+- 338b0ab Add man page for aeolus-services executable
+- 5059400 Fix broken string interpolation
+- 043873a Fix module structure for puppet 2.7 autoloader
+- aab5f1f Use postgres gem if available
+- 4909706 Remove test references to 'dutils'
+- 0782c8c Fix LOAD_PATH issues with Ruby 1.9
+- 4d00f3c Use RSpec 2.x
+- 4f2bf64 BZ827562 - Upgrade from CloudForms 1.0 to CloudForms 1.0.1 requires additional data definition not provided by rails migration
+- 9bffb2c BZ 806001 aeolus-configure will always create an admin user, need to key of a uuid not name
+- 258d5c4 RM3172 Allow standalone imagefactory/iwhd installation
+- f1b6349 RM 3181 - delayed_job support - rev 2
+- 92b67a1 BZ799814: added basic validations for aeolus-configure
+- e0e36a4 BZ811373 - Add KeepAlive on to vhost in conductor.conf
+- 9de4f42 BZ 803745 - Warn credentials are incorrect if authentication with RHEV fails when checking export type
+- 8ac8e2a BZ 803249 - Remove qpidd from configure
+- 0a6ef1c BZ 802847 - cleanup hardware profiles and fix provider ordering effects
+- 45d5fcf BZ #802871: added man pages for configure executables
+- 6f93654 BZ 800057 - aeolus-cleanup should purge aeolus related files in /var/tmp/
+- b7e485e BZ 794505: lower cost hwp for ec2
+- bfa5682 BZ 795935 - put back username and password for conf/vsphere_configure
+- 415e5b9 BZ 795935 - remove username from rhevm.json
+- cd61e61 BZ 798440 - /etc/aeolus-configure/nodes/* should be not be world readable
+- 7bb4220 BZ #796797: Fix Role string for sql statement
+- 2c1404a BZ 795935 - Remove passwords from /etc/imagefactory/.json files
+- 16e7891 BZ 788644 - remove confusing comments in cleanup config files
+- b69c475 BZ 794755 - Static assets don't set Cache-Control headers https://bugzilla.redhat.com/show_bug.cgi?id=794755
+- ac99a8b BZ 788644 - multiple RHEV providers with aeolus_cleanup
+- 2491bed BZ 788397 - /var/lib/iwhd should not be removed to maintain consistency with mongodb
+- 6a3edf2 BZ #783220 - change default admin email to 'root@localhost' (rev 2)
+- aed1ae8 BZ 746702 - Update the error message displayed when there is a problem with a config file
+- c5319e5 BZ 785217 - check provider add success by inspecting the flash image alt text
+- 421c61a BZ #784833. -d param is positionally dependent
+- 2037e2e bz784978 - aeolus-configure is not properly settting the /etc/imagefactory/$provider.json file
+- 45d83b0 Revert "Merge branch 'tito' into 1.0-staging"
+- 686548f Revert "Automatic commit of package [aeolus-configure] release [2.5.0-8]."
+- 0c38ed2 Automatic commit of package [aeolus-configure] release [2.5.0-8].
+- 693ec0e bz784915 - aeolus-configure names vsphere provider "default", change to "vsphere-default"
+- f4bc0a0 BZ 773347 - rename redhat.com to example.org
+- ce58124 BZ 773347 - add a note in rhevm_configure on how to find the data center id
+- 2c51676 Add releasers.conf with rhel dist-git releaser
+- 63bf8b0 Fix suffix on source package (.tgz -> tar.gz)
+- cff05ca Remove aeolus-configure.spec.in and copy current spec from dist-git
+- 3892c74 Initialized to use tito.
+- 9af3e7a BZ 783373 - Execute all provider configurations even if there are failures
+- f543542 shebang comments are not valid JSON, so remove them
+- 82c37d9 Update rhevm and vsphere to support multiple configured providers
+- 3c693ce Use YAML format for parameterized classes
+- c4934bb Pull in create_resources function from puppet 2.7 tree
+- 0a90405 BZ 782210 - improved RHEV NFS export validation
+- c8a13c3 BZ # 741947. RFE: add support for all ec2 regions
+- c32189f BZ# 771922: set owner,group,mode on conductor settings file
+- 814ae5e BZ #740089: remove interactive mode for the time being
+- 152dc36 BZ# 769526 - handle invalid blank cloud provider entries
+- 8f05269 BZ #771305 - fixes error found when using custom profiles
+- a996371 BZ 758644 (part 2) - decrement login counter after aeolus-configure script
+- 30407db BZ 758644 (part 1) - clean old cookies when doing a web request
+- 8507b70 BZ 746702 - improve whitepace checking in /etc/aeolus-configure/nodes configs
+- 8701011 BZ#773060 - do not add provider accounts for rhevm, vshpere in aeolus-configure
+- f3d033e BZ 773037 - update RHEVM configuration to support data centers
+- 3242d07 Revert "Set version in Rakefile to 2.5.0"
+- eea582d Set version in Rakefile to 2.5.0
+- e36cfec Correct versioning in changelog entry
+- bcbbde2 Revert version bump
+- 4dbabc3 Bump version, reset release
+- fdce4e6 Bump release, add changelog
+
 * Fri Mar 16 2012 Mo Morsi <mmorsi@redhat.com> - 2.5.0-3
 - include man pages
 
