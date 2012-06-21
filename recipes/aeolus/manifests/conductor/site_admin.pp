@@ -5,13 +5,17 @@ define aeolus::conductor::site_admin($email="", $password="", $first_name="", $l
          environment => "RAILS_ENV=production",
          command     => "/usr/bin/rake dc:create_user[${name},${password},${email},${first_name},${last_name}]",
          logoutput   => true,
-         unless      => "/usr/bin/test `psql conductor aeolus -P tuples_only -c \"select count(*) from users where login = '${name}';\"` = \"1\"",
+         creates     => "/var/lib/aeolus-conductor/production.admin",
          require     => Aeolus::Rails::Seed::Db["seed_aeolus_database"]}
   exec{"grant_site_admin_privs":
          cwd         => '/usr/share/aeolus-conductor',
          environment => "RAILS_ENV=production",
          command     => "/usr/bin/rake dc:site_admin[${name}]",
          logoutput   => true,
-         unless      => "/usr/bin/test `psql conductor aeolus -P tuples_only -c \"select count(*) FROM roles INNER JOIN permissions ON (roles.id = permissions.role_id) INNER JOIN users ON (permissions.user_id = users.id) where roles.name = 'base.admin' AND users.login = '${name}';\"` = \"1\"",
+         creates     => "/var/lib/aeolus-conductor/production.admin",
          require     => Exec[create_site_admin_user]}
+  file{"/var/lib/aeolus-conductor/production.admin":
+         ensure => present,
+         recurse => true,
+         require => Exec['grant_site_admin_privs']}
 }
