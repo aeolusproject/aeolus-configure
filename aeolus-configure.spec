@@ -2,7 +2,7 @@
 
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
-Version:  2.5.7
+Version:  2.5.8
 Release:  1%{?dist}
 
 Group:    Applications/Internet
@@ -63,6 +63,10 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Fri Jun 22 2012 Steve Linabery <slinaber@redhat.com> 2.5.8-1
+- 3691451 BZ#806001 - Remove admin profile
+- 88c5293 BZ#806001 - Remove admin profile
+
 * Fri Jun 01 2012 Steve Linabery <slinaber@redhat.com> 2.5.7-1
 - 0a00c82 Add man page for aeolus-services executable
 
