@@ -2,7 +2,7 @@
 
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
-Version:  2.5.9
+Version:  2.5.10
 Release:  1%{?dist}
 
 Group:    Applications/Internet
@@ -63,6 +63,9 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Wed Jun 27 2012 Steve Linabery <slinaber@redhat.com> 2.5.10-1
+- a9160b5 BZ835151 configure errors after upgrade
+
 * Fri Jun 22 2012 Steve Linabery <slinaber@redhat.com> 2.5.9-1
 - fa2ca9d Fix site_admin.pp to use 1.0.1 definition of Rails::Seed::Db
 
