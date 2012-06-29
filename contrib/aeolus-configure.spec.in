@@ -69,6 +69,11 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Fri Jun 29 2012 Steve Linabery <slinaber@redhat.com> - 2.6.1-1
+- 3383586 BZ835151 configure errors after upgrade
+- ed28199 BZ#806001 - Remove admin profile
+- f7597a7 BZ#806001 - Remove admin profile
+
 * Wed Jun 06 2012 Steve Linabery <slinaber@redhat.com> - 2.6.0-1
 - 338b0ab Add man page for aeolus-services executable
 - 5059400 Fix broken string interpolation
