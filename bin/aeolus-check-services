@@ -27,7 +27,7 @@ To restart aeolus services please use aeolus-restart-services.
 end
 
 # ordered as in rc.d
-init_scripts=%w(mongod iwhd postgresql httpd deltacloud-core libvirtd aeolus-conductor conductor-dbomatic imagefactory ntpd)
+init_scripts=%w(mongod iwhd postgresql httpd deltacloud-core libvirtd aeolus-conductor conductor-delayed_job conductor-dbomatic imagefactory ntpd)
 
 init_scripts.each do |script|
 	puts "\nChecking #{script} ..."
