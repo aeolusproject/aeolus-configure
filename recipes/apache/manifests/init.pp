@@ -28,7 +28,8 @@ class apache {
   exec{'permit-http-networking':
          command => '/usr/sbin/setsebool -P httpd_can_network_connect 1',
          logoutput => true,
-         unless   => "/usr/bin/test 'Disabled' = `/usr/sbin/getenforce`"
+         unless   => "/usr/bin/test 'Disabled' = `/usr/sbin/getenforce` ||
+                      (/usr/sbin/getsebool httpd_can_network_connect | grep -q 'on$')"
   }
 
 	service { "httpd":
