@@ -1,0 +1,11 @@
+---
+host: localhost
+port: 389
+encryption:
+base_dn: ou=People,dc=my-domain,dc=com
+group_base: ou=Groups,dc=my-domain,dc=com
+server_type: :posix
+service_user:
+service_pass:
+anon_queries: false
+ad_domain:

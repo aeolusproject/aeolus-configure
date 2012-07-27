@@ -28,6 +28,11 @@ class aeolus::conductor inherits aeolus {
       require => Package['aeolus-conductor'],
       mode    => 640, owner => 'root', group => 'aeolus'}
 
+    file{"/etc/ldap_fluff.yml":
+      content => template("aeolus/etc-ldap_fluff.yml"),
+      require => Package['aeolus-conductor'],
+      mode    => 640, owner => 'root', group => 'aeolus'}
+
     file{"/usr/share/aeolus-conductor/config/initializers/secret_token.rb":
       content => template("aeolus/secret_token.rb"),
       require => Package['aeolus-conductor']}
