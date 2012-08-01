@@ -4,7 +4,7 @@
 Summary:  Aeolus Configure Puppet Recipe
 Name:     aeolus-configure
 Version:  @VERSION@
-Release:  0%{?dist}
+Release:  1%{?dist}
 
 Group:    Applications/Internet
 License:  ASL 2.0
