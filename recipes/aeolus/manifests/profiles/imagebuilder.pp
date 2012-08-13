@@ -12,6 +12,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-class aeolus::profiles::imagebuilder {
-  aeolus::create_bucket{"aeolus":}
+class aeolus::profiles::imagebuilder inherits aeolus::profiles::common {
+
 }
