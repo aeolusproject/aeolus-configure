@@ -13,5 +13,5 @@
 #   limitations under the License.
 
 class aeolus::profiles::imagebuilder {
-  aeolus::create_bucket{"aeolus":}
+  aeolus::create_bucket{"imagebuilder":}
 }
