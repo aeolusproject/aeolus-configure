@@ -137,11 +137,16 @@ class aeolus::conductor inherits aeolus {
                 require         => Aeolus::Rails::Migrate::Db[migrate_aeolus_database]}
 
     # Create default admin user
+    include aeolus::profiles::common
+    aeolus::conductor::destroy_temp_admins{ "before" : }
     aeolus::conductor::site_admin{"admin":
                     email => 'root@localhost.localdomain',
                     password => "password",
                     first_name => 'Administrator',
-                    last_name => ''}
+                    last_name => '',
+                    require => Aeolus::Conductor::Destroy_temp_admins["before"]}
+
+    Aeolus::Conductor::Site_admin <| |> -> Aeolus::Conductor::Temp_admin[$aeolus::profiles::common::temp_admin_login]
 
  ### Setup sshd for deltacloud
   package { "openssh-server": ensure => installed }
