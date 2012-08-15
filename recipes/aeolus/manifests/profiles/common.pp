@@ -37,7 +37,7 @@ class aeolus::profiles::common {
 
   aeolus::conductor::logout{$temp_admin_login:}
 
-  aeolus::conductor::destroy_temp_admin{$temp_admin_login :
+  aeolus::conductor::destroy_temp_admins{ "after" :
     require => Aeolus::Conductor::Logout[$temp_admin_login]}
 
   Aeolus::Conductor::Provider <| |> -> Aeolus::Conductor::Logout <| |>
