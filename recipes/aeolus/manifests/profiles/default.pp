@@ -12,34 +12,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-class aeolus::profiles::default {
-
-  #we will use one random hex string to name the temporary admin user
-  $random = secure_random()
-  $temp_admin_login = "temporary-administrative-user-${random}"
-  #and another random hex string for the temp user's password
-  $temp_admin_password = secure_random()
-
-  aeolus::create_bucket{"aeolus":}
-
-  aeolus::conductor::temp_admin{$temp_admin_login :
-     password        => $temp_admin_password }
-
-  aeolus::conductor::login{$temp_admin_login : password => $temp_admin_password,
-     require  => Aeolus::Conductor::Temp_admin[$temp_admin_login]}
-
-  aeolus::conductor::hwp{"small-x86_64":
-      memory         => "512",
-      cpu            => "1",
-      storage        => "",
-      architecture   => "x86_64",
-      admin_login    => $temp_admin_login,
-      require        => Aeolus::Conductor::Login[$temp_admin_login] }
-
-  aeolus::conductor::logout{$temp_admin_login:
-    require    => Aeolus::Conductor::Hwp['small-x86_64']}
-
-  aeolus::conductor::destroy_temp_admin{$temp_admin_login :
-    require => Aeolus::Conductor::Logout[$temp_admin_login]}
+class aeolus::profiles::default inherits aeolus::profiles::common {
 
 }
