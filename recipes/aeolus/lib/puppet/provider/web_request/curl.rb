@@ -99,8 +99,18 @@ class Curl::Easy
     valid_values.include?(response_code.to_s)
   end
 
-  def valid_xpath?(xpath="/")
-    !Nokogiri::HTML(body_str.to_s).xpath(xpath.to_s).empty?
+  def valid_xpath?(xpath="/", content_type="text/html")
+    parser = case
+             when content_type.match(/html/i)
+               Nokogiri::HTML
+             when content_type.match(/xml/i)
+               Nokogiri::XML
+             else
+               raise Puppet::Error,
+                     "Unable to determine parser for #{content_type}"
+             end
+
+    !parser.parse(body_str.to_s).xpath(xpath.to_s).empty?
   end
 
 end
@@ -240,14 +250,20 @@ Puppet::Type.type(:web_request).provide :curl do
                                was not expecting one of #{verify[:does_not_return].join(", ")}"
     end
 
-    if !verify[:contains].nil? &&
-       !result.valid_xpath?(verify[:contains])
-         raise Puppet::Error, "Expecting #{verify[:contains]} in the result"
+    if !verify[:contains].nil?
+      Puppet::Type::Web_request.munge_array_params(verify[:contains]).each do |xpath|
+        if !result.valid_xpath?(xpath, result.content_type)
+          raise Puppet::Error, "Expecting #{xpath} in the result"
+        end
+      end
     end
 
-    if !verify[:does_not_contain].nil? &&
-       result.valid_xpath?(verify[:does_not_contain])
-         raise Puppet::Error, "Not expecting #{verify[:does_not_contain]} in the result"
+    if !verify[:does_not_contain].nil?
+      Puppet::Type::Web_request.munge_array_params(verify[:does_not_contain]).each do |xpath|
+        if result.valid_xpath?(xpath, result.content_type)
+          raise Puppet::Error, "Not expecting #{xpath} in the result"
+        end
+      end
     end
   end
 
