@@ -22,7 +22,14 @@ class apache {
 	  package { "mod_ssl":
                       ensure => installed,
                       source => $package_provider }
-  }
+
+      if $enable_kerberos {
+             package { "mod_auth_kerb":
+                          ensure => installed,
+                          source => $package_provider }
+      }
+
+   }
 
   # if selinux is enabled and we want to use mod_proxy, we need todo this
   exec{'permit-http-networking':
