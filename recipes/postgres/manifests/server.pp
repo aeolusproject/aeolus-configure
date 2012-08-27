@@ -24,9 +24,7 @@ class postgres::server inherits postgres {
     }
 
     exec { "pginitdb":
-        command         => "/usr/bin/initdb --pgdata='/var/lib/pgsql/data' -E UTF8",
-        user            => "postgres",
-        group           => "postgres",
+        command         => "/usr/bin/postgresql-setup initdb",
         creates         => "/var/lib/pgsql/data/PG_VERSION",
         require         => Package["postgresql-server"],
         notify          => Service["postgresql"],

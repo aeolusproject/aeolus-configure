@@ -96,37 +96,30 @@ class aeolus::conductor inherits aeolus {
                owner   => 'postgres',
                group   => 'postgres',
                notify  => Service['postgresql'] }
-      file { "/var/lib/pgsql/data/pg_hba.conf":
-               source  => "puppet:///modules/aeolus/pg_hba-ssl.conf",
-               require => Exec["pginitdb"],
-               owner   => 'postgres',
-               group   => 'postgres',
-               notify  => Service['postgresql']}
       file { "/var/lib/pgsql/data/postgresql.conf":
                source  => "puppet:///modules/aeolus/postgresql.conf",
                require => Exec["pginitdb"],
                owner   => 'postgres',
                group   => 'postgres',
                notify  => Service['postgresql']}
-    } else {
-      file { "/var/lib/pgsql/data/pg_hba.conf":
-               source => "puppet:///modules/aeolus/pg_hba.conf",
-               require => Exec["pginitdb"],
-               owner   => 'postgres',
-               group   => 'postgres',
-               notify  => Service['postgresql']}
+    }
+    exec{ "pgauthuser":
+      command     => "/usr/bin/sed -i s/ident/md5/ /var/lib/pgsql/data/pg_hba.conf",
+      onlyif      => '/bin/grep -q ident /var/lib/pgsql/data/pg_hba.conf',
+      require     => Exec["pginitdb"],
+      notify      => Service["postgresql"]
     }
     postgres::user{"aeolus":
                      password => "v23zj59an",
                      roles    => "CREATEDB",
-                     require  => [Service["postgresql"], File["/var/lib/pgsql/data/pg_hba.conf"]] }
+                     require  => Service["postgresql"] }
 
 
     # Create aeolus database
     aeolus::rails::create::db{"create_aeolus_database":
                 cwd        => "/usr/share/aeolus-conductor",
                 rails_env  => "production",
-                require    => [Postgres::User[aeolus], Package['aeolus-conductor']] }
+                require    => [Postgres::User[aeolus], Exec['pgauthuser'], Package['aeolus-conductor']] }
     aeolus::rails::migrate::db{"migrate_aeolus_database":
                 cwd             => "/usr/share/aeolus-conductor",
                 rails_env       => "production",
