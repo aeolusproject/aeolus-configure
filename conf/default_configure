@@ -12,10 +12,13 @@
 #apart from https on the web server for conductor, you should
 #consider intermachine communications insecure.  Securing
 #intermachine service calls is on the roadmap.
-#
+
+#Kerberos can be used only with https enabled. Your system has to be
+#configured for kerberos authentication.
 ---
 parameters:
   enable_https: true
+  enable_kerberos: false
   enable_security: false
   package_provider: rpm
 classes:
