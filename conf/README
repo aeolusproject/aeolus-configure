@@ -11,3 +11,6 @@ IMPORTANT NOTE:  https is on by default, but no other security is in place
 to ensure that components on different machines can interact in a secure
 fashion.  This is on the roadmap, but not currently in place.  Segregate
 services at your own risk.
+
+Kerberos can be used only with https enabled. Your system has to be
+configured for kerberos authentication.
