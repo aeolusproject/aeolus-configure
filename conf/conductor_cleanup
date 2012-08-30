@@ -2,6 +2,7 @@
 ---
 parameters:
   enable_https: true
+  enable_kerberos: false
   enable_security: false
 classes:
 - aeolus::conductor::disabled
