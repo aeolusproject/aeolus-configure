@@ -26,10 +26,10 @@ class apache {
 
   # if selinux is enabled and we want to use mod_proxy, we need todo this
   exec{'permit-http-networking':
-         command => '/usr/sbin/setsebool -P httpd_can_network_connect 1',
+         command => 'setsebool -P httpd_can_network_connect 1',
          logoutput => true,
-         unless   => "/usr/bin/test 'Disabled' = `/usr/sbin/getenforce` ||
-                      (/usr/sbin/getsebool httpd_can_network_connect | grep -q 'on$')"
+         unless   => "test 'Disabled' = `getenforce` ||
+                      (getsebool httpd_can_network_connect | grep -q 'on$')"
   }
 
 	service { "httpd":
@@ -42,7 +42,7 @@ class apache {
 
         # add a sleep here because httpd may have not finished starting up
 	exec { "reload-apache":
-          command     => "/bin/sleep 1; /sbin/service httpd reload",
+          command     => "sleep 1; service httpd reload",
 	  refreshonly => true,
   }
 }

@@ -3,5 +3,5 @@ define aeolus::rails::migrate::db($cwd="", $rails_env=""){
          cwd         => $cwd,
          environment => "RAILS_ENV=${rails_env}",
          logoutput   => on_failure,
-         command     => "/usr/bin/rake db:migrate"}
+         command     => "rake db:migrate"}
 }
