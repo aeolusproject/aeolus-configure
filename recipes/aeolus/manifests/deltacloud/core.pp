@@ -21,7 +21,7 @@ class aeolus::deltacloud::core {
     # Need to poll for deltacloud-core to complete startup
     # otherwise one may see connect issues when adding providers
     exec{"deltacloud-core-startup-wait":
-      command     => "/usr/bin/nc -z localhost 3002",
+      command     => "nc -z localhost 3002",
       tries       => 60,
       try_sleep   => 1,
       require     => Service["deltacloud-core"]}

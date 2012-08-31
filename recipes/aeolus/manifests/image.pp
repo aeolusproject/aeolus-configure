@@ -1,6 +1,6 @@
 define aeolus::image($template, $provider='', $target='', $hwp=''){
   exec{"build-${name}-image": logoutput => true, timeout => 0,
-        command => "/usr/sbin/aeolus-configure-image $name $target $template $provider $hwp",
+        command => "aeolus-configure-image $name $target $template $provider $hwp",
         require => Service['aeolus-conductor', 'iwhd', 'imagefactory']}
 
   web_request{ "deployment-$name":
