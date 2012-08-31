@@ -3,12 +3,10 @@ define aeolus::conductor::temp_admin($password=""){
       cwd         => '/usr/share/aeolus-conductor',
       environment => "RAILS_ENV=production",
       command     => "rake dc:create_user[${name},${password},'temp-admin@localhost.localdomain','temp','admin']",
-      logoutput   => true,
       require     => Rails::Seed::Db["seed_aeolus_database"]}
     exec{"grant_temp_admin_privs":
       cwd         => '/usr/share/aeolus-conductor',
       environment => "RAILS_ENV=production",
       command     => "rake dc:site_admin[${name}]",
-      logoutput   => true,
       require     => Exec[create_temp_admin]}
 }

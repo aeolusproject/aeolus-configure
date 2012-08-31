@@ -4,7 +4,6 @@ class aeolus::iwhd::disabled {
       command   => 'ruby /usr/share/aeolus-configure/modules/aeolus/clean-iwhd.rb http://localhost:9090',
       before    => Service[iwhd],
       onlyif    => 'curl http://localhost:9090',
-      logoutput => true,
     }
   }
 

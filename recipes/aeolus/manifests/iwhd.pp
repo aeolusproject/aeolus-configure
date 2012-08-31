@@ -58,6 +58,5 @@ class aeolus::iwhd inherits aeolus {
     exec{"iwhd_startup_pause":
                 command => "sleep 2",
                 unless  => "curl --proxy '' http://localhost:9090",
-                logoutput => true,
                 require => Service['iwhd']}
 }
