@@ -33,7 +33,7 @@ class aeolus::image-factory inherits aeolus {
   ### Configure pulp to fetch from Fedora
     # TODO uncomment when factory/warehouse uses pulp
     #exec{"pulp_fedora_config":
-    #      command => "/usr/bin/pulp-admin -u admin -p admin repo create --id=fedora-repo --feed yum:http://download.fedora.redhat.com/pub/fedora/linux/updates/13/x86_64/"
+    #      command => "pulp-admin -u admin -p admin repo create --id=fedora-repo --feed yum:http://download.fedora.redhat.com/pub/fedora/linux/updates/13/x86_64/"
     #}
 
   ### Start the aeolus services

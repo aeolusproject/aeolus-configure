@@ -6,7 +6,7 @@ define openssl::certificate($user='root', $group='root'){
      group => $group 
   }
   exec{"create_${name}_certificate":
-    command => "/usr/bin/openssl req -new -key ${name}.key -days 3650 -out ${name}.crt -x509 -subj '/'",
+    command => "openssl req -new -key ${name}.key -days 3650 -out ${name}.crt -x509 -subj '/'",
     require => Openssl::Key[$name]
   }
 }

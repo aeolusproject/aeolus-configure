@@ -15,7 +15,6 @@
 define aeolus::profiles::rhevm::disable ($nfs_mount_point)
 {
   exec {"umount $nfs_mount_point":
-    path => ["/sbin", "/bin"],
     onlyif => [["mount -l | grep $nfs_mount_point"],
-               ["/bin/sh -c '! (ps -ef | grep -v grep | grep dc-rhev-image)'"]]}
+               ["sh -c '! (ps -ef | grep -v grep | grep dc-rhev-image)'"]]}
 }
