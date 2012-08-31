@@ -3,7 +3,6 @@ define aeolus::rails::seed::db($cwd="", $rails_env=""){
          cwd         => $cwd,
          environment => "RAILS_ENV=${rails_env}",
          command     => "rake db:seed",
-         logoutput   => true,
          creates     => "/var/lib/aeolus-conductor/${rails_env}.seed"
          }
 
