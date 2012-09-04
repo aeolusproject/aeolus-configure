@@ -29,6 +29,7 @@ end
 # ordered as in rc.d
 init_scripts=%w(mongod iwhd postgresql httpd deltacloud-core libvirtd aeolus-conductor conductor-delayed_job conductor-dbomatic imagefactory ntpd)
 
+exit_status = 0
 init_scripts.each do |script|
 	puts "\nChecking #{script} ..."
         cmd = "service #{script} status"
@@ -36,6 +37,8 @@ init_scripts.each do |script|
 	if $?.to_i == 0
 		puts " \e[1;32mSuccess:\e[0m #{out.strip}"
 	else
+                exit_status = 1
 		puts " \e[1;31mFAILURE:\e[0m #{out.strip}"
 	end
 end
+exit(exit_status)
