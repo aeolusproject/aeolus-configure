@@ -37,10 +37,14 @@ end
 # ordered as in rc.d
 $services = %w(mongod iwhd postgresql httpd deltacloud-core libvirtd aeolus-conductor conductor-dbomatic imagefactory ntpd)
 
+$action_messages = {'status' => 'Checking status of',
+                    'start'  => 'Starting',
+                    'stop'   => 'Stopping'}
+
 def perform(action, svcs)
   action = action.to_s
   svcs.map do |script|
-    puts "\n#{action.capitalize}ing #{script} ..."
+    puts "\n#{$action_messages[action]} #{script} ..."
     cmd = "service #{script} #{action}"
     out = `#{cmd}`
     if $?.to_i == 0
