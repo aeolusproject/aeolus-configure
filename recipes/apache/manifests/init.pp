@@ -32,15 +32,14 @@ class apache {
    }
 
   # if selinux is enabled and we want to use mod_proxy, we need todo this
-  exec{'permit-http-networking':
-         command => 'setsebool -P httpd_can_network_connect 1',
-         unless   => "test 'Disabled' = `getenforce` ||
-                      (getsebool httpd_can_network_connect | grep -q 'on$')"
+  selboolean{ 'httpd_can_network_connect':
+    persistent => true,
+    value      => on,
   }
 
 	service { "httpd":
 		ensure     => running,
-		require    => [Package["httpd"], Exec['permit-http-networking']],
+		require    => [Package["httpd"], Selboolean['httpd_can_network_connect']],
 		hasrestart => true,
     hasstatus  => true,
     enable     => true
