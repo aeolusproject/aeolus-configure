@@ -32,8 +32,8 @@ services = %w(mongod iwhd postgresql httpd deltacloud-core libvirtd aeolus-condu
 def perform(action, svcs)
   action = action.to_s
   svcs.map do |script|
-    puts "\n#{action.capitalize}ing #{script} ..."
     cmd = "service #{script} #{action}"
+    puts "\n# #{cmd} ..."
     out = `#{cmd}`
     if $?.to_i == 0
       puts " \e[1;32mSuccess:\e[0m #{out.strip}"
