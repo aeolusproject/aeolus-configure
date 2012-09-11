@@ -4,7 +4,7 @@
 aeolus-cleanup \- manual page for aeolus-cleanup
 .SH DESCRIPTION
 USAGE:
-aeolus\-cleanup [\-d|\-\-debug] [\-h|\-\-help] [\-v|\-\-verbose] [\-s|\-\-savedata] [\-p|\-\-profile]
+aeolus\-cleanup [\-d|\-\-debug] [\-h|\-\-help] [\-v|\-\-verbose] [\-s|\-\-savedata] [\-y|\-\-assumeyes] [\-p|\-\-profile]
 .PP
 .SS "OPTIONS:"
 .TP
@@ -19,6 +19,9 @@ Verbose logging mode.
 .TP
 \fB\-s\fR | \fB\-\-savedata\fR
 Do not delete existing data.
+.TP
+\fB\-y\fR | \fB\-\-assumeyes\fR
+Assume yes; assume that the answer to any question which would be asked is yes.
 .TP
 \fB\-p\fR | \fB\-\-profile\fR
 Name of profile to use. A comma separated list can be used to specify multiple profiles.

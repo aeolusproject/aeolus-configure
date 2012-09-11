@@ -19,18 +19,19 @@ usage()
 cat << EOF
 
 USAGE:
-aeolus-cleanup [-d|--debug] [-h|--help] [-v|--verbose] [-s|--savedata] [-p|--profile]
+aeolus-cleanup [-d|--debug] [-h|--help] [-v|--verbose] [-s|--savedata] [-y|--assumeyes] [-p|--profile]
 
 OPTIONS:
    -h | --help       Show this message.
    -d | --debug      Debug logging mode.
    -v | --verbose    Verbose logging mode.
    -s | --savedata   Do not delete existing data.
+   -y | --assumeyes  Assume yes; assume that the answer to any question which would be asked is yes.
    -p | --profile    Name of profile to use. A comma separated list can be used to specify multiple profiles.
 EOF
 }
 
-args=`getopt -o :hdvsp: --long help,debug,verbose,savedata,profile -- "$@"`
+args=`getopt -o :hdvsyp: --long help,debug,verbose,savedata,assumeyes,profile -- "$@"`
 if test $? != 0
      then
          usage
@@ -39,6 +40,7 @@ fi
 
 SAVE_DATA=false
 PUPPET_NODE='default'
+ASSUME_YES=false
 
 eval set -- $args
 while true ; do
@@ -46,12 +48,21 @@ while true ; do
                 -h|--help) usage ; exit 1 ;  shift ;;
                 -d|--debug) LOGLEVEL="--debug" ; shift ;;
                 -v|--verbose) LOGLEVEL="--verbose" ; shift  ;;
-	        -s|--savedata) SAVE_DATA=true ; shift ;;
+                -s|--savedata) SAVE_DATA=true ; shift ;;
+                -y|--assumeyes) ASSUME_YES=true ; shift ;;
                 -p|--profile) PUPPET_NODE=$2 ; shift ; shift ;;
                 --) shift ; break ;;
                 *)  usage ; exit 1 ;;
         esac
 done
+
+if [ $ASSUME_YES != true ]; then
+  echo "aeolus-cleanup will delete local aeolus installations."
+  read -p "Are you sure you wish to proceed? [y/N]: "
+  if [[ $REPLY != "y" && $REPLY != "Y" ]]; then
+    exit
+  fi
+fi
 
 export FACTER_AEOLUS_ENABLE_HTTPS=true
 export FACTER_AEOLUS_ENABLE_SECURITY=false
