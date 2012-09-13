@@ -104,8 +104,8 @@ class aeolus::conductor inherits aeolus {
                notify  => Service['postgresql']}
     }
     exec{ "pgauthuser":
-      command     => "sed -i s/ident/md5/ /var/lib/pgsql/data/pg_hba.conf",
-      onlyif      => 'grep -q ident /var/lib/pgsql/data/pg_hba.conf',
+      command     => 'sed -i "s/host\(ssl\)*\(.*\)ident/host\1\2md5/" /var/lib/pgsql/data/pg_hba.conf',
+      onlyif      => 'grep -r "host.*ident" /var/lib/pgsql/data/pg_hba.conf',
       require     => Exec["pginitdb"],
       notify      => Service["postgresql"]
     }
