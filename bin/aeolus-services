@@ -48,7 +48,7 @@ def perform(action, svcs)
     cmd = "service #{script} #{action}"
     out = `#{cmd}`
     if $?.to_i == 0
-      puts " \e[1;32mSuccess:\e[0m"
+      puts " \e[1;32mSuccess\e[0m"
     else
       puts " \e[1;31mFAILURE:\e[0m #{out.strip}"
     end
