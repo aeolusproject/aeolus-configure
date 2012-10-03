@@ -35,7 +35,7 @@ init_scripts.each do |script|
         cmd = "service #{script} status"
 	out = `#{cmd}`
 	if $?.to_i == 0
-		puts " \e[1;32mSuccess:\e[0m"
+		puts " \e[1;32mSuccess\e[0m"
 	else
                 exit_status = 1
 		puts " \e[1;31mFAILURE:\e[0m #{out.strip}"
