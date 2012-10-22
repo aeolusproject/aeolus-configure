@@ -49,8 +49,6 @@ Aeolus Configure Puppet Recipe
 %{__cp} -R %{pbuild}/recipes/postgres/ %{buildroot}/%{aeolushome}/modules/postgres
 %{__cp} -R %{pbuild}/bin/aeolus-node %{buildroot}/%{aeolushome}/modules/aeolus/
 %{__cp} -R %{pbuild}/bin/aeolus-node-check %{buildroot}/%{aeolushome}/modules/aeolus/
-%{__cp} -R %{pbuild}/bin/aeolus-check-services %{buildroot}/%{_bindir}/
-%{__cp} -R %{pbuild}/bin/aeolus-restart-services %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-services %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-configure %{buildroot}/%{_sbindir}/
 %{__cp} -R %{pbuild}/bin/aeolus-cleanup %{buildroot}/%{_sbindir}/
@@ -62,8 +60,6 @@ Aeolus Configure Puppet Recipe
 %attr(0755, root, root) %{_sbindir}/aeolus-cleanup
 %config(noreplace) %{_sysconfdir}/aeolus-configure/*
 %attr(0600, root, root) %{_sysconfdir}/aeolus-configure/nodes/*
-%attr(0755, root, root) %{_bindir}/aeolus-check-services
-%attr(0755, root, root) %{_sbindir}/aeolus-restart-services
 %attr(0755, root, root) %{_sbindir}/aeolus-services
 %doc %{_mandir}/man1/*
 %{aeolushome}

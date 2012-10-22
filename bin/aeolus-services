@@ -15,21 +15,17 @@
 #   limitations under the License.
 
 if ARGV.include?('-h') || ARGV.include?('--help')
-  puts "Usage: #{$0} stop|start|restart
-Stop, Start, or Restart Aeolus services.
+  puts "Usage: #{$0} stop|start|restart|status
+Stop, Start, Restart, or display Status of Aeolus services.
 
   -h, --help  display this help and exit
-
-To show status of aeolus services please use aeolus-check-services.
 "
   exit
 end
 
-if !['stop','start','restart'].include?(ARGV[0])
+if !['stop','start','restart','status'].include?(ARGV[0])
   puts "Usage: #{$0} stop|start|restart
-Stop, Start, or Restart Aeolus services.
-
-To show status of aeolus services please use aeolus-check-services.
+Stop, Start, Restart, or display Status of Aeolus services.
 "
   exit(1)
 end
@@ -40,6 +36,7 @@ $services = %w(mongod iwhd postgresql httpd deltacloud-core libvirtd aeolus-cond
 $action_messages = {'status' => 'Checking status of',
                     'start'  => 'Starting',
                     'stop'   => 'Stopping'}
+$exit_status = 0
 
 def perform(action, svcs)
   action = action.to_s
@@ -50,6 +47,7 @@ def perform(action, svcs)
     if $?.to_i == 0
       puts " \e[1;32mSuccess\e[0m"
     else
+      $exit_status = 1
       puts " \e[1;31mFAILURE:\e[0m #{out.strip}"
     end
     $?.to_i
@@ -81,8 +79,15 @@ def restart
   start
 end
 
+def status
+  perform :status, $services
+end
+
 case ARGV[0]
   when "start"   then start
   when "stop"    then stop
   when "restart" then restart
+  when "status"  then status
 end
+
+exit $exit_status
