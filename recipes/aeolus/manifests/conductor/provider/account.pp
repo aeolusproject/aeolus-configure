@@ -31,7 +31,7 @@ define aeolus::conductor::provider::account($provider="", $type="", $username=""
       file_parameters  => { 'provider_account[credentials_hash[x509private]]'=> $x509private,
                             'provider_account[credentials_hash[x509public]]' => $x509public  },
 
-      returns     => '200',
+      returns     => '201',
       #contains    => "//table/thead/tr/th[text() = 'Properties for $name']",
       follow      => true,
       use_cookies_at => "/tmp/aeolus-${admin_login}",
