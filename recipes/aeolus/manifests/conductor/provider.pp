@@ -5,7 +5,7 @@ define aeolus::conductor::provider($deltacloud_driver="",$url="", $deltacloud_pr
     parameters  => { 'provider[name]'  => $name, 'provider[url]'   => $url,
                      'provider[provider_type_deltacloud_driver]' => $deltacloud_driver,
                      'provider[deltacloud_provider]' => $deltacloud_provider },
-    returns     => '200',
+    returns     => '201',
     follow      => true,
     contains    => "/provider/name[text() = '$name']",
     use_cookies_at => "/tmp/aeolus-${admin_login}",
