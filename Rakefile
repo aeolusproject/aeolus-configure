@@ -28,7 +28,7 @@ CLEAN.include('pkg', 'repo')
 CLOBBER.include('aeolus')
 PKG_NAME = "aeolus-configure"
 RPM_SPEC = "contrib/aeolus-configure.spec"
-PKG_VERSION = "2.8.10"
+PKG_VERSION = "2.8.11"
 
 # Build the rpm
 rpm_task =

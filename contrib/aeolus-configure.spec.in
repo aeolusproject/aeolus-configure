@@ -73,6 +73,9 @@ Aeolus Configure Puppet Recipe
 %{aeolushome}
 
 %changelog
+* Thu Oct 24 2012 Steve Linabery <slinaber@redhat.com> - 2.8.11-1
+- build v2.8.11-1 tag
+
 * Wed Oct 24 2012 Steve Linabery <slinaber@redhat.com> - 2.8.10-1
 - build v2.8.10-1 tag
 
