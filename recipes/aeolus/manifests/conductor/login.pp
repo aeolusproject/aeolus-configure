@@ -12,6 +12,7 @@ define aeolus::conductor::login($password){
   exec{"decrement_login_counter":
     cwd         => '/usr/share/aeolus-conductor',
     environment => "RAILS_ENV=production",
+    user        => 'aeolus',
     command     => "rake dc:decrement_counter[${name}]",
     require => Web_Request["${name}-conductor-login"]
   }

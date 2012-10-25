@@ -3,12 +3,14 @@ define aeolus::conductor::site_admin($email="", $password="", $first_name="", $l
   exec{"create_site_admin_user":
          cwd         => '/usr/share/aeolus-conductor',
          environment => "RAILS_ENV=production",
+         user        => 'aeolus',
          command     => "rake dc:create_user[${name},${password},${email},${first_name},${last_name}]",
          unless      => 'rake dc:admin_exists',
          require     => Aeolus::Rails::Seed::Db["seed_aeolus_database"]}
   exec{"grant_site_admin_privs":
          cwd         => '/usr/share/aeolus-conductor',
          environment => "RAILS_ENV=production",
+         user        => 'aeolus',
          command     => "rake dc:site_admin[${name}]",
          subscribe   => Exec[create_site_admin_user],
          refreshonly => true}
