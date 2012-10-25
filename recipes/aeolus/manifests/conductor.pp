@@ -115,6 +115,17 @@ class aeolus::conductor inherits aeolus {
                      require  => Service["postgresql"] }
 
 
+    # This gets generated on each invocation of db:migrate.  It is
+    # possible that an old version with ownership root:root is still
+    # around, which means that running db:migrate as the aeolus user
+    # will fail since it cannot generate the new schema.  Make sure it
+    # is owned by aeolus.
+    file { "/usr/share/aeolus-conductor/db/schema.rb":
+      ensure => present,
+      owner  => aeolus,
+      group  => aeolus
+    }
+
     # Create aeolus database
     aeolus::rails::create::db{"create_aeolus_database":
                 cwd        => "/usr/share/aeolus-conductor",
@@ -123,7 +134,8 @@ class aeolus::conductor inherits aeolus {
     aeolus::rails::migrate::db{"migrate_aeolus_database":
                 cwd             => "/usr/share/aeolus-conductor",
                 rails_env       => "production",
-                require         => [Aeolus::Rails::Create::Db[create_aeolus_database]]}
+                require         => [Aeolus::Rails::Create::Db[create_aeolus_database],
+                                    File["/usr/share/aeolus-conductor/db/schema.rb"]]}
     aeolus::rails::seed::db{"seed_aeolus_database":
                 cwd             => "/usr/share/aeolus-conductor",
                 rails_env       => "production",
