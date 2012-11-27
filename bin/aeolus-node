@@ -1,6 +1,6 @@
-#! /bin/sh
+#! /usr/bin/ruby
 
-#   Copyright 2011 Red Hat, Inc.
+#   Copyright 2012 Red Hat, Inc.
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -14,7 +14,39 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-CAT=/bin/cat
-NODE_DIR=/etc/aeolus-configure/nodes
+require 'yaml'
 
-$CAT $NODE_DIR/$1
+NODE_DIR='/etc/aeolus-configure/nodes'
+ldap_configure_file = File.join(NODE_DIR, 'ldap_configure')
+profile_file = File.join(NODE_DIR, ARGV[0])
+
+[ldap_configure_file, profile_file].each do |f|
+  unless File.exists?(f)
+    STDERR.puts "No such file or directory - #{f}"
+    exit!(1)
+  end
+end
+
+begin
+  ldap = YAML::load_file(ldap_configure_file)['parameters']['enable_ldap']
+rescue NoMethodError
+  STDERR.puts "#{ldap_configure_file} does not contain a value for " \
+              "'enable_ldap' under the 'parameters' section"
+  exit!(1)
+rescue => e
+  STDERR.puts e.message
+  exit!(1)
+end
+
+begin
+  profile = YAML::load_file(profile_file)
+rescue => e
+  STDERR.puts e.message
+  exit!(1)
+end
+
+profile['parameters'] ||= {}
+profile['parameters']['enable_ldap'] = ldap
+puts YAML::dump(profile)
+
+
