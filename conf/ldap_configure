@@ -1,0 +1,6 @@
+# This file is included by other top-level profiles.  You should not
+# use this profile directly (It has no classes so it won't do anything
+# anyway.)
+
+parameters:
+  enable_ldap: false

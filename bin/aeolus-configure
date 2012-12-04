@@ -91,7 +91,7 @@ do
     fi
     puppet /usr/share/aeolus-configure/modules/aeolus/aeolus.pp \
        --modulepath=/usr/share/aeolus-configure/modules/ \
-       --external_nodes "/bin/sh /usr/share/aeolus-configure/modules/aeolus/aeolus-node ${x}_configure" --node_terminus exec \
+       --external_nodes "/usr/bin/ruby /usr/share/aeolus-configure/modules/aeolus/aeolus-node ${x}_configure" --node_terminus exec \
        --logdest=/var/log/aeolus-configure/aeolus-configure.log \
        --logdest=console \
        $LOGLEVEL \

@@ -2,7 +2,7 @@
 
 :auth:
   # supported strategies: database, ldap
-  :strategy: database
+  :strategy: <%= enable_ldap ? "ldap" : "database" %>
 :groups:
   # allows locally-managed groups
   :enable_local: true
