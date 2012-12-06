@@ -1,7 +1,7 @@
 # login to the aeolus conductor
 define aeolus::conductor::login($password){
   web_request{ "${name}-conductor-login":
-    post         => 'https://localhost/conductor/user_session',
+    post         => 'https://localhost/conductor/user_sessions',
     parameters  => { 'username'    => "$name", 'password' => "$password",
                      'commit'                 => 'submit' },
     returns     => '200',
