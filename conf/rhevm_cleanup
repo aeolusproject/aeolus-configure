@@ -1,9 +1,6 @@
 #rhevm-only cleanup specification
 ---
 parameters:
-  enable_https: true
-  enable_kerberos: false
-  enable_security: false
   package_provider: rpm
 classes:
   aeolus::profiles::rhevm::disabled:

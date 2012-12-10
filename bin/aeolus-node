@@ -17,10 +17,19 @@
 require 'yaml'
 
 NODE_DIR='/etc/aeolus-configure/nodes'
-ldap_configure_file = File.join(NODE_DIR, 'ldap_configure')
 profile_file = File.join(NODE_DIR, ARGV[0])
+common_file = case
+              when ARGV[0].end_with?('_configure')
+                File.join(NODE_DIR, 'common_configure')
+              when ARGV[0].end_with?('_cleanup')
+                File.join(NODE_DIR, 'common_cleanup')
+              else
+                STDERR.puts "Unknown profile type for #{ARGV[0]}, " \
+                            "should be one of {configure,cleanup}"
+                exit!(1)
+              end
 
-[ldap_configure_file, profile_file].each do |f|
+[common_file, profile_file].each do |f|
   unless File.exists?(f)
     STDERR.puts "No such file or directory - #{f}"
     exit!(1)
@@ -28,17 +37,7 @@ profile_file = File.join(NODE_DIR, ARGV[0])
 end
 
 begin
-  ldap = YAML::load_file(ldap_configure_file)['parameters']['enable_ldap']
-rescue NoMethodError
-  STDERR.puts "#{ldap_configure_file} does not contain a value for " \
-              "'enable_ldap' under the 'parameters' section"
-  exit!(1)
-rescue => e
-  STDERR.puts e.message
-  exit!(1)
-end
-
-begin
+  common_params = YAML::load_file(common_file)['parameters']
   profile = YAML::load_file(profile_file)
 rescue => e
   STDERR.puts e.message
@@ -46,7 +45,7 @@ rescue => e
 end
 
 profile['parameters'] ||= {}
-profile['parameters']['enable_ldap'] = ldap
+profile['parameters'] = common_params.merge(profile['parameters'])
 puts YAML::dump(profile)
 
 
