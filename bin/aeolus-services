@@ -24,7 +24,7 @@ Stop, Start, Restart, or display Status of Aeolus services.
 end
 
 if !['stop','start','restart','status'].include?(ARGV[0])
-  puts "Usage: #{$0} stop|start|restart
+  puts "Usage: #{$0} stop|start|restart|status
 Stop, Start, Restart, or display Status of Aeolus services.
 "
   exit(1)
