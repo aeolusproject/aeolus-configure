@@ -32,8 +32,8 @@ class aeolus::conductor inherits aeolus {
       require => Package['aeolus-conductor'],
       mode    => 640, owner => 'root', group => 'aeolus'}
 
-    file{"/usr/share/aeolus-conductor/config/initializers/secret_token.rb":
-      content => template("aeolus/secret_token.rb"),
+    file{"/etc/aeolus-conductor/secret_token":
+      content => template("aeolus/secret_token"),
       require => Package['aeolus-conductor']}
 
     file{"/rsyslog": ensure => 'directory' }
@@ -76,7 +76,7 @@ class aeolus::conductor inherits aeolus {
                   Service['httpd'],
                   Apache::Site[aeolus-conductor], Exec[reload-apache],
                   File['/usr/share/aeolus-conductor/config/settings.yml'],
-                  File['/usr/share/aeolus-conductor/config/initializers/secret_token.rb']] }
+                  File['/etc/aeolus-conductor/secret_token']] }
 
   ### Initialize and start the aeolus database
     # Right now we configure and start postgres, at some point I want
