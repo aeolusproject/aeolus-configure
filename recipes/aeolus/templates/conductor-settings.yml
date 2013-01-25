@@ -21,7 +21,7 @@
     :consumer_secret: <%= imagefactory_oauth_password %>
 
 :session:
-  :timeout: 15 # minutes
+  :timeout: <%= conductor_settings_session_timeout %>
 
 :action_mailer:
   :delivery_method: sendmail # or smtp
