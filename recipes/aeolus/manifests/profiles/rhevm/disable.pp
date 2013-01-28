@@ -12,9 +12,10 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-define aeolus::profiles::rhevm::disable ($nfs_mount_point)
+define aeolus::profiles::rhevm::disable ($nfs_mount_point = "")
 {
   exec {"umount $nfs_mount_point":
-    onlyif => [["mount -l | grep $nfs_mount_point"],
-               ["sh -c '! (ps -ef | grep -v grep | grep dc-rhev-image)'"]]}
+    onlyif => ["/usr/bin/test -d $nfs_mount_point",
+               "mount -l | grep $nfs_mount_point",
+               "sh -c '! (ps -ef | grep -v grep | grep dc-rhev-image)'"]}
 }
