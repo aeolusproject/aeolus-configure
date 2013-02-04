@@ -3,4 +3,6 @@
 # anyway.)
 
 parameters:
-  enable_ldap: false
+  enable_https: true
+  enable_kerberos: false
+  enable_security: false

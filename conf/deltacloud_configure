@@ -1,4 +1,3 @@
 parameters:
-  package_provider: rpm
 classes:
 - aeolus::profiles::deltacloud

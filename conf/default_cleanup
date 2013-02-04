@@ -7,9 +7,6 @@
 #desire and it will take precedence over this.
 ---
 parameters:
-  enable_https: true
-  enable_kerberos: false
-  enable_security: false
 # Uncomment these to clean up RHEV
 #  rhevm_nfs_server: nfs.server.com
 #  rhevm_nfs_export: /export/export_domain

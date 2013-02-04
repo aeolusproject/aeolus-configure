@@ -1,10 +1,6 @@
 # ec2 setup configuration.
 ---
 parameters:
-  enable_https: true
-  enable_kerberos: false
-  enable_security: false
-  package_provider: rpm
 classes:
 - aeolus::conductor
 - aeolus::image-factory
