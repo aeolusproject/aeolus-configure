@@ -145,7 +145,7 @@ class aeolus::conductor inherits aeolus {
     aeolus::conductor::destroy_temp_admins{ "before" : }
     aeolus::conductor::site_admin{"admin":
                     email => 'root@localhost.localdomain',
-                    password => "password",
+                    password => hiera('aeolus_site_admin_password'),
                     first_name => 'Administrator',
                     last_name => '',
                     require => Aeolus::Conductor::Destroy_temp_admins["before"]}
