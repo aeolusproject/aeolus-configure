@@ -109,7 +109,7 @@ class aeolus::conductor inherits aeolus {
       notify      => Service["postgresql"]
     }
     postgres::user{"aeolus":
-                     password => "v23zj59an",
+                     password => hiera('aeolus_password'),
                      roles    => "CREATEDB",
                      require  => Service["postgresql"] }
 
